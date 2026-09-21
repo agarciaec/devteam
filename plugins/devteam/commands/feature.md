@@ -1,6 +1,6 @@
 ---
 description: Ciclo completo de desarrollo con el equipo de agentes, del diseno a la verificacion
-argument-hint: Descripcion de lo que hay que construir o arreglar
+argument-hint: Que construir o arreglar. Si pides varias cosas inconexas, se desglosan en tareas
 ---
 
 # Desarrollo con el equipo
@@ -28,9 +28,32 @@ Tarea: $ARGUMENTS
    avisa al usuario de que `/onboard` daria mejores resultados y pregunta si continuar igualmente.
    Si durante la tarea descubres que algo de la ficha no es cierto, corrigelo en cuanto lo sepas:
    todos los agentes que convoques despues la van a creer.
-2. Elige un `<slug>` corto para la tarea y crea `.devteam/tasks/<slug>/`.
-3. Escribe `spec.md`: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado.
-4. Si el proyecto no tiene git, avisa al usuario: los cambios no seran reversibles ni revisables como diff.
+2. **Decide si esto es una tarea o varias.** El criterio no es cuantas cosas pidio el usuario, sino
+   cuantas **unidades con contrato y criterios de aceptacion propios** hay.
+
+   Es **una sola tarea** aunque suene a varias cuando todo comparte los mismos modelos, endpoints o
+   pantallas: listar, crear y cancelar reservas es una funcionalidad, no tres, y partirla te dejaria
+   tres contratos que en realidad son uno.
+
+   Son **varias tareas** cuando no comparten nada entre si: arreglar el login, anadir exportacion a
+   Excel y actualizar dependencias son tres cosas que solo coinciden en que se pidieron a la vez.
+
+   Si son varias, **no las mezcles en un slug**. Un contrato que intenta cubrir cosas inconexas queda
+   difuso, el diff final es imposible de revisar de una pieza, `/standup` no puede decir cual va por
+   donde, y un bloqueo en una frena a las demas sin motivo.
+
+   Propon el desglose al usuario antes de empezar: una linea por tarea, en el orden en que conviene
+   hacerlas, y di por que ese orden si hay dependencias entre ellas (una suele producir el contrato o
+   el modelo de datos que otra necesita). Advierte de que cada tarea recorre el ciclo entero con sus
+   propias paradas, asi que tres tareas son tres ciclos y no uno mas largo.
+
+   Con el desglose acordado, ejecuta **una cada vez**, completa, hasta el cierre y el aprendizaje,
+   antes de empezar la siguiente. Entre una y otra, resume en una linea y sigue. Si una falla o el
+   usuario quiere parar, las demas quedan sin empezar y se dice cuales son.
+
+3. Elige un `<slug>` corto para la tarea y crea `.devteam/tasks/<slug>/`.
+4. Escribe `spec.md`: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado.
+5. Si el proyecto no tiene git, avisa al usuario: los cambios no seran reversibles ni revisables como diff.
 
 ## Fase 1: Exploracion en paralelo
 

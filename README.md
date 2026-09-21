@@ -53,6 +53,10 @@ con revision, pruebas y seguridad a la vez.
 Se para en dos sitios a esperarte: tras el diseno, para resolver ambiguedades antes de escribir
 codigo, y al final, para contarte que se verifico y con que resultado real.
 
+**Es una tarea por invocacion**, pero una tarea puede abarcar varias cosas si comparten contrato:
+listar, crear y cancelar reservas es una sola funcionalidad. Si le pides cosas inconexas, las
+desglosa, te propone el orden y las hace una a una en lugar de mezclarlas en un unico contrato.
+
 **4. Retomar.** Cuando vuelves a un proyecto y no recuerdas donde lo dejaste.
 
 ```
