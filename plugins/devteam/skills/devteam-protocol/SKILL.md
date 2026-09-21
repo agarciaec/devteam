@@ -15,6 +15,15 @@ Lo que si existe, y es con lo que se construye el equipo:
 2. **El paralelismo es real** cuando varias llamadas a la herramienta Agent salen en **un mismo mensaje**. En mensajes separados se ejecutan en serie y se pierde la ventaja.
 3. **El handoff es por archivos.** `.devteam/` es la memoria compartida del equipo, y lo unico que un agente puede heredar de otro.
 
+## De donde sale `context.md`
+
+En un proyecto que ya existe lo genera `/onboard`, deduciendo el stack del codigo y preguntando lo
+que no se puede deducir. En un proyecto nuevo lo genera `/kickoff` a partir de las decisiones de
+stack que el equipo propone y el usuario aprueba, porque ahi no hay nada que deducir todavia.
+
+En ambos casos es la unica fuente de especializacion de los agentes: ninguno sabe nada de este
+proyecto hasta que lo lee.
+
 ## Estructura de `.devteam/`
 
 ```

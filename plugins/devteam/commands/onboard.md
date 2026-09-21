@@ -11,6 +11,12 @@ Los agentes del equipo son genericos por oficio: saben de backend, de datos o de
 
 Notas adicionales del usuario: $ARGUMENTS
 
+## Paso 0: Comprobar que hay algo que reconocer
+
+Si el directorio esta vacio o solo tiene un repositorio recien iniciado, aqui no hay nada que
+deducir: dilo y ofrece `/kickoff`, que es el comando para proyectos nuevos, donde el equipo
+propone stack y estructura en lugar de reconocerlos. No sigas.
+
 ## Paso 1: Comprobar si ya existe
 
 Mira si hay `.devteam/context.md` y `CLAUDE.md`. Si ambos existen y estan actualizados, dilo, ofrece refrescarlos y no rehagas el trabajo sin permiso.
