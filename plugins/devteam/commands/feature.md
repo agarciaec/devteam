@@ -23,7 +23,11 @@ Tarea: $ARGUMENTS
 
 ## Fase 0: Preparacion
 
-1. Lee `.devteam/context.md`. Si no existe, avisa al usuario de que `/onboard` daria mejores resultados y pregunta si continuar igualmente.
+1. Lee `.devteam/context.md`, incluidas sus trampas conocidas y sus lecciones: ahi esta lo que el
+   equipo ya aprendio de este proyecto, y se escribio para que no vuelvas a tropezar. Si no existe,
+   avisa al usuario de que `/onboard` daria mejores resultados y pregunta si continuar igualmente.
+   Si durante la tarea descubres que algo de la ficha no es cierto, corrigelo en cuanto lo sepas:
+   todos los agentes que convoques despues la van a creer.
 2. Elige un `<slug>` corto para la tarea y crea `.devteam/tasks/<slug>/`.
 3. Escribe `spec.md`: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado.
 4. Si el proyecto no tiene git, avisa al usuario: los cambios no seran reversibles ni revisables como diff.
@@ -67,12 +71,53 @@ Con el codigo ya aplicado, lanza en **un solo mensaje**:
 - `qa-tester` para pruebas del cambio
 - `security-auditor` si la tarea toca autenticacion, datos personales o dinero; y siempre que `context.md` marque el proyecto como portador de datos sensibles o regulados
 
-Consolida los tres informes. Si se contradicen, decide tu y explica por que. Arregla lo que bloquea antes de dar nada por terminado.
+Consolida los tres informes. Si se contradicen, decide tu y explica por que.
 
-## Fase 5: Cierre
+**Corrige y vuelve a verificar.** Arreglar un hallazgo no cierra el asunto: el arreglo tambien
+puede estar mal, o romper otra cosa. Aplica la correccion, ejecuta de nuevo lo que fallaba, y solo
+entonces dalo por resuelto. Si tras dos intentos sigue fallando, para y cuentaselo al usuario con
+la salida real en lugar de seguir intentando variaciones a ciegas.
+
+Si el mismo tipo de defecto aparece dos veces en esta tarea, o ya habia aparecido en otra, no es
+casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
+
+## Fase 5: Cierre y aprendizaje
 
 1. Convoca a `docs-writer` si el cambio afecta a como se usa o se configura el proyecto.
 2. Escribe `log.md` en la carpeta de la tarea: que se hizo, que decidio el equipo y que quedo pendiente.
-3. Resume al usuario: que cambio, que archivos, que se verifico **y con que resultado real**, y que queda abierto.
+
+3. **Actualiza `.devteam/context.md`.** Este es el paso que hace que el equipo mejore con el uso, y
+   el que mas se olvida. La ficha se escribio con lo que se sabia entonces; esta tarea acaba de
+   ensenar cosas nuevas.
+
+   **Corrige lo que resulto ser falso.** Si la ficha decia que las pruebas se ejecutan de una forma
+   y era otra, arreglalo ahora. Una ficha que miente es peor que una incompleta, porque todos los
+   agentes la creen.
+
+   **Anade a Trampas conocidas** lo que te costo descubrir y volvera a costar: una dependencia que
+   se rompe, un paso manual que nadie documento, un comportamiento que sorprende.
+
+   **Anade a Lecciones del proyecto**, con la fecha, solo lo que cumpla las tres condiciones:
+
+   - Es **especifico de este proyecto**. Que no haya que capturar excepciones en silencio es
+     conocimiento general y los agentes ya lo traen; que en este proyecto las fechas lleguen del
+     sistema antiguo en un formato raro, no.
+   - **Volvera a ser relevante.** Si no cambia lo que alguien haria la proxima vez, sobra.
+   - **No esta ya escrito** ahi ni en `CLAUDE.md`. Si esta y quedo corto, mejora esa entrada en
+     lugar de anadir otra.
+
+   Sobre todo anota el defecto que aparecio dos veces, la decision que se tomo y su motivo, y el
+   supuesto que resulto equivocado.
+
+   **Poda mientras escribes.** Borra lo que dejo de ser cierto y lo que se volvio obvio porque el
+   codigo cambio. Esta seccion la leen los diez agentes en cada arranque: si crece sin control se
+   convierte en ruido que estorba mas de lo que ayuda. Si pasa de unas veinte entradas, consolida
+   las parecidas en una sola mejor escrita.
+
+   Si la tarea no enseno nada que cumpla las condiciones, no escribas nada. Anotar por anotar
+   degrada la ficha.
+
+4. Resume al usuario: que cambio, que archivos, que se verifico **y con que resultado real**, que
+   quedo abierto, y que aprendio el equipo sobre el proyecto.
 
 No declares la tarea terminada si las pruebas fallan o si no llegaste a ejecutar la verificacion. Di lo que hay.

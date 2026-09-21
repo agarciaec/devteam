@@ -24,6 +24,36 @@ stack que el equipo propone y el usuario aprueba, porque ahi no hay nada que ded
 En ambos casos es la unica fuente de especializacion de los agentes: ninguno sabe nada de este
 proyecto hasta que lo lee.
 
+## Como mejora el equipo con el uso
+
+Conviene ser preciso con esto, porque la palabra "aprender" promete algo que no ocurre: **el
+modelo no se reentrena con tu uso, y ningun agente recuerda nada de ayer**. Cada uno arranca en
+frio, siempre.
+
+Lo que si ocurre es que el equipo **escribe lo que descubre** en un sitio que todos leen antes de
+trabajar. El aprendizaje es un archivo, no una intuicion. Y como es un archivo, funciona: no se
+degrada, se puede leer, corregir y borrar.
+
+El ciclo tiene tres momentos:
+
+1. **Al empezar una tarea**, todos leen `context.md`. Ahi estan el stack, las trampas conocidas y
+   las lecciones que dejaron las tareas anteriores.
+2. **Durante la tarea**, cualquier discrepancia entre la ficha y la realidad se corrige en el
+   momento. Una ficha que miente es peor que una incompleta, porque los agentes la creen sin
+   comprobarla.
+3. **Al cerrar**, se anota lo aprendido: lo que resulto falso, las trampas nuevas, los defectos que
+   se repitieron y las decisiones con su motivo.
+
+**Lo que hace que esto funcione es la disciplina de no anotarlo todo.** La seccion de lecciones la
+leen los diez agentes en cada arranque: cada entrada inutil cuesta atencion en todas las tareas
+futuras. Entra solo lo que es especifico de este proyecto, volvera a ser relevante, y no esta ya
+escrito. El conocimiento general no entra: los agentes ya lo traen. Y se poda al escribir, no
+algun dia.
+
+**La otra mitad es la correccion dentro de la tarea.** Aplicar un arreglo no lo da por bueno: hay
+que volver a ejecutar lo que fallaba, porque el arreglo puede estar mal o romper otra cosa. Y
+tras dos intentos fallidos se para y se cuenta, en lugar de probar variaciones a ciegas.
+
 ## Estructura de `.devteam/`
 
 ```

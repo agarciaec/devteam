@@ -78,6 +78,11 @@ Crea `.devteam/context.md` con esta estructura, rellenada con datos reales del p
 ## Trampas conocidas
 <lo que sorprende al que llega: dependencias fragiles, configuracion manual, cosas que se rompen facil>
 
+## Lecciones del proyecto
+<vacio al principio. Aqui el equipo va anotando lo que aprende trabajando: decisiones que se
+tomaron y por que, errores que se repitieron, cosas que parecian correctas y no lo eran. Cada
+entrada con su fecha. Se actualiza al cerrar cada tarea, no antes.>
+
 ## Datos sensibles
 <que informacion delicada maneja y bajo que marco regulatorio, o "ninguna". Se concreto:
 datos de salud, financieros, tributarios, personales de clientes, credenciales de terceros.

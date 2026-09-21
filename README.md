@@ -91,6 +91,30 @@ El apartado de la ficha que mas conviene cuidar es **que datos sensibles maneja 
 el dependen el auditor de seguridad y el especialista de datos para calibrar su exigencia, asi que
 un "ninguna" equivocado le baja la guardia a todo el equipo.
 
+## Como mejora con el uso
+
+La palabra "aprender" promete algo que no ocurre: el modelo no se reentrena con tu uso, y ningun
+agente recuerda nada de la sesion anterior. Lo que si hace el equipo es **escribir lo que descubre**
+en la ficha del proyecto, que todos leen antes de trabajar. El aprendizaje es un archivo, y por eso
+funciona: se puede leer, corregir y borrar.
+
+Al cerrar cada tarea, `/feature` actualiza `context.md`: corrige lo que resulto ser falso, anade las
+trampas que costo descubrir, y anota en **Lecciones del proyecto** lo que cambiara lo que alguien
+haga la proxima vez — el defecto que aparecio dos veces, la decision tomada y su motivo, el supuesto
+que resulto equivocado.
+
+Lo que hace que esto sirva es la disciplina de **no anotarlo todo**. Esa seccion la leen los diez
+agentes en cada arranque, asi que cada entrada inutil cuesta atencion en todas las tareas futuras.
+Entra solo lo especifico de este proyecto, que vaya a ser relevante otra vez y que no este ya
+escrito; el conocimiento general no entra, porque los agentes ya lo traen. Y se poda al escribir.
+
+La otra mitad es la correccion dentro de la tarea: aplicar un arreglo no lo da por bueno, hay que
+volver a ejecutar lo que fallaba. Y tras dos intentos fallidos el equipo para y lo cuenta con la
+salida real, en lugar de probar variaciones a ciegas.
+
+`/standup` avisa si una tarea se cerro dejando hallazgos abiertos sin anotar ninguna leccion:
+significa que ese aprendizaje se perdio.
+
 ## Como funciona
 
 Los subagentes de Claude Code no se comunican entre si: cada uno arranca en frio y reporta a la
@@ -110,7 +134,7 @@ El detalle esta en la skill `devteam-protocol`.
 
 ```
 .devteam/
-├── context.md              # ficha del proyecto (/onboard o /kickoff)
+├── context.md              # ficha del proyecto, viva: la actualiza cada /feature al cerrar
 └── tasks/<slug>/
     ├── spec.md             # que se pide y criterios de aceptacion
     ├── design.md           # decision de arquitectura

@@ -82,7 +82,9 @@ pasan el contenido, como en cualquier otra tarea del equipo.
    siempre implica sacar valores que ya se colaron en el codigo.
 4. **Una prueba que pasa**, por minima que sea: deja el camino abierto para las siguientes.
 5. **`.devteam/context.md`**: aqui se escribe a partir de las decisiones tomadas, no de la
-   deteccion. Misma estructura que genera `/onboard`, incluido el apartado de datos sensibles.
+   deteccion. Misma estructura que genera `/onboard`, incluido el apartado de datos sensibles y la
+   seccion de lecciones, que arranca vacia. Estrena esa seccion con las decisiones de stack y su
+   motivo: dentro de seis meses, saber **por que** se eligio algo vale mas que saber que se eligio.
 6. **`CLAUDE.md`** con los comandos reales y las convenciones acordadas.
 
 ## Fase 5: Comprobar que arranca de verdad

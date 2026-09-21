@@ -25,6 +25,10 @@ Tarea consultada: $ARGUMENTS
 
 4. Contrasta con el estado real del codigo. Si el proyecto tiene git, mira `git status` y `git log` para ver si hay cambios sin confirmar o trabajo posterior. Si lo que dicen los documentos no cuadra con el codigo, senalalo: suele significar que la tarea avanzo fuera del flujo del equipo.
 
-5. Cierra con lo unico que el usuario necesita decidir: **el siguiente paso concreto**, y si hay algo bloqueado, que lo desbloquea.
+5. Mira las **lecciones del proyecto** en `.devteam/context.md`. Si la ultima tarea no anadio
+   ninguna y sin embargo dejo hallazgos abiertos o defectos que se repitieron, dilo: significa que
+   el cierre se hizo a medias y ese aprendizaje se perdio.
+
+6. Cierra con lo unico que el usuario necesita decidir: **el siguiente paso concreto**, y si hay algo bloqueado, que lo desbloquea.
 
 Se breve. Esto es un parte de situacion, no un informe.
