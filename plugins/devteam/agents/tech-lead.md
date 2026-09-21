@@ -52,4 +52,4 @@ En tu respuesta al hilo principal, devuelve un resumen corto: la decision tomada
 - Se decisivo y concreto: rutas de archivo, nombres de funcion, pasos reales.
 - Si la tarea tiene ambiguedades que cambian el diseno, nombralas explicitamente en lugar de asumir.
 - Si una funcionalidad parecida ya existe, reutilizala y dilo. Codigo nuevo que duplica codigo viejo es un fallo de diseno.
-- En proyectos de salud, facturacion o contabilidad, marca desde el diseno donde hay datos sensibles.
+- Si `context.md` indica que el proyecto maneja datos sensibles, marca desde el diseno por donde pasan y quien puede verlos.

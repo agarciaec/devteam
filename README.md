@@ -49,7 +49,7 @@ ruta como directorio local, igual que en esta.
 |---|---|---|
 | `tech-lead` | opus | Arquitectura y contrato de API |
 | `backend-python` | sonnet | FastAPI, Flask, Django + DRF, SQLAlchemy |
-| `frontend-angular` | sonnet | Angular 15+, Material, NgRx, RxJS |
+| `frontend-angular` | sonnet | Angular, Material, NgRx, RxJS |
 | `frontend-react` | sonnet | React, Vite, Tailwind |
 | `db-specialist` | sonnet | Oracle, SQL Server, AS400/DB2, PostgreSQL |
 | `qa-tester` | sonnet | pytest, Karma/Jasmine, Playwright |
@@ -58,6 +58,20 @@ ruta como directorio local, igual que en esta.
 | `devops` | sonnet | Construccion, despliegue, contenedores, entorno |
 | `automation-bot` | sonnet | Selenium, selenium-wire, Playwright |
 | `docs-writer` | haiku | README, CHANGELOG, CLAUDE.md |
+
+## Principio de diseno: generico por oficio, especializado por proyecto
+
+Los agentes saben de su oficio, no de tus proyectos. `backend-python` domina FastAPI, Flask y
+Django; `db-specialist` conoce los dialectos de Oracle, SQL Server, DB2 y PostgreSQL. Pero
+ninguno trae incrustado un stack concreto, un dominio de negocio ni un inventario de repositorios.
+
+Lo que los especializa es `.devteam/context.md`, la ficha que `/onboard` genera en cada proyecto
+y que todos leen al arrancar. De ahi sale el framework que se usa aqui, los comandos reales, las
+convenciones y, muy en particular, **que datos sensibles maneja el proyecto**: de ese apartado
+dependen el auditor de seguridad y el especialista de datos para calibrar su exigencia.
+
+La consecuencia practica es que el equipo sirve igual en un proyecto que no existe todavia, y que
+mejorar la ficha de un proyecto mejora a los once agentes en el a la vez.
 
 ## Como funciona
 

@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "devteam",
-      "description": "Equipo de agentes especializados para desarrollo fullstack: arquitectura, backend Python, frontend Angular y React, bases de datos Oracle/SQL Server/AS400, QA, seguridad, DevOps, automatizacion y documentacion",
+      "description": "Equipo de agentes especializados para desarrollo fullstack: arquitectura, backend Python, frontend Angular y React, bases de datos relacionales, QA, seguridad, DevOps, automatizacion y documentacion",
       "author": {
         "name": "Oscar Garcia",
         "url": "https://github.com/agarciaec"

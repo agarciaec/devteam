@@ -65,7 +65,7 @@ Con el codigo ya aplicado, lanza en **un solo mensaje**:
 
 - `code-reviewer` sobre el diff
 - `qa-tester` para pruebas del cambio
-- `security-auditor` si la tarea toca autenticacion, datos personales, pagos o facturacion; en proyectos de salud o tributarios, siempre
+- `security-auditor` si la tarea toca autenticacion, datos personales o dinero; y siempre que `context.md` marque el proyecto como portador de datos sensibles o regulados
 
 Consolida los tres informes. Si se contradicen, decide tu y explica por que. Arregla lo que bloquea antes de dar nada por terminado.
 

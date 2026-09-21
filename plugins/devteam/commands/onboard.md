@@ -7,6 +7,8 @@ argument-hint: Opcional, notas sobre el proyecto que el analisis no puede deduci
 
 Vas a examinar el proyecto en el directorio actual y dejar por escrito lo que cualquier sesion o agente futuro necesita saber para trabajar bien en el. Es el paso previo a usar el equipo en este proyecto.
 
+Los agentes del equipo son genericos por oficio: saben de backend, de datos o de seguridad, pero no conocen **este** proyecto. La ficha que escribas aqui es lo unico que los especializa, asi que su calidad determina la del equipo entero.
+
 Notas adicionales del usuario: $ARGUMENTS
 
 ## Paso 1: Comprobar si ya existe
@@ -71,7 +73,10 @@ Crea `.devteam/context.md` con esta estructura, rellenada con datos reales del p
 <lo que sorprende al que llega: dependencias fragiles, configuracion manual, cosas que se rompen facil>
 
 ## Datos sensibles
-<que informacion delicada maneja, o "ninguna">
+<que informacion delicada maneja y bajo que marco regulatorio, o "ninguna". Se concreto:
+datos de salud, financieros, tributarios, personales de clientes, credenciales de terceros.
+De este apartado dependen el auditor de seguridad y el especialista de datos para calibrar
+su nivel de exigencia, asi que un "ninguna" equivocado baja la guardia de todo el equipo.>
 
 ## Control de versiones
 <si tiene git o no; si no lo tiene, advertirlo>
