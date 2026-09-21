@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "devteam-local",
+  "description": "Marketplace local de Oscar Garcia para el equipo de agentes de desarrollo fullstack",
+  "owner": {
+    "name": "Oscar Garcia",
+    "email": "oscar.garcia.idrovo@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "devteam",
+      "description": "Equipo de agentes especializados para desarrollo fullstack: arquitectura, backend Python, frontend Angular y React, bases de datos Oracle/SQL Server/AS400, QA, seguridad, DevOps, automatizacion y documentacion",
+      "author": {
+        "name": "Oscar Garcia",
+        "email": "oscar.garcia.idrovo@gmail.com"
+      },
+      "source": "./plugins/devteam",
+      "category": "development"
+    }
+  ]
+}
