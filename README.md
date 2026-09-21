@@ -4,16 +4,71 @@ Equipo de agentes especializados para desarrollo fullstack, disponible en cualqu
 
 Este repositorio es a la vez el marketplace (`devteam-local`) y el plugin (`devteam`).
 
-## Instalacion
+## Uso rapido
+
+El ciclo completo, de instalar a trabajar.
+
+| Paso | Cuando | Comando |
+|---|---|---|
+| 1. Instalar | Una vez por maquina | `claude plugin marketplace add agarciaec/devteam` |
+| 2. Presentar el proyecto | Una vez por proyecto | `/kickoff` si es nuevo, `/onboard` si ya existe |
+| 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
+| 4. Retomar | Al volver dias despues | `/standup` |
+
+**1. Instalar.** Una sola vez en cada maquina. Los agentes aparecen al abrir una sesion nueva de
+Claude Code.
 
 ```bash
 claude plugin marketplace add agarciaec/devteam
 claude plugin install devteam@devteam-local
 ```
 
-Los agentes y comandos aparecen al abrir una sesion nueva de Claude Code.
+**2. Presentar el proyecto al equipo.** Los agentes no saben nada de tu proyecto hasta que existe
+su ficha, asi que este paso va primero. Se hace una vez y sirve para siempre.
 
-Para traer cambios posteriores:
+En un proyecto que **ya existe**, el equipo lo reconoce solo: lee el codigo y las dependencias,
+deduce lenguaje, framework, base de datos y comandos, te pregunta lo que no puede deducir, y
+escribe `.devteam/context.md` y `CLAUDE.md`.
+
+```
+/onboard
+```
+
+En un proyecto **nuevo**, el flujo se invierte: le cuentas que quieres construir, el equipo propone
+stack y estructura justificando que descarta, tu decides, y solo entonces crea el esqueleto y
+comprueba que arranca.
+
+```
+/kickoff una API para gestionar reservas de canchas deportivas
+```
+
+**3. Trabajar.** Es el comando del dia a dia. Una orden, y el equipo recorre el ciclo entero:
+explora el codigo en paralelo, disena y acuerda contigo el contrato de API, implementa, y verifica
+con revision, pruebas y seguridad a la vez.
+
+```
+/feature permitir cancelar una reserva hasta 2 horas antes
+```
+
+Se para en dos sitios a esperarte: tras el diseno, para resolver ambiguedades antes de escribir
+codigo, y al final, para contarte que se verifico y con que resultado real.
+
+**4. Retomar.** Cuando vuelves a un proyecto y no recuerdas donde lo dejaste.
+
+```
+/standup
+```
+
+Tambien puedes llamar a un especialista directamente, sin pasar por `/feature`, cuando ya sabes lo
+que necesitas: *"usa el security-auditor sobre el login"* o *"que el db-specialist revise por que
+esta consulta va lenta"*.
+
+Y con el uso, el equipo mejora: cada `/feature` deja escrito en la ficha lo que aprendio del
+proyecto, asi que la siguiente tarea empieza sabiendo mas que la anterior.
+
+## Actualizar el plugin
+
+Para traer los cambios publicados desde la ultima vez:
 
 ```bash
 claude plugin marketplace update devteam-local
