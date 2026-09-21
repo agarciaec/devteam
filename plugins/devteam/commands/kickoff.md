@@ -85,7 +85,11 @@ pasan el contenido, como en cualquier otra tarea del equipo.
    deteccion. Misma estructura que genera `/onboard`, incluido el apartado de datos sensibles y la
    seccion de lecciones, que arranca vacia. Estrena esa seccion con las decisiones de stack y su
    motivo: dentro de seis meses, saber **por que** se eligio algo vale mas que saber que se eligio.
-6. **`CLAUDE.md`** con los comandos reales y las convenciones acordadas.
+6. **`.devteam/decisions.md`**: estrenalo con las decisiones de stack que se acaban de tomar, cada
+   una con su fecha, su motivo y la alternativa descartada. Es el archivo que evita que dentro de un
+   ano nadie sepa por que el proyecto es como es, y el unico momento en que estas decisiones estan
+   frescas es ahora.
+7. **`CLAUDE.md`** con los comandos reales y las convenciones acordadas.
 
 ## Fase 5: Comprobar que arranca de verdad
 

@@ -54,23 +54,62 @@ algun dia.
 que volver a ejecutar lo que fallaba, porque el arreglo puede estar mal o romper otra cosa. Y
 tras dos intentos fallidos se para y se cuenta, en lugar de probar variaciones a ciegas.
 
+## Estado actual frente a historia
+
+Es la distincion que evita el error mas caro de todos: **leer un documento viejo creyendo que
+describe el sistema de hoy.**
+
+**Estado actual**, se mantiene al dia y se puede creer:
+
+- El **codigo**, que es la unica verdad completa
+- `context.md`: stack, comandos, convenciones, trampas y lecciones
+- `decisions.md`: las decisiones de arquitectura vigentes y por que
+
+**Historia**, es una foto del momento y no se actualiza nunca:
+
+- Todo lo que hay en `tasks/<slug>/`: el spec, el diseno, el contrato y los informes
+
+Un `contract.md` de hace ocho meses describe una API que puede haber cambiado tres veces desde
+entonces, y no lleva ningun aviso de estar obsoleto. Sirve para responder "que se decidio entonces
+y por que", jamas para responder "como funciona esto ahora". Si necesitas lo segundo, mira el
+codigo.
+
+Por eso las decisiones que siguen vigentes se copian a `decisions.md` en lugar de quedarse solo en
+la carpeta de su tarea: una decision viva tiene que estar donde se busca lo vivo. Y cuando una
+decision nueva sustituye a otra, la anterior se marca como superada en vez de borrarse, porque
+saber que algo se intento y se abandono evita que alguien lo reintente dentro de un ano.
+
+## Que el historial no se vuelva ilegible
+
+Las carpetas de tareas no se cargan nunca en contexto, asi que no encarecen las sesiones por muchas
+que haya. El riesgo no es el peso, es que con veinte tareas los nombres de carpeta dejan de decir
+nada y la informacion se vuelve inencontrable.
+
+Lo resuelve `tasks/index.md`: una linea por tarea con fecha, nombre, que hizo y en que estado quedo.
+Se escribe al cerrar cada tarea y es por donde se empieza a buscar, en lugar de abrir carpetas a
+ciegas. Las tareas que quedaron a medias se marcan como parciales y no se borran: una fila que dice
+que algo quedo sin terminar vale mas que el silencio.
+
 ## Estructura de `.devteam/`
 
 ```
 .devteam/
-├── context.md                 # ficha del proyecto, la lee todo agente al arrancar
-└── tasks/<slug>/
-    ├── spec.md                # que se pide y criterios de aceptacion
-    ├── design.md              # decision de arquitectura
-    ├── contract.md            # endpoints, esquemas, tipos e interfaces
-    ├── findings/              # un informe por especialista
-    │   ├── backend.md
-    │   ├── frontend.md
-    │   ├── db.md
-    │   ├── qa.md
-    │   ├── review.md
-    │   └── security.md
-    └── log.md                 # bitacora de cierre
+├── context.md                 # estado actual: la lee todo agente al arrancar
+├── decisions.md               # decisiones de arquitectura vigentes (la lee tech-lead)
+└── tasks/
+    ├── index.md               # una linea por tarea: fecha, nombre, que hizo, estado
+    └── <slug>/                # historia: foto del momento, no se actualiza
+        ├── spec.md            # que se pide y criterios de aceptacion
+        ├── design.md          # decision de arquitectura
+        ├── contract.md        # endpoints, esquemas, tipos e interfaces
+        ├── findings/          # un informe por especialista
+        │   ├── backend.md
+        │   ├── frontend.md
+        │   ├── db.md
+        │   ├── qa.md
+        │   ├── review.md
+        │   └── security.md
+        └── log.md             # bitacora de cierre
 ```
 
 ## Por que el contrato va antes que el codigo

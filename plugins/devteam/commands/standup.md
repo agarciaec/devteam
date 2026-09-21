@@ -1,6 +1,6 @@
 ---
 description: Resume el estado de las tareas del equipo en este proyecto
-argument-hint: Opcional, el slug de una tarea concreta
+argument-hint: Opcional, el slug de una tarea o un tema para buscar en el historial
 ---
 
 # Estado del equipo
@@ -13,7 +13,12 @@ Tarea consultada: $ARGUMENTS
 
 1. Si no hay `.devteam/` en este proyecto, dilo y sugiere `/onboard`. Termina ahi.
 
-2. Si el usuario indico un slug, informa solo de esa tarea. Si no, lista las tareas de `.devteam/tasks/` de mas reciente a mas antigua y detalla la ultima; menciona el resto en una linea cada una.
+2. Si el usuario indico un slug, informa solo de esa tarea. Si no, lee `.devteam/tasks/index.md` y
+   detalla la ultima tarea; de las anteriores da solo las filas del indice, y con mas de diez
+   quedate en las cinco mas recientes mas las que sigan marcadas como parciales. El indice existe
+   para no tener que abrir veinte carpetas: usalo en lugar de recorrerlas.
+
+   Si no hay indice pero si carpetas de tareas, dilo y ofrece reconstruirlo leyendo sus `log.md`.
 
 3. Para la tarea que detalles, lee sus documentos y reporta:
 
@@ -30,5 +35,16 @@ Tarea consultada: $ARGUMENTS
    el cierre se hizo a medias y ese aprendizaje se perdio.
 
 6. Cierra con lo unico que el usuario necesita decidir: **el siguiente paso concreto**, y si hay algo bloqueado, que lo desbloquea.
+
+## Si lo que te dan es un tema, no un slug
+
+Preguntas como "cuando tocamos las reservas" o "por que elegimos esta autenticacion" se responden
+con el historial, no con el estado de la tarea en curso:
+
+1. Busca el tema en `.devteam/tasks/index.md` y en `.devteam/decisions.md`.
+2. Abre solo las tareas que encajen y resume que se hizo y que se decidio, citando la fecha.
+3. **Advierte de que eso es historia.** Un contrato o un diseno de hace meses describe como era el
+   sistema entonces; para saber como es hoy, el codigo manda. Si lo que cuenta el historial no cuadra
+   con lo que ves en el codigo, dilo: significa que cambio despues y nadie lo anoto.
 
 Se breve. Esto es un parte de situacion, no un informe.

@@ -57,10 +57,14 @@ codigo, y al final, para contarte que se verifico y con que resultado real.
 listar, crear y cancelar reservas es una sola funcionalidad. Si le pides cosas inconexas, las
 desglosa, te propone el orden y las hace una a una en lugar de mezclarlas en un unico contrato.
 
-**4. Retomar.** Cuando vuelves a un proyecto y no recuerdas donde lo dejaste.
+**4. Retomar y consultar.** Cuando vuelves a un proyecto y no recuerdas donde lo dejaste, o cuando
+necesitas buscar algo en el historial.
 
 ```
 /standup
+```
+```
+/standup por que elegimos esta autenticacion
 ```
 
 Tambien puedes llamar a un especialista directamente, sin pasar por `/feature`, cuando ya sabes lo
@@ -193,14 +197,29 @@ El detalle esta en la skill `devteam-protocol`.
 
 ```
 .devteam/
-├── context.md              # ficha del proyecto, viva: la actualiza cada /feature al cerrar
-└── tasks/<slug>/
-    ├── spec.md             # que se pide y criterios de aceptacion
-    ├── design.md           # decision de arquitectura
-    ├── contract.md         # endpoints, esquemas, tipos
-    ├── findings/           # un informe por especialista
-    └── log.md              # bitacora de cierre
+├── context.md              # estado actual: stack, comandos, trampas, lecciones
+├── decisions.md            # decisiones de arquitectura vigentes y su motivo
+└── tasks/
+    ├── index.md            # una linea por tarea: fecha, nombre, que hizo, estado
+    └── <slug>/             # historia: foto del momento, no se actualiza
+        ├── spec.md         # que se pide y criterios de aceptacion
+        ├── design.md       # decision de arquitectura
+        ├── contract.md     # endpoints, esquemas, tipos
+        ├── findings/       # un informe por especialista
+        └── log.md          # bitacora de cierre
 ```
+
+**Lo que esta vivo y lo que es historia.** El codigo, `context.md` y `decisions.md` describen el
+proyecto de hoy y se mantienen al dia. Todo lo que hay dentro de `tasks/<slug>/` es una foto del
+momento y no se actualiza nunca: sirve para saber que se decidio entonces y por que, jamas para
+saber como funciona algo ahora. Un contrato de hace ocho meses no lleva ningun aviso de estar
+obsoleto, y esa es la trampa.
+
+**El historial no encarece las sesiones.** Las carpetas de tareas no se cargan en contexto: los
+agentes leen `context.md` y la tarea en curso, nada mas. Puedes acumular doscientas tareas sin que
+el coste por sesion cambie. El riesgo no es el peso, sino que con veinte tareas los nombres de
+carpeta dejen de decir nada; para eso esta `tasks/index.md`, que `/standup` usa para buscar en
+lugar de abrir carpetas a ciegas.
 
 ## Modificar el equipo
 

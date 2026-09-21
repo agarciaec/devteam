@@ -95,6 +95,16 @@ su nivel de exigencia, asi que un "ninguna" equivocado baja la guardia de todo e
 
 Si un dato no lo pudiste averiguar, escribe "desconocido" en lugar de suponer. Un dato inventado aqui se propaga a todos los agentes.
 
+## Paso 4b: Decisiones que ya estan tomadas
+
+Si al explorar identificaste decisiones de arquitectura que condicionan el proyecto y siguen
+vigentes —como se resuelve la autenticacion, por que hay dos bases de datos, por que ese patron
+raro— anotalas en `.devteam/decisions.md` con lo que sepas.
+
+Muchas veces el motivo original no esta escrito en ninguna parte y solo lo sabe quien lo hizo.
+Escribe la decision igualmente y marca el motivo como desconocido, o preguntaselo al usuario si
+parece importante: una decision sin motivo conocido es justo la que alguien deshara sin querer.
+
 ## Paso 5: CLAUDE.md
 
 Si no existe `CLAUDE.md` en la raiz, crealo con lo esencial de la ficha: comandos, convenciones y trampas. Debe ser corto y util, no una copia del contexto completo.

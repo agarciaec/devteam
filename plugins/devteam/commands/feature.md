@@ -109,6 +109,20 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
 1. Convoca a `docs-writer` si el cambio afecta a como se usa o se configura el proyecto.
 2. Escribe `log.md` en la carpeta de la tarea: que se hizo, que decidio el equipo y que quedo pendiente.
 
+   Anade tambien una linea a `.devteam/tasks/index.md`, creandolo si no existe, con este formato:
+
+   ```
+   | 2026-09-21 | reserva-cancelacion | Cancelar reservas hasta 2h antes | cerrada |
+   ```
+
+   Es el indice del proyecto: con veinte tareas, los nombres de carpeta ya no dicen nada y esta es
+   la unica forma de encontrar cuando se toco algo y donde quedo escrito. Una linea por tarea, la
+   mas reciente arriba, y el estado real: cerrada, parcial o abandonada. Una tarea que se dejo a
+   medias se marca como parcial y se dice que falto, nunca se borra la fila.
+
+   Si la tarea fijo una decision de arquitectura que sigue vigente, comprueba que el `tech-lead` la
+   registro en `.devteam/decisions.md`. Si no lo hizo, hazlo tu.
+
 3. **Actualiza `.devteam/context.md`.** Este es el paso que hace que el equipo mejore con el uso, y
    el que mas se olvida. La ficha se escribio con lo que se sabia entonces; esta tarea acaba de
    ensenar cosas nuevas.
