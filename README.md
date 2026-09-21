@@ -4,14 +4,36 @@ Equipo de agentes especializados para desarrollo fullstack, disponible en todos 
 
 Este repositorio es a la vez el marketplace (`devteam-local`) y el plugin (`devteam`).
 
-## Instalacion
+## Instalacion en una maquina nueva
 
-Ya esta instalado en esta maquina. Para una maquina nueva:
+El repositorio es privado, asi que primero hay que tener sesion de GitHub:
 
 ```bash
-claude plugin marketplace add D:/Desarrollo/_devteam
+gh auth login --hostname github.com --git-protocol https --web
+claude plugin marketplace add agarciaec/devteam
 claude plugin install devteam@devteam-local
 ```
+
+Los agentes y comandos aparecen al abrir una sesion nueva de Claude Code.
+
+Para traer cambios posteriores:
+
+```bash
+claude plugin marketplace update devteam-local
+claude plugin update devteam
+```
+
+## Donde se edita el equipo
+
+La maquina donde vive el repositorio (`D:\Desarrollo\_devteam`) tiene el marketplace
+registrado como directorio local, asi que los cambios se ven al abrir sesion nueva, sin
+pasar por GitHub. Es la maquina de desarrollo del plugin.
+
+Las demas maquinas consumen la version publicada. El ciclo es: editar aqui, `git push`,
+y en las otras `claude plugin marketplace update devteam-local && claude plugin update devteam`.
+
+Si algun dia hay que editar desde otra maquina, clona el repositorio ahi y registra esa
+ruta como directorio local, igual que en esta.
 
 ## Comandos
 
