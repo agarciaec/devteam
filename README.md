@@ -13,6 +13,7 @@ El ciclo completo, de instalar a trabajar.
 | 1. Instalar | Una vez por maquina | `claude plugin marketplace add agarciaec/devteam` |
 | 2. Presentar el proyecto | Una vez por proyecto | `/kickoff` si es nuevo, `/onboard` si ya existe |
 | 2b. Revisar su salud | Tras el onboarding y cada cierto tiempo | `/audit` |
+| 2c. Revisar la interfaz | Cuando la interfaz se queda vieja o incomoda | `/redesign` |
 | 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
 | 4. Publicar | Al terminar cada cambio | `/ship` |
 | 5. Versionar | Al cerrar una version | `/release` |
@@ -63,6 +64,25 @@ No modifica codigo. Entrega un informe con evidencias ordenado por gravedad, lo 
 auditoria anterior si la hay, y convierte los hallazgos en tareas que te propone hacer una a una con
 `/feature`. En proyectos grandes acota por modulos: una auditoria que intenta abarcarlo todo de una
 vez revisa en superficie todo y a fondo nada.
+
+**2c. Revisar y actualizar la interfaz completa.** `/redesign` revisa todas las pantallas —con
+capturas de la aplicacion real si se puede arrancar en local—, diagnostica usabilidad, consistencia,
+accesibilidad, adaptacion a movil y actualidad, y te pide elegir cuanto cambiar:
+
+- **Pulir**: corregir dentro del diseno actual
+- **Evolucionar**: modernizar el sistema de diseno conservando la estructura que los usuarios conocen
+- **Redisenar**: direccion visual nueva, con prototipos sobre tus pantallas reales para elegir
+
+```
+/redesign
+```
+```
+/redesign hacerla mas productiva para quien la usa todo el dia
+```
+
+No toca codigo hasta que decides. Despues lo planifica primero el sistema de diseno y luego pantalla a
+pantalla, por orden de valor, y cada etapa se ejecuta con su propio `/feature`: la aplicacion queda
+funcionando y publicable en cada paso, nunca un cambio enorme de golpe.
 
 **3. Trabajar.** Es el comando del dia a dia. Una orden, y el equipo recorre el ciclo entero:
 explora el codigo en paralelo, disena y acuerda contigo el contrato de API, implementa, y verifica
@@ -147,6 +167,7 @@ claude plugin marketplace add /opt/devteam
 | `/kickoff <idea>` | **Proyecto nuevo.** El equipo propone stack y estructura, lo acuerda contigo, crea el esqueleto y registra las decisiones. |
 | `/onboard` | **Proyecto existente.** Reconoce el stack y genera `context.md`, `decisions.md` y `CLAUDE.md`. |
 | `/audit [area]` | Revision global de salud y consistencia: ejecuta, revisa cada capa en paralelo y cruza donde se tocan. No modifica codigo; devuelve informe y tareas. |
+| `/redesign [objetivo]` | Revisa toda la interfaz, te hace elegir el nivel de cambio (pulir, evolucionar, redisenar) y lo planifica por etapas. |
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
 | `/ship` | Sincroniza, hace commit, sube la rama y abre el pull request, con tu confirmacion en cada paso que publica. |
 | `/release [version]` | Calcula el numero de version, actualiza el CHANGELOG, y crea tag y release. |
@@ -262,6 +283,7 @@ El detalle esta en la skill `devteam-protocol`.
 ├── context.md              # estado actual: stack, comandos, trampas, lecciones
 ├── decisions.md            # decisiones de arquitectura vigentes y su motivo
 ├── audits/<fecha>/         # historia: linea base, informes por capa y report.md de cada /audit
+├── redesign/<fecha>/       # historia: capturas, diagnostico, prototipos y plan de cada /redesign
 └── tasks/
     ├── index.md            # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/             # historia: foto del momento, no se actualiza

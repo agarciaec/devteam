@@ -97,6 +97,7 @@ que algo quedo sin terminar vale mas que el silencio.
 ├── context.md                 # estado actual: la lee todo agente al arrancar
 ├── decisions.md               # decisiones de arquitectura vigentes (la lee tech-lead)
 ├── audits/<fecha>/            # historia: cada /audit, con su linea base, informes y report.md
+├── redesign/<fecha>/          # historia: capturas, diagnosis.md, prototipos y plan.md de cada /redesign
 └── tasks/
     ├── index.md               # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/                # historia: foto del momento, no se actualiza
@@ -132,6 +133,7 @@ Si durante la implementacion un especialista ve que el contrato esta mal, **no l
 | Disenar la solucion | `tech-lead` |
 | Lado servidor, cualquier lenguaje | `backend` |
 | Como debe verse y sentirse una interfaz: flujo, diseno visual, animacion | `ui-designer` |
+| Revisar y actualizar la interfaz completa | `/redesign`, que diagnostica, acuerda el nivel de cambio y planifica por etapas |
 | Interfaz, con framework o sin el | `frontend` |
 | Esquema, migraciones, consultas lentas | `db-specialist` |
 | Verificar que funciona | `qa-tester` |
