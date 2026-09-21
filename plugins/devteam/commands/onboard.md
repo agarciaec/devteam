@@ -128,3 +128,7 @@ Si el proyecto usa git, pregunta al usuario si quiere versionar `.devteam/`. Ver
 ## Cierre
 
 Resume en pocas lineas: que es el proyecto, su stack, y sobre todo que no pudiste averiguar y necesita confirmacion del usuario.
+
+Si es la primera vez que el equipo entra en este proyecto, ofrece `/audit` como siguiente paso: deja
+una linea base de su estado con la que comparar despues, y suele descubrir lo que conviene arreglar
+antes de construir nada nuevo encima.

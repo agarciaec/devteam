@@ -1,0 +1,123 @@
+---
+description: Revision global de salud y consistencia del proyecto: ejecuta, revisa cada capa en paralelo y comprueba que encajan entre si
+argument-hint: Opcional, un area o modulo para acotar la revision; sin argumento revisa todo
+---
+
+# Auditoria del proyecto
+
+Vas a comprobar que el proyecto funciona como un todo, no solo cada parte por separado. Coordinas al
+equipo; **en esta auditoria nadie modifica codigo**, tampoco tu. El resultado es un informe con
+evidencias y una lista de tareas para arreglar lo encontrado.
+
+Alcance indicado por el usuario: $ARGUMENTS
+
+## Reglas de esta auditoria
+
+**Solo lectura.** Diagnosticar y arreglar a la vez contamina las dos cosas: al final no se sabe que
+estaba roto y que se rompio al arreglarlo. Lo unico que se escribe esta en `.devteam/`.
+
+**Evidencia o no cuenta.** Cada hallazgo lleva `archivo:linea` o la salida real de un comando. Una
+sospecha sin evidencia se reporta como sospecha, en una seccion aparte, o no se reporta.
+
+**Nada contra sistemas reales.** No ejecutes nada contra bases de datos de produccion, servicios de
+terceros ni cuentas reales. Si una comprobacion lo requiere, anotala como no verificada y di por que.
+
+---
+
+## Fase 0: Preparacion
+
+1. Lee `.devteam/context.md` y `.devteam/decisions.md`. Si no existe la ficha, para y propone
+   `/onboard` primero: auditar sin saber como se construye y se prueba el proyecto produce ruido.
+2. Crea `.devteam/audits/<fecha>/` para esta auditoria.
+3. **Acota si el proyecto es grande.** Si tiene varios modulos o servicios, o si el usuario indico un
+   area, define el alcance por modulos y dilo. Un agente que intenta leer un proyecto enorme de una
+   vez revisa en superficie todo y a fondo nada; es mejor una auditoria por modulo, bien hecha.
+4. Si hay auditorias anteriores en `.devteam/audits/`, localiza la ultima: al final compararas.
+
+## Fase 1: Linea base, ejecutando
+
+Antes de leer una sola linea, **ejecuta** lo que la ficha dice que se puede ejecutar y guarda la
+salida real en `baseline.md`:
+
+- Instalacion de dependencias
+- Construccion o compilacion
+- Pruebas, con su resultado y su cobertura si esta disponible
+- Linter y comprobacion de tipos
+- Arranque de la aplicacion, si es posible hacerlo en local sin sistemas reales
+
+Anota lo que falla, lo que avisa y **lo que no se pudo ejecutar**, que tambien es un hallazgo: un
+proyecto cuyas pruebas no se sabe como lanzar tiene un problema aunque todas pasen.
+
+Esta linea base se entrega a todos los agentes de la siguiente fase. Parten de hechos, no de
+suposiciones.
+
+## Fase 2: Revision por capas, en paralelo
+
+Lanza **en un solo mensaje** a los especialistas que apliquen al stack, cada uno con la linea base,
+el alcance y la ruta donde escribir su informe, `.devteam/audits/<fecha>/<rol>.md`. Diles que es una
+auditoria global: revisan el estado del proyecto, no un diff.
+
+- `backend`: manejo de errores, transacciones, validacion, consultas en bucle, configuracion
+- `frontend`: fugas, estados de carga y error, accesibilidad, tipado de respuestas
+- `db-specialist`: modelos frente a migraciones, integridad, indices para las consultas reales
+- `qa-tester`: que partes no tienen pruebas, pruebas que no prueban nada, caminos de error sin cubrir
+- `security-auditor`: el sistema completo, no solo lo reciente
+- `devops`: dependencias desactualizadas o vulnerables, configuracion por entorno, arranque
+- `git-manager`: salud del repositorio, archivos que no deberian estar versionados, secretos en el
+  historial
+- `docs-writer`: documentacion que contradice al codigo, incluida la propia ficha de `.devteam/`
+
+## Fase 3: Revision cruzada
+
+Esta es la parte que convierte la revision en global, y la que ningun especialista cubre solo.
+Convoca a `code-reviewer` con todos los informes de la fase anterior, o hazla tu. Comprueba donde
+se tocan las capas:
+
+- **Interfaz y servidor**: cada llamada del frontend apunta a un endpoint que existe, con el metodo,
+  los parametros y la forma de respuesta que ese endpoint tiene de verdad.
+- **Servidor y datos**: los modelos coinciden con el esquema real y con sus migraciones; no hay
+  migraciones pendientes ni columnas que el codigo usa y el esquema no tiene.
+- **Configuracion**: cada variable de entorno que el codigo lee esta documentada y en el archivo de
+  ejemplo; y al reves, no hay variables documentadas que ya nadie usa.
+- **Dependencias**: lo que se importa esta declarado, y lo declarado se usa.
+- **Codigo muerto**: rutas, componentes, funciones y tablas a las que nada llama.
+- **Convenciones**: los modulos siguen las mismas reglas, o cada uno invento las suyas.
+- **Ficha frente a realidad**: lo que dicen `context.md` y `decisions.md` sigue siendo cierto.
+
+## Fase 4: Consolidacion
+
+Escribe `.devteam/audits/<fecha>/report.md`:
+
+1. **Resumen**: tres o cuatro lineas sobre el estado general, sin adornos.
+2. **Linea base**: que se pudo ejecutar y con que resultado.
+3. **Hallazgos**, deduplicados, porque varios agentes veran lo mismo desde angulos distintos, y
+   ordenados por gravedad:
+   - **Critico**: roto hoy o explotable hoy
+   - **Alto**: fallara en cuanto se den condiciones normales de uso
+   - **Medio**: deuda que encarece cada cambio futuro
+   - **Bajo**: mejoras
+   Cada uno con su evidencia y el agente que lo encontro.
+4. **No verificado**: lo que no se pudo comprobar y por que.
+5. **Comparacion** con la auditoria anterior si la hay: que se arreglo, que sigue, que es nuevo.
+
+Si dos informes se contradicen, verifica tu mismo contra el codigo antes de decidir.
+
+## Fase 5: De hallazgos a trabajo
+
+Un informe que nadie convierte en trabajo no sirve de nada. Agrupa los hallazgos en tareas con
+sentido propio, siguiendo el mismo criterio que usa `/feature`: lo que comparte area y contrato va
+junto, lo inconexo va separado. Ordenalas por gravedad y por dependencia.
+
+Presenta al usuario la lista y propon empezar por los criticos, cada uno con su `/feature`. **No
+empieces ninguno sin que lo apruebe.**
+
+Actualiza tambien:
+
+- `.devteam/context.md`: corrige lo que la auditoria demostro falso y anade a trampas lo descubierto.
+- `.devteam/tasks/index.md`: una fila para la auditoria con el enlace al informe.
+
+## Cierre
+
+Resume al usuario el estado general, los hallazgos criticos y altos, lo que no se pudo verificar, y
+la lista de tareas propuestas. Si el proyecto esta sano, dilo en una linea: no infles hallazgos para
+justificar la auditoria.

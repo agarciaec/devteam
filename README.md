@@ -12,6 +12,7 @@ El ciclo completo, de instalar a trabajar.
 |---|---|---|
 | 1. Instalar | Una vez por maquina | `claude plugin marketplace add agarciaec/devteam` |
 | 2. Presentar el proyecto | Una vez por proyecto | `/kickoff` si es nuevo, `/onboard` si ya existe |
+| 2b. Revisar su salud | Tras el onboarding y cada cierto tiempo | `/audit` |
 | 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
 | 4. Publicar | Al terminar cada cambio | `/ship` |
 | 5. Versionar | Al cerrar una version | `/release` |
@@ -43,6 +44,25 @@ comprueba que arranca.
 ```
 /kickoff una API para gestionar reservas de canchas deportivas
 ```
+
+**2b. Revisar la salud del proyecto entero.** En un proyecto existente, `/audit` es el paso natural
+despues de `/onboard`, y conviene repetirlo cada cierto tiempo o antes de una version importante.
+Primero ejecuta build, pruebas, linter y arranque para tener una linea base real; despues cada
+especialista revisa su capa en paralelo; y al final se hace una revision cruzada de donde se tocan
+las capas, que es donde suele estar el problema: el frontend llama a un endpoint que ya no existe, un
+modelo no coincide con su migracion, el codigo lee una variable de entorno que nadie documento.
+
+```
+/audit
+```
+```
+/audit modulo de facturacion
+```
+
+No modifica codigo. Entrega un informe con evidencias ordenado por gravedad, lo compara con la
+auditoria anterior si la hay, y convierte los hallazgos en tareas que te propone hacer una a una con
+`/feature`. En proyectos grandes acota por modulos: una auditoria que intenta abarcarlo todo de una
+vez revisa en superficie todo y a fondo nada.
 
 **3. Trabajar.** Es el comando del dia a dia. Una orden, y el equipo recorre el ciclo entero:
 explora el codigo en paralelo, disena y acuerda contigo el contrato de API, implementa, y verifica
@@ -120,6 +140,7 @@ claude plugin marketplace add /opt/devteam
 |---|---|
 | `/kickoff <idea>` | **Proyecto nuevo.** El equipo propone stack y estructura, lo acuerda contigo, crea el esqueleto y registra las decisiones. |
 | `/onboard` | **Proyecto existente.** Reconoce el stack y genera `context.md`, `decisions.md` y `CLAUDE.md`. |
+| `/audit [area]` | Revision global de salud y consistencia: ejecuta, revisa cada capa en paralelo y cruza donde se tocan. No modifica codigo; devuelve informe y tareas. |
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
 | `/ship` | Sincroniza, hace commit, sube la rama y abre el pull request, con tu confirmacion en cada paso que publica. |
 | `/release [version]` | Calcula el numero de version, actualiza el CHANGELOG, y crea tag y release. |
@@ -233,6 +254,7 @@ El detalle esta en la skill `devteam-protocol`.
 .devteam/
 ├── context.md              # estado actual: stack, comandos, trampas, lecciones
 ├── decisions.md            # decisiones de arquitectura vigentes y su motivo
+├── audits/<fecha>/         # historia: linea base, informes por capa y report.md de cada /audit
 └── tasks/
     ├── index.md            # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/             # historia: foto del momento, no se actualiza

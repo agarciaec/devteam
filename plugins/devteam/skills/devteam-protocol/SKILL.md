@@ -96,6 +96,7 @@ que algo quedo sin terminar vale mas que el silencio.
 .devteam/
 ├── context.md                 # estado actual: la lee todo agente al arrancar
 ├── decisions.md               # decisiones de arquitectura vigentes (la lee tech-lead)
+├── audits/<fecha>/            # historia: cada /audit, con su linea base, informes y report.md
 └── tasks/
     ├── index.md               # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/                # historia: foto del momento, no se actualiza
@@ -137,6 +138,13 @@ Si durante la implementacion un especialista ve que el contrato esta mal, **no l
 | Bots y scraping | `automation-bot` |
 | Documentacion y CLAUDE.md | `docs-writer` |
 | Ramas, commits, sincronizacion, PR, versiones, conflictos | `git-manager` |
+| Salud y consistencia del proyecto entero | `/audit`, que convoca a todos por capas y cruza |
+
+**Tarea frente a auditoria.** `/feature` revisa lo que acaba de cambiar; `/audit` revisa el
+proyecto entero y, sobre todo, donde se tocan sus capas. Cada parte puede estar bien por separado y
+el conjunto fallar en las costuras: un endpoint que el frontend llama y ya no existe, un modelo que
+no coincide con su migracion, una variable de entorno que nadie documento. Una auditoria no modifica
+codigo: produce evidencias y tareas, y cada tarea se hace despues con su propio `/feature`.
 
 `git-manager` sigue la misma regla que los demas: analiza y prepara, y la sesion principal ejecuta.
 Con una diferencia: todo lo que publica —push, pull request, merge, tag, release— requiere la
