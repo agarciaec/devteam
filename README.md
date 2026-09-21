@@ -95,10 +95,10 @@ claude plugin marketplace add /opt/devteam
 
 | Comando | Para que |
 |---|---|
-| `/kickoff <idea>` | **Proyecto nuevo.** El equipo propone stack y estructura, lo acuerda contigo y crea el esqueleto. |
-| `/onboard` | **Proyecto existente.** Reconoce el stack y genera `.devteam/context.md` y `CLAUDE.md`. |
-| `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion, con los especialistas en paralelo. |
-| `/standup` | En que punto quedo el trabajo y que falta. |
+| `/kickoff <idea>` | **Proyecto nuevo.** El equipo propone stack y estructura, lo acuerda contigo, crea el esqueleto y registra las decisiones. |
+| `/onboard` | **Proyecto existente.** Reconoce el stack y genera `context.md`, `decisions.md` y `CLAUDE.md`. |
+| `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
+| `/standup` | Donde quedo el trabajo y que falta. Con un tema, busca en el historial: `/standup por que elegimos esta autenticacion`. |
 
 ## Agentes
 
@@ -128,7 +128,8 @@ es lo que se transfiere entre tecnologias. Lo que cambia es como se escribe, y e
 leyendo el proyecto.
 
 **Lo que los especializa es `.devteam/context.md`**, la ficha de cada proyecto, que todos leen al
-arrancar. La consecuencia practica es que mejorar esa ficha mejora a los diez agentes a la vez.
+arrancar; y `decisions.md`, que lee el `tech-lead` antes de disenar. La consecuencia practica es
+que mejorar esa ficha mejora a los diez agentes a la vez.
 
 ## De donde sale el contexto de cada proyecto
 
@@ -140,10 +141,16 @@ Lo que no se puede deducir —si el proyecto esta activo, donde se despliega, qu
 delicadas— te lo pregunta. Cuando un dato no se averigua, se escribe "desconocido": un dato
 inventado en la ficha se propaga a todos los agentes.
 
+`/onboard` anota ademas en `decisions.md` las decisiones de arquitectura que ya estan tomadas y
+condicionan el proyecto. Muchas veces su motivo no esta escrito en ninguna parte y solo lo sabe
+quien lo hizo: en ese caso se anota la decision y se marca el motivo como desconocido, porque una
+decision sin motivo conocido es justo la que alguien deshace sin querer.
+
 **En un proyecto nuevo** no hay nada que leer, asi que el flujo se invierte: `/kickoff` te pregunta
 que vas a construir y para quien, el equipo **propone** stack y estructura justificando cada
-eleccion y diciendo que descarto, tu decides, y solo entonces se crea el esqueleto. La ficha se
-escribe a partir de esas decisiones en lugar de la deteccion.
+eleccion y diciendo que descarto, tu decides, y solo entonces se crea el esqueleto. Tanto la ficha
+como las decisiones se escriben a partir de lo acordado, que es el unico momento en que el motivo
+de cada eleccion esta fresco.
 
 El criterio de eleccion es el mismo en todo el equipo: en un proyecto que ya existe manda la
 consistencia con lo que hay; cuando de verdad hay que elegir algo nuevo, lo actual y mantenido,
@@ -163,8 +170,9 @@ funciona: se puede leer, corregir y borrar.
 
 Al cerrar cada tarea, `/feature` actualiza `context.md`: corrige lo que resulto ser falso, anade las
 trampas que costo descubrir, y anota en **Lecciones del proyecto** lo que cambiara lo que alguien
-haga la proxima vez — el defecto que aparecio dos veces, la decision tomada y su motivo, el supuesto
-que resulto equivocado.
+haga la proxima vez — el defecto que aparecio dos veces, el supuesto que resulto equivocado. Si la
+tarea fijo una decision de arquitectura que seguira vigente, va a `decisions.md`; y en cualquier
+caso deja su fila en `tasks/index.md`.
 
 Lo que hace que esto sirva es la disciplina de **no anotarlo todo**. Esa seccion la leen los diez
 agentes en cada arranque, asi que cada entrada inutil cuesta atencion en todas las tareas futuras.
