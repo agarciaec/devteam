@@ -4,7 +4,7 @@
   "description": "Marketplace local de Oscar Garcia para el equipo de agentes de desarrollo fullstack",
   "owner": {
     "name": "Oscar Garcia",
-    "email": "oscar.garcia.idrovo@gmail.com"
+    "url": "https://github.com/agarciaec"
   },
   "plugins": [
     {
@@ -12,7 +12,7 @@
       "description": "Equipo de agentes especializados para desarrollo fullstack: arquitectura, backend Python, frontend Angular y React, bases de datos Oracle/SQL Server/AS400, QA, seguridad, DevOps, automatizacion y documentacion",
       "author": {
         "name": "Oscar Garcia",
-        "email": "oscar.garcia.idrovo@gmail.com"
+        "url": "https://github.com/agarciaec"
       },
       "source": "./plugins/devteam",
       "category": "development"
