@@ -50,8 +50,8 @@ Convoca a `tech-lead` con el spec y los hallazgos. Producira `design.md` y `cont
 
 Convoca en paralelo a los especialistas del stack que haga falta, indicando a cada uno la ruta de `contract.md`:
 
-- `backend-python` para servidor
-- `frontend-angular` o `frontend-react` para interfaz
+- `backend` para el lado servidor
+- `frontend` para la interfaz
 - `db-specialist` para migraciones
 - `automation-bot` si hay automatizacion
 

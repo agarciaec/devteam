@@ -48,8 +48,8 @@ Si durante la implementacion un especialista ve que el contrato esta mal, **no l
 |---|---|
 | Entender el codigo antes de decidir | exploradores, `db-specialist`, `qa-tester` en paralelo |
 | Disenar la solucion | `tech-lead` |
-| Servidor en Python | `backend-python` |
-| Interfaz | `frontend-angular` o `frontend-react` |
+| Lado servidor, cualquier lenguaje | `backend` |
+| Interfaz, con framework o sin el | `frontend` |
 | Esquema, migraciones, consultas lentas | `db-specialist` |
 | Verificar que funciona | `qa-tester` |
 | Revisar el cambio antes de cerrarlo | `code-reviewer` |

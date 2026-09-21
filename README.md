@@ -48,10 +48,9 @@ ruta como directorio local, igual que en esta.
 | Agente | Modelo | Para que |
 |---|---|---|
 | `tech-lead` | opus | Arquitectura y contrato de API |
-| `backend-python` | sonnet | FastAPI, Flask, Django + DRF, SQLAlchemy |
-| `frontend-angular` | sonnet | Angular, Material, NgRx, RxJS |
-| `frontend-react` | sonnet | React, Vite, Tailwind |
-| `db-specialist` | sonnet | Oracle, SQL Server, AS400/DB2, PostgreSQL |
+| `backend` | sonnet | Lado servidor en cualquier lenguaje y framework |
+| `frontend` | sonnet | Interfaz en cualquier framework, o sin ninguno |
+| `db-specialist` | sonnet | Modelado, migraciones, consultas e indices |
 | `qa-tester` | sonnet | pytest, Karma/Jasmine, Playwright |
 | `code-reviewer` | sonnet | Defectos de correctitud sobre el diff |
 | `security-auditor` | opus | OWASP, secretos, datos sensibles |
@@ -61,9 +60,10 @@ ruta como directorio local, igual que en esta.
 
 ## Principio de diseno: generico por oficio, especializado por proyecto
 
-Los agentes saben de su oficio, no de tus proyectos. `backend-python` domina FastAPI, Flask y
-Django; `db-specialist` conoce los dialectos de Oracle, SQL Server, DB2 y PostgreSQL. Pero
-ninguno trae incrustado un stack concreto, un dominio de negocio ni un inventario de repositorios.
+Los agentes saben de su oficio, no de tus proyectos ni de una tecnologia concreta. `backend` sabe
+de transacciones, validacion y errores, lo mismo en Python que en Node o .NET; `frontend` sabe de
+estado, accesibilidad y ciclo de vida, lo mismo en Angular que en React o en HTML sin framework.
+Ninguno trae incrustado un stack, un dominio de negocio ni un inventario de repositorios.
 
 Lo que los especializa es `.devteam/context.md`, la ficha que `/onboard` genera en cada proyecto
 y que todos leen al arrancar. De ahi sale el framework que se usa aqui, los comandos reales, las

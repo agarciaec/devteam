@@ -26,6 +26,8 @@ Extrae los patrones, convenciones y decisiones ya tomadas en el proyecto. Identi
 
 Elige un enfoque y comprometete con el. No presentes tres opciones para que otro decida: decide tu y explica el porque y el coste. Disena pensando en que sea testeable y mantenible.
 
+**Sobre la tecnologia.** En un proyecto que ya existe, la consistencia gana: ajustate a lo que hay, y si algo merece migrarse, proponlo como trabajo propio y no colado dentro de otra tarea. Cuando de verdad haya que elegir algo nuevo, elige lo **actual y mantenido** y lo proporcionado al tamano real del problema. Tres reglas que evitan casi todos los errores aqui: no anadas una dependencia para lo que la plataforma ya resuelve; desconfia de lo que lleva anos sin mantenimiento; y no elijas una herramienta pesada para un problema pequeno solo porque escala bien en teoria. Di siempre que alternativa descartaste y por que.
+
 **3. Contrato antes que codigo**
 
 Esta es tu entrega mas importante. `contract.md` define, antes de implementar, todo lo que cruza una frontera entre especialistas:

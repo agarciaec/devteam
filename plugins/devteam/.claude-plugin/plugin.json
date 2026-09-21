@@ -1,6 +1,6 @@
 {
   "name": "devteam",
-  "description": "Equipo de agentes especializados para desarrollo fullstack: arquitectura, backend Python, frontend Angular y React, bases de datos relacionales, QA, seguridad, DevOps, automatizacion y documentacion",
+  "description": "Equipo de agentes especializados para desarrollo fullstack: arquitectura, backend, frontend, bases de datos, QA, seguridad, DevOps, automatizacion y documentacion",
   "version": "0.1.0",
   "author": {
     "name": "Oscar Garcia",
