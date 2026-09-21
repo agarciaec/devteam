@@ -55,6 +55,13 @@ Tarea: $ARGUMENTS
 4. Escribe `spec.md`: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado.
 5. Si el proyecto no tiene git, avisa al usuario: los cambios no seran reversibles ni revisables como diff.
 
+   Si lo tiene, parte de una base limpia antes de tocar nada: comprueba que no hay cambios sin
+   confirmar de otro trabajo, trae el remoto, y crea una rama para esta tarea desde la rama principal
+   actualizada, siguiendo el nombre que use el repositorio segun `context.md`. Si hay cambios sin
+   confirmar que no son de esta tarea, pregunta al usuario que hacer con ellos antes de seguir: no los
+   mezcles ni los descartes. Ante cualquier duda sobre el estado del repositorio, convoca a
+   `git-manager`.
+
 ## Fase 1: Exploracion en paralelo
 
 Lanza en **un solo mensaje** los agentes que apliquen a la tarea, normalmente dos o tres:
@@ -147,7 +154,7 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
    supuesto que resulto equivocado.
 
    **Poda mientras escribes.** Borra lo que dejo de ser cierto y lo que se volvio obvio porque el
-   codigo cambio. Esta seccion la leen los diez agentes en cada arranque: si crece sin control se
+   codigo cambio. Esta seccion la leen todos los agentes en cada arranque: si crece sin control se
    convierte en ruido que estorba mas de lo que ayuda. Si pasa de unas veinte entradas, consolida
    las parecidas en una sola mejor escrita.
 
@@ -156,5 +163,8 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
 
 4. Resume al usuario: que cambio, que archivos, que se verifico **y con que resultado real**, que
    quedo abierto, y que aprendio el equipo sobre el proyecto.
+
+5. Si el proyecto tiene git y la verificacion paso, ofrece `/ship` para confirmar y publicar el
+   cambio. No confirmes ni subas nada por tu cuenta: publicar es decision del usuario.
 
 No declares la tarea terminada si las pruebas fallan o si no llegaste a ejecutar la verificacion. Di lo que hay.

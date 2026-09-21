@@ -13,7 +13,9 @@ El ciclo completo, de instalar a trabajar.
 | 1. Instalar | Una vez por maquina | `claude plugin marketplace add agarciaec/devteam` |
 | 2. Presentar el proyecto | Una vez por proyecto | `/kickoff` si es nuevo, `/onboard` si ya existe |
 | 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
-| 4. Retomar | Al volver dias despues | `/standup` |
+| 4. Publicar | Al terminar cada cambio | `/ship` |
+| 5. Versionar | Al cerrar una version | `/release` |
+| 6. Retomar | Al volver dias despues | `/standup` |
 
 **1. Instalar.** Una sola vez en cada maquina. Los agentes aparecen al abrir una sesion nueva de
 Claude Code.
@@ -57,7 +59,28 @@ codigo, y al final, para contarte que se verifico y con que resultado real.
 listar, crear y cancelar reservas es una sola funcionalidad. Si le pides cosas inconexas, las
 desglosa, te propone el orden y las hace una a una en lugar de mezclarlas en un unico contrato.
 
-**4. Retomar y consultar.** Cuando vuelves a un proyecto y no recuerdas donde lo dejaste, o cuando
+**4. Publicar.** Con la tarea verificada, `/ship` la lleva a GitHub: sincroniza con el remoto,
+resuelve conflictos volviendo a probar, redacta el commit con la convencion del repositorio, sube
+la rama y abre el pull request. Te pide confirmacion antes de cada paso que sale de tu maquina, y
+se detiene si encuentra secretos en el diff o si la verificacion no paso.
+
+```
+/ship
+```
+
+`/feature` ya crea una rama propia para cada tarea al empezar, desde la principal actualizada, asi
+que al llegar aqui el trabajo esta aislado. Nunca confirma ni sube nada por su cuenta.
+
+**5. Versionar.** Cuando quieres cerrar una version: `/release` reune lo cambiado desde el ultimo
+tag, propone el numero segun lo que cambio —un contrato de API incompatible es version mayor aunque
+el cambio parezca pequeno—, escribe el CHANGELOG para quien usa el software, y crea tag y release
+con tu confirmacion.
+
+```
+/release
+```
+
+**6. Retomar y consultar.** Cuando vuelves a un proyecto y no recuerdas donde lo dejaste, o cuando
 necesitas buscar algo en el historial.
 
 ```
@@ -98,6 +121,8 @@ claude plugin marketplace add /opt/devteam
 | `/kickoff <idea>` | **Proyecto nuevo.** El equipo propone stack y estructura, lo acuerda contigo, crea el esqueleto y registra las decisiones. |
 | `/onboard` | **Proyecto existente.** Reconoce el stack y genera `context.md`, `decisions.md` y `CLAUDE.md`. |
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
+| `/ship` | Sincroniza, hace commit, sube la rama y abre el pull request, con tu confirmacion en cada paso que publica. |
+| `/release [version]` | Calcula el numero de version, actualiza el CHANGELOG, y crea tag y release. |
 | `/standup` | Donde quedo el trabajo y que falta. Con un tema, busca en el historial: `/standup por que elegimos esta autenticacion`. |
 
 ## Agentes
@@ -114,6 +139,7 @@ claude plugin marketplace add /opt/devteam
 | `devops` | sonnet | Construccion, despliegue, contenedores, entorno |
 | `automation-bot` | sonnet | Automatizacion de navegador y procesos desatendidos |
 | `docs-writer` | haiku | README, CHANGELOG, CLAUDE.md |
+| `git-manager` | sonnet | Ramas, commits, sincronizacion, pull requests, versiones y conflictos |
 
 ## Principio de diseno: generico por oficio, especializado por proyecto
 
@@ -129,7 +155,7 @@ leyendo el proyecto.
 
 **Lo que los especializa es `.devteam/context.md`**, la ficha de cada proyecto, que todos leen al
 arrancar; y `decisions.md`, que lee el `tech-lead` antes de disenar. La consecuencia practica es
-que mejorar esa ficha mejora a los diez agentes a la vez.
+que mejorar esa ficha mejora a todos los agentes a la vez.
 
 ## De donde sale el contexto de cada proyecto
 
@@ -174,7 +200,7 @@ haga la proxima vez — el defecto que aparecio dos veces, el supuesto que resul
 tarea fijo una decision de arquitectura que seguira vigente, va a `decisions.md`; y en cualquier
 caso deja su fila en `tasks/index.md`.
 
-Lo que hace que esto sirva es la disciplina de **no anotarlo todo**. Esa seccion la leen los diez
+Lo que hace que esto sirva es la disciplina de **no anotarlo todo**. Esa seccion la leen todos los
 agentes en cada arranque, asi que cada entrada inutil cuesta atencion en todas las tareas futuras.
 Entra solo lo especifico de este proyecto, que vaya a ser relevante otra vez y que no este ya
 escrito; el conocimiento general no entra, porque los agentes ya lo traen. Y se poda al escribir.

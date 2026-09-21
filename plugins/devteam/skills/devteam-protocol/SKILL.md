@@ -45,7 +45,7 @@ El ciclo tiene tres momentos:
    se repitieron y las decisiones con su motivo.
 
 **Lo que hace que esto funcione es la disciplina de no anotarlo todo.** La seccion de lecciones la
-leen los diez agentes en cada arranque: cada entrada inutil cuesta atencion en todas las tareas
+leen todos los agentes en cada arranque: cada entrada inutil cuesta atencion en todas las tareas
 futuras. Entra solo lo que es especifico de este proyecto, volvera a ser relevante, y no esta ya
 escrito. El conocimiento general no entra: los agentes ya lo traen. Y se poda al escribir, no
 algun dia.
@@ -108,6 +108,7 @@ que algo quedo sin terminar vale mas que el silencio.
         │   ├── db.md
         │   ├── qa.md
         │   ├── review.md
+        │   ├── git.md
         │   └── security.md
         └── log.md             # bitacora de cierre
 ```
@@ -135,6 +136,11 @@ Si durante la implementacion un especialista ve que el contrato esta mal, **no l
 | Construccion, despliegue, contenedores, entorno | `devops` |
 | Bots y scraping | `automation-bot` |
 | Documentacion y CLAUDE.md | `docs-writer` |
+| Ramas, commits, sincronizacion, PR, versiones, conflictos | `git-manager` |
+
+`git-manager` sigue la misma regla que los demas: analiza y prepara, y la sesion principal ejecuta.
+Con una diferencia: todo lo que publica —push, pull request, merge, tag, release— requiere la
+confirmacion explicita del usuario, porque sale de su maquina y otros lo ven.
 
 ## Cuando lanzar de nuevo y cuando retomar
 

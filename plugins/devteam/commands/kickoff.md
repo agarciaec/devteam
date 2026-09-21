@@ -75,7 +75,9 @@ Ya con el acuerdo, crea el proyecto. **Escribe tu, la sesion principal**; los es
 pasan el contenido, como en cualquier otra tarea del equipo.
 
 1. **Control de versiones primero**: `git init` y un `.gitignore` adecuado al stack, antes de
-   escribir codigo. Asi todo lo demas es reversible desde el primer momento.
+   escribir codigo. Asi todo lo demas es reversible desde el primer momento. Acuerda con el usuario
+   la rama principal, la convencion de commits y si habra remoto; crear el repositorio en GitHub o
+   GitLab publica algo, asi que pide confirmacion y pregunta si debe ser privado o publico.
 2. **Estructura minima que arranca**: no un andamiaje enorme, sino lo suficiente para ejecutar
    algo y ver que responde.
 3. **Configuracion por entorno** desde el principio, con su archivo de ejemplo. Anadirla despues

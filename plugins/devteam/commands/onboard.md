@@ -90,7 +90,17 @@ De este apartado dependen el auditor de seguridad y el especialista de datos par
 su nivel de exigencia, asi que un "ninguna" equivocado baja la guardia de todo el equipo.>
 
 ## Control de versiones
-<si tiene git o no; si no lo tiene, advertirlo>
+<si tiene git o no; si no lo tiene, advertirlo. Si lo tiene:
+- Remoto y plataforma: GitHub, GitLab, otro, o ninguno
+- Rama principal y como se nombran las ramas de trabajo
+- Convencion de mensajes de commit, deducida del historial reciente
+- Como se integra: pull request con revision, merge directo, squash o rebase
+- Versionado: formato de los tags, si hay CHANGELOG
+- Protecciones: CI que valida los cambios, hooks de pre-commit
+- Si esta disponible gh o glab para operar con la plataforma>
+
+<De este apartado depende git-manager para seguir las costumbres del repositorio en lugar de
+imponer las suyas. Deducelo del historial, no lo supongas.>
 ```
 
 Si un dato no lo pudiste averiguar, escribe "desconocido" en lugar de suponer. Un dato inventado aqui se propaga a todos los agentes.
