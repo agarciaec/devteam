@@ -78,14 +78,23 @@ Convoca a `tech-lead` con el spec y los hallazgos. Producira `design.md` y `cont
 
 `contract.md` es la pieza que permite trabajar en paralelo despues: endpoints, esquemas, tipos e interfaces acordados antes de implementar.
 
-**Presenta el diseno al usuario y resuelve con el las ambiguedades antes de continuar.** Este es el punto de parada del flujo.
+**Si la tarea crea o cambia pantallas**, convoca despues a `ui-designer` con el spec y el
+`contract.md` ya escrito: disena el flujo, la interfaz y el movimiento sobre los datos que de verdad
+existen, y deja `ui.md` y un prototipo `mockup.html`. Si al disenar descubre que a la pantalla le
+falta un dato que el contrato no da, vuelve con `tech-lead` y ajustad el contrato antes de seguir;
+es mucho mas barato ahora que despues de implementar.
+
+**Presenta el diseno al usuario y resuelve con el las ambiguedades antes de continuar.** Si hay
+prototipo, dale la ruta para que lo abra en el navegador: se decide mejor viendo que leyendo. Este es
+el punto de parada del flujo.
 
 ## Fase 3: Implementacion
 
 Convoca en paralelo a los especialistas del stack que haga falta, indicando a cada uno la ruta de `contract.md`:
 
 - `backend` para el lado servidor
-- `frontend` para la interfaz
+- `frontend` para la interfaz, con la ruta de `ui.md` si existe: implementa esa especificacion, no
+  una interpretacion propia
 - `db-specialist` para migraciones
 - `automation-bot` si hay automatizacion
 

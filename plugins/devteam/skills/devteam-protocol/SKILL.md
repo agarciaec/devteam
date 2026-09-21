@@ -103,6 +103,8 @@ que algo quedo sin terminar vale mas que el silencio.
         ├── spec.md            # que se pide y criterios de aceptacion
         ├── design.md          # decision de arquitectura
         ├── contract.md        # endpoints, esquemas, tipos e interfaces
+        ├── ui.md              # especificacion visual, si la tarea toca pantallas
+        ├── mockup.html        # prototipo navegable de ui-designer
         ├── findings/          # un informe por especialista
         │   ├── backend.md
         │   ├── frontend.md
@@ -129,6 +131,7 @@ Si durante la implementacion un especialista ve que el contrato esta mal, **no l
 | Entender el codigo antes de decidir | exploradores, `db-specialist`, `qa-tester` en paralelo |
 | Disenar la solucion | `tech-lead` |
 | Lado servidor, cualquier lenguaje | `backend` |
+| Como debe verse y sentirse una interfaz: flujo, diseno visual, animacion | `ui-designer` |
 | Interfaz, con framework o sin el | `frontend` |
 | Esquema, migraciones, consultas lentas | `db-specialist` |
 | Verificar que funciona | `qa-tester` |

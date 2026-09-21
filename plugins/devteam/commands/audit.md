@@ -59,6 +59,8 @@ auditoria global: revisan el estado del proyecto, no un diff.
 
 - `backend`: manejo de errores, transacciones, validacion, consultas en bucle, configuracion
 - `frontend`: fugas, estados de carga y error, accesibilidad, tipado de respuestas
+- `ui-designer`: consistencia visual entre pantallas, componentes que hacen lo mismo con aspecto
+  distinto, contraste, flujos con pasos de mas, estados vacios y de error sin disenar
 - `db-specialist`: modelos frente a migraciones, integridad, indices para las consultas reales
 - `qa-tester`: que partes no tienen pruebas, pruebas que no prueban nada, caminos de error sin cubrir
 - `security-auditor`: el sistema completo, no solo lo reciente

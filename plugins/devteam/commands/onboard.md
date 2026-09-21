@@ -83,6 +83,11 @@ Crea `.devteam/context.md` con esta estructura, rellenada con datos reales del p
 tomaron y por que, errores que se repitieron, cosas que parecian correctas y no lo eran. Cada
 entrada con su fecha. Se actualiza al cerrar cada tarea, no antes.>
 
+## Sistema de diseno
+<solo si el proyecto tiene interfaz. Libreria de componentes, colores de marca, tipografia, donde
+viven los estilos y tokens, si hay modo oscuro, y como se ve en general: coherente, o cada pantalla
+con su estilo. De aqui depende ui-designer para respetar lo existente en lugar de imponer lo suyo.>
+
 ## Datos sensibles
 <que informacion delicada maneja y bajo que marco regulatorio, o "ninguna". Se concreto:
 datos de salud, financieros, tributarios, personales de clientes, credenciales de terceros.

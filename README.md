@@ -75,6 +75,12 @@ con revision, pruebas y seguridad a la vez.
 Se para en dos sitios a esperarte: tras el diseno, para resolver ambiguedades antes de escribir
 codigo, y al final, para contarte que se verifico y con que resultado real.
 
+**Si la tarea toca pantallas**, en esa primera parada no solo lees un diseno: `ui-designer` te deja
+un prototipo `mockup.html` que abres en el navegador, con datos realistas, sus estados de carga,
+vacio y error, y las animaciones reales. Lo apruebas o lo corriges *antes* de que se escriba codigo,
+y `frontend` implementa exactamente eso. En un proyecto que ya tiene diseno, respeta su sistema
+visual; en uno nuevo o en un rediseno, te propone dos o tres direcciones contrastadas para elegir.
+
 **Es una tarea por invocacion**, pero una tarea puede abarcar varias cosas si comparten contrato:
 listar, crear y cancelar reservas es una sola funcionalidad. Si le pides cosas inconexas, las
 desglosa, te propone el orden y las hace una a una en lugar de mezclarlas en un unico contrato.
@@ -152,6 +158,7 @@ claude plugin marketplace add /opt/devteam
 |---|---|---|
 | `tech-lead` | opus | Arquitectura, eleccion de stack y contrato de API |
 | `backend` | sonnet | Lado servidor en cualquier lenguaje y framework |
+| `ui-designer` | opus | Experiencia y diseno visual: flujos, sistema de diseno, animacion, prototipo navegable |
 | `frontend` | sonnet | Interfaz en cualquier framework, o sin ninguno |
 | `db-specialist` | sonnet | Modelado, migraciones, consultas e indices |
 | `qa-tester` | sonnet | Pruebas unitarias, de integracion y de extremo a extremo |
@@ -261,6 +268,8 @@ El detalle esta en la skill `devteam-protocol`.
         ├── spec.md         # que se pide y criterios de aceptacion
         ├── design.md       # decision de arquitectura
         ├── contract.md     # endpoints, esquemas, tipos
+        ├── ui.md           # especificacion visual, si la tarea toca pantallas
+        ├── mockup.html     # prototipo navegable para aprobar antes de implementar
         ├── findings/       # un informe por especialista
         └── log.md          # bitacora de cierre
 ```
