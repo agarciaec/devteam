@@ -284,6 +284,16 @@ una sesion nueva. La maquina donde vive el repositorio tiene el marketplace regi
 directorio local, asi que ahi los cambios se ven sin pasar por GitHub; las demas consumen la
 version publicada y la traen con `marketplace update` y `plugin update`.
 
+**Sube la version en cada publicacion, o los cambios no llegaran a las demas maquinas.** Claude Code
+guarda una copia del plugin en una carpeta con su numero de version, y `plugin update` solo la
+renueva cuando ese numero cambia. Si publicas cambios sin tocar `version` en
+`plugins/devteam/.claude-plugin/plugin.json`, las otras maquinas creen que ya estan al dia y se
+quedan con la copia vieja. Despues de subir la version, etiqueta y publica:
+
+```bash
+claude plugin tag plugins/devteam --push
+```
+
 Dos cosas que conviene respetar al modificarlo:
 
 - **No incrustes contexto de un proyecto concreto en un agente.** Si hace falta que sepa algo del
