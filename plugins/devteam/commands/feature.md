@@ -102,18 +102,26 @@ repetida se paga entera otra vez.
    antes de empezar la siguiente. Entre una y otra, resume en una linea y sigue. Si una falla o el
    usuario quiere parar, las demas quedan sin empezar y se dice cuales son.
 
-3. **Si lo que te pasan parece un slug, busca antes de preguntar.** Mira si existe
-   `.devteam/tasks/<slug>/spec.md` o una fila con ese nombre en `tasks/index.md`. Si existe y esta
-   pendiente, esa es la tarea: la dejo preparada `/audit`, `/uitest` o `/redesign`. Lee el spec, abre
-   solo las secciones del informe de origen que cita, comprueba que la evidencia sigue siendo cierta
-   en el codigo, y usa su nivel sugerido. Pregunta al usuario solo lo que el spec deje abierto, y
-   resume en dos lineas que vas a hacer antes de empezar.
+3. **Si lo que te pasan parece un slug (palabras-unidas-por-guiones, sin mas explicacion), es casi
+   seguro una tarea que propuso un informe en otra sesion.** Buscala en este orden y **no preguntes
+   al usuario ni la declares nueva hasta haber hecho los tres pasos**:
 
-   Si el slug existe pero la tarea ya esta cerrada, dilo y pregunta si es una continuacion.
-   Si viene de un informe antiguo sin spec, busca el slug en `.devteam/audits/*/report.md` (y en
-   `uitest/` y `redesign/`) y reconstruye el spec desde ahi antes de preguntar.
+   1. `.devteam/tasks/<slug>/spec.md` o una fila con ese nombre en `tasks/index.md`.
+   2. El slug literal en todo `.devteam/`: `grep -rl "<slug>" .devteam/`.
+   3. Por tema, en los informes mas recientes: toma las palabras del slug (en
+      `transacciones-dinero-mensajeria`: transaccion, dinero, saldo, cobro, mensaje) y buscalas en
+      el ultimo `report.md` de `.devteam/audits/`, `uitest/` y `redesign/`. Los informes de versiones
+      anteriores del plugin no escribian el slug, solo los hallazgos: el que agrupa esas palabras
+      con gravedad alta o critica es la tarea.
 
-   Si no existe, elige un `<slug>` corto para la tarea y crea `.devteam/tasks/<slug>/`.
+   Si la encuentras con spec pendiente, esa es la tarea. Si la encuentras solo en un informe,
+   **reconstruye el spec** desde sus hallazgos (evidencia, gravedad, arreglo) y escribelo. En ambos
+   casos comprueba que la evidencia sigue siendo cierta en el codigo, usa el nivel sugerido, y di al
+   usuario en dos lineas de que informe sale y que vas a hacer. Pregunta solo lo que el informe deje
+   abierto: **no ofrezcas opciones inventadas** sobre que podria significar el nombre.
+
+   Si la tarea ya esta cerrada, dilo y pregunta si es una continuacion. Solo si los tres pasos no
+   dan nada es una tarea nueva: elige un `<slug>` corto y crea `.devteam/tasks/<slug>/`.
 4. Escribe `spec.md`, o completa el que ya habia: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado.
 5. Si el proyecto no tiene git, avisa al usuario: los cambios no seran reversibles ni revisables como diff.
 
