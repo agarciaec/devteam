@@ -98,6 +98,7 @@ que algo quedo sin terminar vale mas que el silencio.
 ├── decisions.md               # decisiones de arquitectura vigentes (la lee tech-lead)
 ├── audits/<fecha>/            # historia: cada /audit, con su linea base, informes y report.md
 ├── redesign/<fecha>/          # historia: capturas, diagnosis.md, prototipos y plan.md de cada /redesign
+├── uitest/<fecha>/            # historia: cobertura, fallos con reproduccion y report.md de cada /uitest
 └── tasks/
     ├── index.md               # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/                # historia: foto del momento, no se actualiza
@@ -134,6 +135,12 @@ Si durante la implementacion un especialista ve que el contrato esta mal, **no l
 | Lado servidor, cualquier lenguaje | `backend` |
 | Como debe verse y sentirse una interfaz: flujo, diseno visual, animacion | `ui-designer` |
 | Revisar y actualizar la interfaz completa | `/redesign`, que diagnostica, acuerda el nivel de cambio y planifica por etapas |
+| Comprobar que la interfaz funciona al usarla | `/uitest`, o `qa-tester` directamente para una pantalla concreta |
+
+**Un navegador, un agente.** Un servidor MCP de navegador maneja un unico navegador. Nunca lances
+varios agentes a usarlo a la vez: se pisan las pestanas y los resultados no valen. Con navegador
+compartido se recorre en serie; solo se reparte en paralelo si cada agente lanza su propio proceso de
+Playwright mediante scripts.
 | Interfaz, con framework o sin el | `frontend` |
 | Esquema, migraciones, consultas lentas | `db-specialist` |
 | Verificar que funciona | `qa-tester` |

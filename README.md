@@ -14,6 +14,7 @@ El ciclo completo, de instalar a trabajar.
 | 2. Presentar el proyecto | Una vez por proyecto | `/kickoff` si es nuevo, `/onboard` si ya existe |
 | 2b. Revisar su salud | Tras el onboarding y cada cierto tiempo | `/audit` |
 | 2c. Revisar la interfaz | Cuando la interfaz se queda vieja o incomoda | `/redesign` |
+| 2d. Probar la interaccion | Antes de una version, tras un rediseno, o si algo no responde | `/uitest` |
 | 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
 | 4. Publicar | Al terminar cada cambio | `/ship` |
 | 5. Versionar | Al cerrar una version | `/release` |
@@ -92,6 +93,26 @@ accesibilidad, adaptacion a movil y actualidad, y te pide elegir cuanto cambiar:
 No toca codigo hasta que decides. Despues lo planifica primero el sistema de diseno y luego pantalla a
 pantalla, por orden de valor, y cada etapa se ejecuta con su propio `/feature`: la aplicacion queda
 funcionando y publicable en cada paso, nunca un cambio enorme de golpe.
+
+**2d. Probar que la interfaz funciona al usarla.** `/uitest` es la parte de `/audit` dedicada a la
+interaccion, sin convocar al resto del equipo: mas rapida y mas barata cuando la duda es solo si los
+botones, formularios, tablas y ventanas hacen lo que deben.
+
+```
+/uitest
+```
+```
+/uitest flujo de facturacion y pantalla de clientes
+```
+
+Comprueba primero que puede hacerse —que la aplicacion arranca en local, que hay navegador y que el
+entorno es de pruebas— y si falta algo te dice como resolverlo. Despues toma las pantallas del
+enrutador, acuerda contigo cuales recorrer, y `qa-tester` las usa como un usuario. El informe trae una
+tabla de cobertura por pantalla, cada fallo con sus pasos para reproducirlo, los errores silenciosos
+de consola y red, y lo que no se ejercito. Cada fallo sale con la prueba automatica que lo detectaria,
+para que al arreglarlo no pueda volver sin que las pruebas avisen.
+
+"Sin fallos" solo vale para lo que se recorrio: el informe siempre dice que quedo fuera.
 
 **3. Trabajar.** Es el comando del dia a dia. Una orden, y el equipo recorre el ciclo entero:
 explora el codigo en paralelo, disena y acuerda contigo el contrato de API, implementa, y verifica
@@ -177,6 +198,7 @@ claude plugin marketplace add /opt/devteam
 | `/onboard` | **Proyecto existente.** Reconoce el stack y genera `context.md`, `decisions.md` y `CLAUDE.md`. |
 | `/audit [area]` | Revision global de salud y consistencia: ejecuta, revisa cada capa en paralelo y cruza donde se tocan. No modifica codigo; devuelve informe y tareas. |
 | `/redesign [objetivo]` | Revisa toda la interfaz, te hace elegir el nivel de cambio (pulir, evolucionar, redisenar) y lo planifica por etapas. |
+| `/uitest [pantallas]` | Recorre la interfaz en un navegador como un usuario y comprueba que botones, formularios, tablas y ventanas funcionan. No modifica codigo. |
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
 | `/ship` | Sincroniza, hace commit, sube la rama y abre el pull request, con tu confirmacion en cada paso que publica. |
 | `/release [version]` | Calcula el numero de version, actualiza el CHANGELOG, y crea tag y release. |
@@ -293,6 +315,7 @@ El detalle esta en la skill `devteam-protocol`.
 ├── decisions.md            # decisiones de arquitectura vigentes y su motivo
 ├── audits/<fecha>/         # historia: linea base, informes por capa y report.md de cada /audit
 ├── redesign/<fecha>/       # historia: capturas, diagnostico, prototipos y plan de cada /redesign
+├── uitest/<fecha>/         # historia: cobertura, fallos con reproduccion y report.md de cada /uitest
 └── tasks/
     ├── index.md            # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/             # historia: foto del momento, no se actualiza
