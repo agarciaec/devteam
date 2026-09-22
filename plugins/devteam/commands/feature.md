@@ -107,7 +107,9 @@ Tras aplicar, ejecuta lo que corresponda (construccion, arranque, pruebas) y com
 Con el codigo ya aplicado, lanza en **un solo mensaje**:
 
 - `code-reviewer` sobre el diff
-- `qa-tester` para pruebas del cambio
+- `qa-tester` para pruebas del cambio; si la tarea toco pantallas, que ademas **recorra la interfaz
+  en el navegador** con la aplicacion en marcha: pulsar, rellenar, ordenar, cerrar. Que compile y
+  pasen las pruebas no significa que el boton funcione
 - `security-auditor` si la tarea toca autenticacion, datos personales o dinero; y siempre que `context.md` marque el proyecto como portador de datos sensibles o regulados
 
 Consolida los tres informes. Si se contradicen, decide tu y explica por que.

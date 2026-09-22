@@ -60,6 +60,15 @@ modelo no coincide con su migracion, el codigo lee una variable de entorno que n
 /audit modulo de facturacion
 ```
 
+Si el proyecto tiene interfaz, ademas **la usa**: `qa-tester` arranca la aplicacion en local y la
+recorre en un navegador como un usuario —pulsa botones, rellena formularios con datos validos e
+invalidos, ordena, filtra y pagina tablas, abre y cierra ventanas— vigilando errores de consola y
+peticiones fallidas. Es lo que encuentra un boton que falla al pulsarlo o una tabla que ordena mal,
+que leyendo codigo no se ve. Cada fallo sale con los pasos para reproducirlo y la prueba automatica
+que lo detectaria la proxima vez. Necesita poder arrancar la aplicacion en local y una herramienta de
+navegador, como Playwright; sin eso, la interfaz queda marcada como no verificada, nunca como
+correcta.
+
 No modifica codigo. Entrega un informe con evidencias ordenado por gravedad, lo compara con la
 auditoria anterior si la hay, y convierte los hallazgos en tareas que te propone hacer una a una con
 `/feature`. En proyectos grandes acota por modulos: una auditoria que intenta abarcarlo todo de una
@@ -182,7 +191,7 @@ claude plugin marketplace add /opt/devteam
 | `ui-designer` | opus | Experiencia y diseno visual: flujos, sistema de diseno, animacion, prototipo navegable |
 | `frontend` | sonnet | Interfaz en cualquier framework, o sin ninguno |
 | `db-specialist` | sonnet | Modelado, migraciones, consultas e indices |
-| `qa-tester` | sonnet | Pruebas unitarias, de integracion y de extremo a extremo |
+| `qa-tester` | sonnet | Pruebas automaticas, y recorrido de la aplicacion en marcha en un navegador como un usuario |
 | `code-reviewer` | sonnet | Defectos de correctitud sobre el diff |
 | `security-auditor` | opus | OWASP, secretos, datos sensibles |
 | `devops` | sonnet | Construccion, despliegue, contenedores, entorno |

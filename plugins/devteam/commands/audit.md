@@ -63,11 +63,38 @@ auditoria global: revisan el estado del proyecto, no un diff.
   distinto, contraste, flujos con pasos de mas, estados vacios y de error sin disenar
 - `db-specialist`: modelos frente a migraciones, integridad, indices para las consultas reales
 - `qa-tester`: que partes no tienen pruebas, pruebas que no prueban nada, caminos de error sin cubrir
+- `qa-tester`, en una segunda invocacion dentro del mismo mensaje, para el **recorrido funcional**
+  si el proyecto tiene interfaz: ver mas abajo
 - `security-auditor`: el sistema completo, no solo lo reciente
 - `devops`: dependencias desactualizadas o vulnerables, configuracion por entorno, arranque
 - `git-manager`: salud del repositorio, archivos que no deberian estar versionados, secretos en el
   historial
 - `docs-writer`: documentacion que contradice al codigo, incluida la propia ficha de `.devteam/`
+
+### Recorrido funcional de la interfaz
+
+Es la parte que la lectura de codigo no puede cubrir. Un boton que lanza un error al pulsarlo, un
+formulario que rechaza datos validos, una tabla que ordena o pagina mal o una ventana que no se
+cierra no se ven leyendo: se ven usando la aplicacion.
+
+`qa-tester` arranca la aplicacion en local y la recorre en un navegador como un usuario, pantalla por
+pantalla del alcance: acciones, formularios con datos validos, invalidos y limite, tablas con su
+ordenacion, filtros y paginacion, ventanas, navegacion, y tamanos de movil y escritorio. Vigila la
+consola del navegador y las peticiones fallidas, y documenta cada fallo con pasos para reproducirlo y
+su evidencia en `.devteam/audits/<fecha>/functional.md`.
+
+Condiciones:
+
+- **Solo contra un entorno local o de pruebas** con datos de prueba. Nunca produccion.
+- **Prioriza** en proyectos grandes: primero los flujos principales y las pantallas mas usadas. Es
+  mejor recorrer a fondo diez pantallas que tocar por encima cien.
+- **Declara la cobertura**: que pantallas se recorrieron y cuales no. Una pantalla no recorrida no esta
+  verificada, y el informe tiene que decirlo.
+- Si la aplicacion no se puede arrancar o no hay forma de manejar un navegador, el recorrido no se
+  hace y la interfaz queda marcada como **no verificada en ejecucion**, no como correcta.
+
+Cada fallo encontrado se acompana de la prueba de extremo a extremo que lo detectaria: la siguiente
+auditoria lo encontrara ejecutando pruebas, sin tener que recorrer la pantalla a mano.
 
 ## Fase 3: Revision cruzada
 
