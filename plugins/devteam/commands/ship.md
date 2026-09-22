@@ -6,15 +6,23 @@ argument-hint: Opcional, el slug de la tarea o una nota para el commit
 # Publicar el cambio
 
 Vas a llevar el trabajo terminado desde la copia local hasta un pull request listo para revisar.
-Convoca a `git-manager` para el analisis y los textos; **tu ejecutas los comandos**.
+Lo normal es que lo hagas tu directamente; `git-manager` se convoca solo para los casos
+complicados que se indican abajo. **Tu ejecutas los comandos** en cualquier caso.
 
 Contexto adicional: $ARGUMENTS
 
 ## Paso 1: Situacion
 
-Convoca a `git-manager` para que revise el estado: rama actual, cambios sin confirmar, distancia con
-el remoto, y las costumbres del repositorio. Si hay una tarea de `/feature` recien cerrada, indicale
-su slug para que redacte a partir de su `spec.md` y su `log.md`.
+Revisa tu mismo el estado, que son unos pocos comandos baratos: rama actual, `git status`, distancia
+con el remoto, y `git diff --stat` en lugar del diff completo. Las costumbres del repositorio estan en
+el apartado de control de versiones de `.devteam/context.md`. Si hay una tarea de `/feature` recien
+cerrada, redacta el commit y el PR a partir de su `spec.md` y su `log.md`.
+
+Convoca a `git-manager` **solo** cuando aporte: si la ficha no recoge las costumbres del repositorio,
+si hay conflictos, si el historial esta enredado o el diff es grande y hay que decidir como partirlo.
+
+Para buscar secretos no leas el diff entero: busca en el diff preparado patrones de credenciales,
+claves, tokens, cadenas de conexion y archivos `.env`, y abre solo lo que coincida.
 
 Detente y avisa si:
 
@@ -45,7 +53,7 @@ nunca lo saltes.
 Esto sale de la maquina del usuario, asi que **pide confirmacion explicita** antes de cada paso:
 
 1. Subir la rama al remoto.
-2. Abrir el pull request con el titulo y la descripcion de `git-manager`. Si esta disponible `gh` o
+2. Abrir el pull request con el titulo y la descripcion que redactaste. Si esta disponible `gh` o
    `glab`, usalo; si no, deja el enlace y el texto listos para pegar.
 
 No hagas merge del PR ni actives el merge automatico salvo que el usuario lo pida. La revision

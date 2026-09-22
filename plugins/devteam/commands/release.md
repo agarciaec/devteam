@@ -5,16 +5,21 @@ argument-hint: Opcional, el numero de version si ya lo tienes decidido
 
 # Publicar una version
 
-Vas a cerrar una version del proyecto. Convoca a `git-manager` para el analisis y los textos; **tu
-ejecutas los comandos**, y todo lo que publica requiere la confirmacion del usuario.
+Vas a cerrar una version del proyecto. Lo normal es que lo hagas tu directamente, y que `git-manager`
+entre solo en los casos complicados que se indican abajo. **Tu ejecutas los comandos**, y todo lo que
+publica requiere la confirmacion del usuario.
 
 Version indicada por el usuario, si la hay: $ARGUMENTS
 
 ## Paso 1: Que entra en esta version
 
-Convoca a `git-manager` para que reuna lo cambiado desde la ultima version publicada: los commits
-desde el ultimo tag, los PR integrados y las tareas cerradas en `.devteam/tasks/index.md` en ese
-periodo.
+Reune tu mismo lo cambiado desde la ultima version publicada: `git log --oneline` desde el ultimo
+tag, y las filas de `.devteam/tasks/index.md` de ese periodo, que ya resumen cada tarea en una linea.
+No abras las carpetas de las tareas salvo para comprobar si alguna cambio un `contract.md` de forma
+incompatible.
+
+Convoca a `git-manager` solo si el periodo es largo y el historial no se entiende a simple vista, o
+si el proyecto no ha versionado nunca y hay que decidir el formato.
 
 Detente y avisa si:
 
@@ -24,7 +29,7 @@ Detente y avisa si:
 
 ## Paso 2: Numero de version
 
-Si el usuario no lo dio, `git-manager` lo propone a partir del contenido y justifica el nivel.
+Si el usuario no lo dio, propon el numero a partir del contenido y justifica el nivel.
 Presta atencion a los cambios de contrato: si alguna tarea cambio un `contract.md` de forma
 incompatible, es una version mayor aunque el cambio parezca pequeno.
 

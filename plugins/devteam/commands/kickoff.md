@@ -45,13 +45,17 @@ Convoca a `tech-lead` con todo lo recogido. Su encargo es proponer:
 - **Que descarto y por que**: las alternativas serias que considero y el motivo de no elegirlas.
 
 Si el proyecto tiene interfaz, convoca tambien en paralelo a `ui-designer`: como no hay diseno
-previo, propondra dos o tres direcciones visuales contrastadas, cada una con su prototipo, para que el
-usuario elija sobre algo que puede ver. La direccion elegida fija los tokens del sistema de diseno con
-los que nacera el proyecto.
+previo, propondra **dos** direcciones visuales contrastadas, cada una con un prototipo de una sola
+pantalla representativa, para que el usuario elija sobre algo que puede ver. La direccion elegida fija
+los tokens del sistema de diseno con los que nacera el proyecto. No hace falta prototipar la
+aplicacion entera para elegir una direccion.
 
-Convoca en paralelo, en el mismo mensaje, a `db-specialist` si hay datos que modelar y a `devops`
-si el despliegue condiciona la eleccion; a menudo la restriccion de despliegue decide el stack mas
-que ninguna otra cosa.
+Convoca a `db-specialist` solo si hay un modelo de datos no trivial, y a `devops` solo si el
+despliegue condiciona de verdad la eleccion. Si no, el `tech-lead` cubre ambos puntos en su
+propuesta: cada agente que no hace falta es una propuesta entera razonada por nada.
+
+**En modo de consumo economico**, convoca solo a `tech-lead`, con modelo `sonnet`; y a `ui-designer`,
+tambien con `sonnet`, con una sola direccion y su prototipo: si no convence, se pide otra.
 
 El criterio de eleccion es el del equipo: **tecnologia actual y mantenida, proporcionada al tamano
 real del problema**. Nada de una arquitectura distribuida para algo que usan diez personas, ni de

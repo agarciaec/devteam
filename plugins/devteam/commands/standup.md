@@ -26,9 +26,9 @@ Tarea consultada: $ARGUMENTS
    - **Que se decidio**: de `design.md`, la decision de arquitectura en una o dos frases.
    - **Fase alcanzada**: dedúcela de los archivos presentes. Solo `spec.md` significa que quedo en preparacion; con `design.md` y `contract.md`, que el diseno esta hecho; con informes en `findings/`, que hubo implementacion o verificacion; con `log.md`, que se cerro.
    - **Quien participo**: los especialistas con informe en `findings/`.
-   - **Hallazgos abiertos**: recorre los informes y extrae lo que quedo marcado como pendiente, bloqueante o no resuelto. Esto es lo mas importante del resumen.
+   - **Hallazgos abiertos**: lo que quedo pendiente, bloqueante o no resuelto. Esto es lo mas importante del resumen. Sacalo de `log.md`, que ya lo resume; abre los informes de `findings/` solo si la tarea no llego a cerrarse y no hay `log.md`, y aun entonces busca en ellos esos terminos en lugar de leerlos enteros.
 
-4. Contrasta con el estado real del codigo. Si el proyecto tiene git, mira `git status` y `git log` para ver si hay cambios sin confirmar o trabajo posterior. Si lo que dicen los documentos no cuadra con el codigo, senalalo: suele significar que la tarea avanzo fuera del flujo del equipo.
+4. Contrasta con el estado real del codigo. Si el proyecto tiene git, mira `git status` y `git log --oneline -10` para ver si hay cambios sin confirmar o trabajo posterior. Si lo que dicen los documentos no cuadra con el codigo, senalalo: suele significar que la tarea avanzo fuera del flujo del equipo.
 
 5. Mira las **lecciones del proyecto** en `.devteam/context.md`. Si la ultima tarea no anadio
    ninguna y sin embargo dejo hallazgos abiertos o defectos que se repitieron, dilo: significa que

@@ -40,6 +40,11 @@ herramienta de navegador disponible, captura cada pantalla principal en movil y 
 las capturas en la carpeta del rediseno. El codigo no cuenta como se ve de verdad una pantalla con
 datos reales. Si no se puede arrancar, dilo y trabaja con lo que haya.
 
+**Captura con un script, no pantalla a pantalla.** Un script de Playwright que recorre la lista de
+rutas y guarda las imagenes en disco cuesta casi nada; hacer cada captura con el navegador
+interactivo mete cada imagen en el contexto. Despues, abre solo las capturas que necesites para
+fundamentar un hallazgo concreto, no todas.
+
 ## Fase 2: Diagnostico
 
 `ui-designer` escribe `diagnosis.md`, con evidencia en cada punto (pantalla, captura o
@@ -66,10 +71,15 @@ Presenta el diagnostico al usuario y propon uno de estos niveles, con tu recomen
    el objetivo del producto cambio; tiene coste real para quien ya usa la aplicacion y tiene que
    reaprender.
 
-Para los niveles 2 y 3, `ui-designer` prepara prototipos de la direccion propuesta aplicada a **dos o
-tres pantallas representativas** —la mas usada y la mas compleja— para que el usuario vea el
-resultado sobre sus pantallas reales, no sobre un ejemplo generico. En el nivel 3, dos o tres
-direcciones contrastadas para elegir.
+Para los niveles 2 y 3, `ui-designer` prepara prototipos de la direccion propuesta aplicada a **dos
+pantallas representativas** —la mas usada y la mas compleja— para que el usuario vea el resultado
+sobre sus pantallas reales, no sobre un ejemplo generico. En el nivel 3, dos direcciones contrastadas,
+cada una sobre **una** pantalla; la elegida se extiende despues a la segunda. El nivel 1 no necesita
+prototipos: son correcciones que se describen y se ven al implementarlas.
+
+**En modo de consumo economico**, convoca a `ui-designer` con modelo `sonnet`, sin `frontend` en la
+Fase 1 —la viabilidad la revisas tu sobre el plan de la Fase 4, que es mucho mas corto que el
+inventario entero—, y con un solo prototipo por direccion.
 
 **No sigas sin la decision del usuario.** Registra el nivel elegido y la direccion en
 `.devteam/decisions.md`: es una decision que condiciona todo el trabajo de interfaz de aqui en

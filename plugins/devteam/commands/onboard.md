@@ -33,7 +33,12 @@ Examina el proyecto y averigua:
 - **Control de versiones**: si hay `.git`. Si no lo hay, es importante: los cambios no seran reversibles.
 - **Dominio**: que hace el sistema y si maneja datos sensibles como historias clinicas, facturacion o contabilidad.
 
-Para proyectos grandes, lanza varios agentes de exploracion en paralelo, en un solo mensaje, cada uno con un area distinta.
+**Lee lo que responde, no todo el codigo.** Casi toda la ficha sale de manifiestos de dependencias,
+archivos de configuracion, scripts, la estructura de carpetas, el historial de git y unos pocos
+archivos representativos por capa. Usa listados y busquedas, y abre solo fragmentos. Leer el proyecto
+entero para escribir una ficha cuesta mucho y no la mejora. Solo en un repositorio muy grande o con
+varios servicios, convoca **un** agente de exploracion por servicio, y en modo de consumo economico
+con el modelo `haiku`.
 
 ## Paso 3: Preguntar lo que no se puede deducir
 

@@ -1,6 +1,6 @@
 ---
 description: Revision global de salud y consistencia del proyecto: ejecuta, revisa cada capa en paralelo y comprueba que encajan entre si
-argument-hint: Opcional, un area o modulo para acotar la revision; sin argumento revisa todo
+argument-hint: Opcional, el nivel (rapida, estandar, completa) y un area o modulo para acotar
 ---
 
 # Auditoria del proyecto
@@ -45,15 +45,36 @@ salida real en `baseline.md`:
 - Linter y comprobacion de tipos
 - Arranque de la aplicacion, si es posible hacerlo en local sin sistemas reales
 
+**Redirige cada salida a un archivo** dentro de la carpeta de la auditoria y trae a tu contexto solo
+el final y las lineas de error o aviso. La instalacion, la compilacion y las pruebas producen miles de
+lineas que no aportan nada leidas enteras; el archivo queda como evidencia por si hace falta.
+
 Anota lo que falla, lo que avisa y **lo que no se pudo ejecutar**, que tambien es un hallazgo: un
 proyecto cuyas pruebas no se sabe como lanzar tiene un problema aunque todas pasen.
 
 Esta linea base se entrega a todos los agentes de la siguiente fase. Parten de hechos, no de
 suposiciones.
 
+## Nivel de la auditoria
+
+Es el comando mas caro del equipo, asi que su profundidad se ajusta. Usa el nivel que pida el
+usuario ("rapida", "completa"); si no, el que marque el modo de consumo de la ficha; si no, estandar.
+Anuncialo al empezar.
+
+- **Rapida**: la linea base de la Fase 1 y la revision cruzada de la Fase 3 las haces tu, **sin
+  convocar especialistas**. Detecta lo roto y lo que no encaja entre capas, que es lo mas valioso, a
+  una fraccion del coste. Es el nivel del modo economico.
+- **Estandar**: ademas convocas especialistas, pero **solo para las capas donde la linea base o una
+  primera mirada senalen problemas**, y siempre `security-auditor` si la ficha marca datos sensibles.
+  `docs-writer`, `git-manager` y `devops` solo si hay indicios en su terreno. El recorrido funcional,
+  con script de prueba y no con navegador interactivo.
+- **Completa**: todos los especialistas de la Fase 2, como se describe abajo.
+
+En cualquier nivel, en un proyecto grande **acota por modulos** en lugar de ampliar el nivel.
+
 ## Fase 2: Revision por capas, en paralelo
 
-Lanza **en un solo mensaje** a los especialistas que apliquen al stack, cada uno con la linea base,
+Lanza **en un solo mensaje** a los especialistas que apliquen al stack y al nivel, cada uno con la linea base,
 el alcance y la ruta donde escribir su informe, `.devteam/audits/<fecha>/<rol>.md`. Diles que es una
 auditoria global: revisan el estado del proyecto, no un diff.
 

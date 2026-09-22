@@ -1,6 +1,6 @@
 ---
 name: devteam-protocol
-description: Protocolo de coordinacion del equipo de agentes de desarrollo: como se reparte el trabajo, como se paraleliza sin colisiones, como se pasan informacion los especialistas a traves de la carpeta .devteam, y como se resuelven informes que se contradicen. Cargalo cuando vayas a coordinar a varios agentes especialistas en una misma tarea, cuando trabajes con una carpeta .devteam, o cuando tengas que decidir a quien convocar y en que orden.
+description: Referencia del protocolo del equipo de agentes: estructura de la carpeta .devteam, estado actual frente a historia, a quien convocar y como resolver informes que se contradicen. Los comandos del plugin (feature, audit, onboard y demas) ya incluyen lo que necesitan, asi que no hace falta cargarla al usarlos. Cargala solo para coordinar agentes a mano fuera de los comandos, o cuando el usuario pregunte como funciona el equipo.
 ---
 
 # Protocolo del equipo

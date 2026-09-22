@@ -220,6 +220,21 @@ economico
   de "revisa la pantalla de facturas", porque no obliga a explorar.
 - **`/audit`, `/redesign` y `/uitest` son caros por naturaleza**: recorren todo. Tienen sentido de vez
   en cuando, no a diario; acotalos a un modulo cuando puedas.
+- **Todos los comandos siguen las mismas reglas de ahorro:**
+
+  | Comando | Como ahorra |
+  |---|---|
+  | `/feature` | Niveles ligero, estandar y completo; en los dos primeros implementa la sesion sin subagentes |
+  | `/audit` | Niveles rapida (sin especialistas), estandar (solo capas con indicios) y completa; las salidas largas van a archivo |
+  | `/onboard` | Deduce de manifiestos, configuracion y muestras, no leyendo todo el codigo |
+  | `/kickoff` | Dos direcciones visuales sobre una pantalla, y solo los agentes que condicionan la decision |
+  | `/redesign` | Capturas por script a disco, prototipos acotados, sin prototipos en el nivel pulir |
+  | `/uitest` | Recorrido escrito como pruebas y ejecutado, navegador interactivo solo para lo que falte |
+  | `/ship`, `/release` | La sesion hace el trabajo de git; `git-manager` solo para conflictos o casos enredados |
+  | `/standup` | Se apoya en el indice y en `log.md`, sin abrir informes enteros |
+
+  En modo economico, todos ademas rebajan los modelos al convocar agentes.
+
 - **Pruebas con script antes que navegador interactivo.** `qa-tester` ya prefiere escribir el
   recorrido como prueba de Playwright y ejecutarlo: le vuelve solo el resultado, y la prueba queda.
 

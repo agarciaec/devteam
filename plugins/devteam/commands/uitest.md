@@ -49,6 +49,14 @@ del informe. En cada pantalla ejercita acciones, formularios con datos validos, 
 tablas con su ordenacion, filtros y paginacion, ventanas y menus, navegacion y recargas, y los tamanos
 de movil y escritorio, vigilando la consola y las peticiones de red.
 
+**Primero con script, el navegador interactivo solo para lo que falte.** Pide a `qa-tester` que
+escriba el recorrido como pruebas de Playwright —o del marco que use el proyecto— y las ejecute: a tu
+contexto solo vuelve el resultado, y las pruebas quedan para la proxima vez, que costara casi nada.
+Manejar el navegador paso a paso con herramientas MCP devuelve miles de tokens por cada instantanea
+de la pagina; reservalo para explorar lo que el script no sabe como probar y para confirmar un fallo
+concreto. Si ya existen pruebas de extremo a extremo de una pantalla, ejecutalas en lugar de
+recorrerla de nuevo.
+
 **Sobre el paralelismo.** Un servidor MCP de navegador maneja un unico navegador: varios agentes
 usandolo a la vez se pisan las pestanas y los resultados no valen. Con el navegador compartido,
 recorre **un grupo de pantallas cada vez**, retomando al mismo `qa-tester` con SendMessage para el
