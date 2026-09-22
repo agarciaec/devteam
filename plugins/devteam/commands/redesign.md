@@ -98,7 +98,9 @@ El orden importa:
    publicable. Un rediseno de golpe es un cambio enorme imposible de revisar y de revertir.
 3. **Por valor**: las pantallas mas usadas o con mas quejas, primero.
 
-Convierte el plan en tareas, cada una con su alcance y su `ui.md`, y anotalas en
+Convierte el plan en tareas y deja cada una escrita en `.devteam/tasks/<slug>/`, porque se hara en
+otra sesion que solo recibira el slug: `spec.md` (origen en `plan.md`, alcance, pantallas, criterios
+de aceptacion, nivel sugerido, **estado: pendiente**) y su `ui.md`. Anotalas en
 `.devteam/tasks/index.md` como pendientes.
 
 ## Fase 5: Ejecucion

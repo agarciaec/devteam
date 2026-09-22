@@ -158,13 +158,28 @@ Un informe que nadie convierte en trabajo no sirve de nada. Agrupa los hallazgos
 sentido propio, siguiendo el mismo criterio que usa `/feature`: lo que comparte area y contrato va
 junto, lo inconexo va separado. Ordenalas por gravedad y por dependencia.
 
-Presenta al usuario la lista y propon empezar por los criticos, cada uno con su `/feature`. **No
-empieces ninguno sin que lo apruebe.**
+**Deja cada tarea escrita**, porque se hara en otra sesion que no habra visto esta auditoria y solo
+recibira el slug. Para cada una crea `.devteam/tasks/<slug>/spec.md` con:
+
+- **Origen**: la ruta de `report.md` de esta auditoria.
+- **Problema**: los hallazgos que agrupa, con su gravedad y su evidencia (`archivo:linea` o salida).
+- **Que se pide**: el arreglo concreto, no el area. "Envolver el cobro y el envio en una transaccion
+  para que un fallo no deje saldo descontado sin mensaje" y no "transacciones en mensajeria".
+- **Que queda fuera** y **criterios de aceptacion** verificables.
+- **Nivel de esfuerzo sugerido** (ligero, estandar o completo) y las tareas de las que depende.
+- **Estado: pendiente**, sin empezar.
+
+Si algo del arreglo es una decision de producto que no puedes tomar tu, escribelo como pregunta
+abierta en el spec en lugar de inventar la respuesta.
+
+Presenta al usuario la lista y propon empezar por los criticos, cada uno con `/feature <slug>`.
+**No empieces ninguno sin que lo apruebe.**
 
 Actualiza tambien:
 
 - `.devteam/context.md`: corrige lo que la auditoria demostro falso y anade a trampas lo descubierto.
-- `.devteam/tasks/index.md`: una fila para la auditoria con el enlace al informe.
+- `.devteam/tasks/index.md`: una fila para la auditoria con el enlace al informe, y una fila por cada
+  tarea propuesta con estado **pendiente (auditoria <fecha>)**.
 
 ## Cierre
 

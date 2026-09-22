@@ -102,8 +102,19 @@ repetida se paga entera otra vez.
    antes de empezar la siguiente. Entre una y otra, resume en una linea y sigue. Si una falla o el
    usuario quiere parar, las demas quedan sin empezar y se dice cuales son.
 
-3. Elige un `<slug>` corto para la tarea y crea `.devteam/tasks/<slug>/`.
-4. Escribe `spec.md`: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado.
+3. **Si lo que te pasan parece un slug, busca antes de preguntar.** Mira si existe
+   `.devteam/tasks/<slug>/spec.md` o una fila con ese nombre en `tasks/index.md`. Si existe y esta
+   pendiente, esa es la tarea: la dejo preparada `/audit`, `/uitest` o `/redesign`. Lee el spec, abre
+   solo las secciones del informe de origen que cita, comprueba que la evidencia sigue siendo cierta
+   en el codigo, y usa su nivel sugerido. Pregunta al usuario solo lo que el spec deje abierto, y
+   resume en dos lineas que vas a hacer antes de empezar.
+
+   Si el slug existe pero la tarea ya esta cerrada, dilo y pregunta si es una continuacion.
+   Si viene de un informe antiguo sin spec, busca el slug en `.devteam/audits/*/report.md` (y en
+   `uitest/` y `redesign/`) y reconstruye el spec desde ahi antes de preguntar.
+
+   Si no existe, elige un `<slug>` corto para la tarea y crea `.devteam/tasks/<slug>/`.
+4. Escribe `spec.md`, o completa el que ya habia: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado.
 5. Si el proyecto no tiene git, avisa al usuario: los cambios no seran reversibles ni revisables como diff.
 
    Si lo tiene, parte de una base limpia antes de tocar nada: comprueba que no hay cambios sin
