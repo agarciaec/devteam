@@ -61,6 +61,10 @@ modelo no coincide con su migracion, el codigo lee una variable de entorno que n
 /audit modulo de facturacion
 ```
 
+Cada tarea propuesta queda escrita en `.devteam/tasks/<slug>/spec.md`, asi que en otra sesion basta
+con `/feature <slug>`. Si la auditoria se hizo con una version anterior del plugin y solo te dejo los
+nombres, `/audit tareas` convierte el ultimo informe en specs sin volver a auditar.
+
 Si el proyecto tiene interfaz, ademas **la usa**: `qa-tester` arranca la aplicacion en local y la
 recorre en un navegador como un usuario —pulsa botones, rellena formularios con datos validos e
 invalidos, ordena, filtra y pagina tablas, abre y cierra ventanas— vigilando errores de consola y

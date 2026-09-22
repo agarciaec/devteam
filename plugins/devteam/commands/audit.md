@@ -1,6 +1,6 @@
 ---
 description: Revision global de salud y consistencia del proyecto: ejecuta, revisa cada capa en paralelo y comprueba que encajan entre si
-argument-hint: Opcional, el nivel (rapida, estandar, completa) y un area o modulo para acotar
+argument-hint: Opcional, el nivel (rapida, estandar, completa) y un area o modulo para acotar; o "tareas" para convertir el ultimo informe en tareas sin auditar de nuevo
 ---
 
 # Auditoria del proyecto
@@ -21,6 +21,14 @@ sospecha sin evidencia se reporta como sospecha, en una seccion aparte, o no se 
 
 **Nada contra sistemas reales.** No ejecutes nada contra bases de datos de produccion, servicios de
 terceros ni cuentas reales. Si una comprobacion lo requiere, anotala como no verificada y di por que.
+
+**Si el alcance es `tareas`**, no se audita nada: se reaprovecha la ultima auditoria. Lee el
+`report.md` mas reciente de `.devteam/audits/`, mira en `tasks/index.md` y en git que tareas ya se
+hicieron, y ejecuta solo la **Fase 5** para las pendientes: un `spec.md` por tarea y su fila en el
+indice. Si el usuario pasa una lista de slugs, usa esos nombres y asigna a cada uno los hallazgos que
+le correspondan; si un slug no encaja con ningun hallazgo, dilo en vez de inventarle contenido. Sin
+especialistas y sin linea base: es barato. Sirve para auditorias hechas con versiones anteriores del
+plugin, que no dejaban las tareas escritas.
 
 ---
 
