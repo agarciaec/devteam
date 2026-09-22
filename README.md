@@ -114,9 +114,10 @@ para que al arreglarlo no pueda volver sin que las pruebas avisen.
 
 "Sin fallos" solo vale para lo que se recorrio: el informe siempre dice que quedo fuera.
 
-**3. Trabajar.** Es el comando del dia a dia. Una orden, y el equipo recorre el ciclo entero:
-explora el codigo en paralelo, disena y acuerda contigo el contrato de API, implementa, y verifica
-con revision, pruebas y seguridad a la vez.
+**3. Trabajar.** Es el comando del dia a dia. Una orden, y el equipo explora, disena, implementa y
+verifica, con el esfuerzo ajustado al tamano de la tarea: un cambio pequeno lo resuelve la sesion sin
+convocar a nadie, y el equipo completo se reserva para lo grande o arriesgado. Ver
+[Controlar el consumo](#controlar-el-consumo).
 
 ```
 /feature permitir cancelar una reserva hasta 2 horas antes
@@ -172,6 +173,55 @@ esta consulta va lenta"*.
 
 Y con el uso, el equipo mejora: cada `/feature` deja escrito en la ficha lo que aprendio del
 proyecto, asi que la siguiente tarea empieza sabiendo mas que la anterior.
+
+## Controlar el consumo
+
+El texto del plugin cuesta poco: unos 3.000 tokens fijos por sesion y entre 1.000 y 2.500 por cada
+agente que se invoca. Lo que agota los limites es el trabajo: cada agente arranca en frio y vuelve a
+leer el proyecto, los roles de criterio usan Opus, y manejar el navegador cuesta miles de tokens por
+pantalla. Por eso `/feature` ajusta el esfuerzo a la tarea en lugar de usar siempre el equipo entero.
+
+**Niveles de `/feature`.** Los elige solo segun el tamano y el riesgo, y te dice cual uso:
+
+| Nivel | Para | Que hace |
+|---|---|---|
+| Ligero | Cambios acotados en una capa: la mayoria | Sin subagentes: explora e implementa la sesion directamente; pruebas y, si el diff lo merece, una revision |
+| Estandar | Funcionalidades que cruzan capas | Un explorador como mucho, `tech-lead` solo si hay contrato, implementa la sesion; revision y pruebas en paralelo |
+| Completo | Autenticacion, pagos, datos sensibles, cambios grandes | El equipo entero, como describe el ciclo |
+
+Puedes forzarlo en la propia peticion:
+
+```
+/feature ligero: cambiar el texto del boton de guardar
+```
+```
+/feature completo: nuevo flujo de pagos con tarjeta
+```
+
+**Modo de consumo del proyecto.** En `.devteam/context.md`, el apartado `## Modo de consumo` fija el
+comportamiento por defecto: `economico`, `equilibrado` o `maximo`. En economico, `/feature` usa
+siempre el nivel mas bajo posible y ademas rebaja los modelos al convocar agentes —Sonnet en lugar de
+Opus, Haiku para explorar y documentar—, salvo la auditoria de seguridad de datos sensibles, donde
+ahorrar no compensa. `/onboard` te lo pregunta; en fichas creadas antes de esta version, anade el
+apartado a mano:
+
+```markdown
+## Modo de consumo
+economico
+```
+
+**Habitos que ahorran mas que cualquier ajuste del plugin:**
+
+- **Una tarea por sesion.** Al terminar un `/feature`, empieza una sesion nueva o limpia el contexto.
+  Cada mensaje de una sesion larga vuelve a cargar todo lo anterior: la decima tarea de una misma
+  sesion cuesta mucho mas que la primera. Lo que el equipo aprendio ya esta escrito en la ficha, asi
+  que no pierdes nada al empezar de cero.
+- **Peticiones concretas.** "Arregla el filtro de fecha de la tabla de facturas" cuesta una fraccion
+  de "revisa la pantalla de facturas", porque no obliga a explorar.
+- **`/audit`, `/redesign` y `/uitest` son caros por naturaleza**: recorren todo. Tienen sentido de vez
+  en cuando, no a diario; acotalos a un modulo cuando puedas.
+- **Pruebas con script antes que navegador interactivo.** `qa-tester` ya prefiere escribir el
+  recorrido como prueba de Playwright y ejecutarlo: le vuelve solo el resultado, y la prueba queda.
 
 ## Actualizar el plugin
 

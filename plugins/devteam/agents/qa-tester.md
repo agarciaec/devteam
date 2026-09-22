@@ -35,10 +35,13 @@ Leer el codigo de una interfaz no dice si funciona. Un boton cuyo manejador lanz
 formulario que rechaza datos validos o una tabla que ordena mal solo se descubren usandolos. Cuando la
 tarea toque la interfaz, **recorrela de verdad**.
 
-**Como.** Arranca la aplicacion en local con el comando de la ficha. Si tienes herramientas de
-navegador disponibles, como Playwright o las de las herramientas de desarrollo del navegador, usalas
-para manejarla. Si no, y el proyecto ya tiene Playwright o Cypress, escribe y ejecuta un recorrido con
-ellos. Si no hay ninguna forma de manejar un navegador, dilo: la interfaz queda **no verificada en
+**Como.** Arranca la aplicacion en local con el comando de la ficha. **Prefiere un script de prueba
+a manejar el navegador paso a paso**: si el proyecto tiene Playwright o Cypress, o se pueden usar,
+escribe el recorrido como prueba y ejecutala; solo vuelve a tu contexto el resultado, y la prueba
+queda para siempre. Manejar el navegador de forma interactiva con herramientas MCP es mucho mas caro:
+cada instantanea de la pagina son miles de tokens. Usalo para explorar lo que no sabes como probar, y
+entonces pide instantaneas solo despues de las acciones que importan, sin capturas de pagina completa
+repetidas. Si no hay ninguna forma de manejar un navegador, dilo: la interfaz queda **no verificada en
 ejecucion**, que no es lo mismo que verificada.
 
 **Que ejercitar**, en cada pantalla del alcance:

@@ -83,6 +83,12 @@ Crea `.devteam/context.md` con esta estructura, rellenada con datos reales del p
 tomaron y por que, errores que se repitieron, cosas que parecian correctas y no lo eran. Cada
 entrada con su fecha. Se actualiza al cerrar cada tarea, no antes.>
 
+## Modo de consumo
+<economico, equilibrado o maximo. Preguntaselo al usuario. Economico: /feature usa el nivel mas bajo
+posible y rebaja los modelos de los agentes; es lo recomendable en planes con limites ajustados.
+Equilibrado: el nivel se ajusta al tamano de cada tarea. Maximo: ciclo completo siempre. Si no lo
+sabe, equilibrado.>
+
 ## Sistema de diseno
 <solo si el proyecto tiene interfaz. Libreria de componentes, colores de marca, tipografia, donde
 viven los estilos y tokens, si hay modo oscuro, y como se ve en general: coherente, o cada pantalla

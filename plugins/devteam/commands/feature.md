@@ -1,5 +1,5 @@
 ---
-description: Ciclo completo de desarrollo con el equipo de agentes, del diseno a la verificacion
+description: Desarrolla una tarea con el equipo, del diseno a la verificacion, con el esfuerzo ajustado a su tamano: ligero, estandar o completo
 argument-hint: Que construir o arreglar. Si pides varias cosas inconexas, se desglosan en tareas
 ---
 
@@ -9,7 +9,58 @@ Coordinas al equipo de especialistas para sacar adelante esta tarea. Tu papel es
 
 Tarea: $ARGUMENTS
 
+## Nivel de esfuerzo: decidelo antes de convocar a nadie
+
+El equipo completo es caro: cada agente arranca en frio y vuelve a leer el proyecto. Usarlo para un
+cambio pequeno agota los limites del usuario sin mejorar el resultado. **El esfuerzo se ajusta al
+tamano y al riesgo de la tarea**, no es siempre el maximo.
+
+Elige el nivel con este orden de prioridad:
+
+1. Si el usuario lo dijo en la tarea —"ligero", "rapido", "completo", "a fondo"—, ese.
+2. Si `.devteam/context.md` tiene un **modo de consumo** fijado, ese es el nivel por defecto.
+3. Si no, **el nivel mas bajo que cubra el riesgo real** de la tarea.
+
+Anuncia el nivel elegido en una linea al empezar, para que el usuario pueda cambiarlo.
+
+**Ligero** — cambios acotados: un texto, un estilo, un campo, un arreglo localizado, algo que toca
+pocos archivos de una sola capa. Es el nivel por defecto para la mayoria de tareas.
+
+- **Sin subagentes para explorar ni implementar.** Localiza tu mismo lo necesario con busquedas y
+  lecturas acotadas, e implementa directamente.
+- Sin `design.md` ni `contract.md`. Un `spec.md` de pocas lineas con los criterios de aceptacion.
+- Verificacion: ejecuta las pruebas y el linter. Solo si el diff no es trivial, un `code-reviewer`.
+- Si toca pantallas, comprueba solo el flujo cambiado, con un script de prueba si es posible.
+- El cierre se mantiene, pero breve: la fila del indice siempre, y lecciones solo si las hay.
+
+**Estandar** — funcionalidades que cruzan capas o tocan varias partes del proyecto.
+
+- Como mucho **un** agente de exploracion, y solo si la zona no es conocida.
+- `tech-lead` solo si hay un contrato que acordar entre capas; si no, disenas tu en el `spec.md`.
+- **Implementas tu**, sin subagentes de implementacion: te ahorras que el especialista escriba el
+  codigo en su informe y tu lo reescribas despues, que duplica el coste mas caro de todos.
+- `ui-designer` solo si se crea una pantalla nueva; para cambios en una existente, sigue su estilo.
+- Verificacion: `code-reviewer` y `qa-tester` en paralelo; `security-auditor` solo si toca
+  autenticacion, dinero o datos sensibles.
+
+**Completo** — el ciclo entero que describen las fases de abajo, con todos los especialistas. Para
+tareas grandes o de alto riesgo: autenticacion, pagos, datos regulados, cambios de contrato
+incompatibles, o cuando el usuario lo pide.
+
+**Modo economico.** Si la ficha fija modo de consumo economico, ademas de usar el nivel mas bajo
+posible, al convocar agentes pasa el modelo explicitamente en la llamada: `sonnet` para los que
+declaran `opus`, y `haiku` para exploracion y documentacion. Para `security-auditor` en tareas de
+datos sensibles, manten `opus` y dilo: ahi ahorrar no compensa.
+
+Las fases de abajo describen el nivel completo. En ligero y estandar, **salta** lo que el nivel
+excluye; no lo hagas "por si acaso".
+
 ## Reglas de coordinacion
+
+**Lee lo justo.** Pide a los agentes que devuelvan conclusiones con referencias `archivo:linea`, no
+copias de archivos. Tu lee solo los fragmentos que vas a modificar, con rango de lineas, no archivos
+enteros; y no vuelvas a leer lo que un agente ya resumio salvo que vayas a editarlo. Cada lectura
+repetida se paga entera otra vez.
 
 **Paraleliza de verdad.** Cuando lances varios agentes de una fase, hazlo en **un solo mensaje con varias llamadas a la herramienta Agent**. Lanzarlos uno detras de otro desperdicia el paralelismo, que es el motivo de tener equipo.
 
@@ -70,7 +121,7 @@ Lanza en **un solo mensaje** los agentes que apliquen a la tarea, normalmente do
 - `db-specialist` si la tarea toca datos
 - `qa-tester` para saber que pruebas existen y como se ejecutan
 
-Cuando terminen, **lee tu mismo los archivos clave que senalaron**. Los informes te orientan; el codigo lo tienes que ver de primera mano antes de decidir nada.
+Cuando terminen, **lee tu mismo los fragmentos clave que senalaron**, con su rango de lineas. Los informes te orientan; el codigo que vas a tocar lo tienes que ver de primera mano antes de decidir, pero no hace falta releer archivos enteros que no vas a modificar.
 
 ## Fase 2: Diseno
 
