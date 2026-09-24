@@ -17,8 +17,16 @@ para y usa `/onboard`: ese reconoce lo que hay en lugar de proponer algo nuevo.
 
 ## Fase 1: Entender que se va a construir
 
-No propongas tecnologia todavia. Primero hay que saber que es esto. Pregunta al usuario **en una
-sola tanda** lo que no se deduzca de su descripcion:
+No propongas tecnologia todavia. Primero hay que saber que es esto.
+
+**Si esto recrea un sistema que ya existe**, la mayor parte esta escrita: busca una carpeta de
+especificacion (`spec/<fecha>/` de `/spec`) en el directorio o donde el usuario te la senale. Lee su
+`overview.md` y su `plan.md` completos, y de los demas documentos solo lo que condicione la eleccion
+de tecnologia: volumenes y datos regulados, sistemas externos, entornos, y si la interfaz es el
+corazon del sistema. `parity.md` y `rules.md` no se leen ahora, se leen al implementar cada etapa.
+Con eso, pregunta solo lo que la especificacion no cubra y salta al resto de la fase.
+
+Pregunta al usuario **en una sola tanda** lo que no se deduzca de su descripcion:
 
 - **Que hace y para quien.** Una aplicacion interna para cinco personas y un producto publico con
   miles de usuarios no se parecen en nada, aunque la descripcion inicial suene igual.

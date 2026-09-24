@@ -15,6 +15,7 @@ El ciclo completo, de instalar a trabajar.
 | 2b. Revisar su salud | Tras el onboarding y cada cierto tiempo | `/audit` |
 | 2c. Revisar la interfaz | Cuando la interfaz se queda vieja o incomoda | `/redesign` |
 | 2d. Probar la interaccion | Antes de una version, tras un rediseno, o si algo no responde | `/uitest` |
+| 2e. Especificar para recrear | Cuando vas a rehacer la aplicacion con otra tecnologia | `/spec` |
 | 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
 | 4. Publicar | Al terminar cada cambio | `/ship` |
 | 5. Versionar | Al cerrar una version | `/release` |
@@ -117,6 +118,28 @@ de consola y red, y lo que no se ejercito. Cada fallo sale con la prueba automat
 para que al arreglarlo no pueda volver sin que las pruebas avisen.
 
 "Sin fallos" solo vale para lo que se recorrio: el informe siempre dice que quedo fuera.
+
+**2e. Especificar la aplicacion para rehacerla.** Cuando la decision es reescribir en lugar de
+arreglar, `/spec` extrae de la aplicacion actual **que hace, quien la usa y con que reglas**, sin
+nombrar ni un framework. Es lo contrario de `/onboard`: no describe el proyecto para trabajar en el,
+sino el problema que ese proyecto resuelve, para poder resolverlo otra vez con otra tecnologia.
+
+```
+/spec
+```
+```
+/spec completa, modulo de facturacion
+```
+
+Deja en `.devteam/spec/<fecha>/` el inventario de funcionalidades, las **reglas de negocio** —lo mas
+valioso y lo primero que se pierde al reescribir—, el modelo de dominio conceptual, las pantallas y
+los recorridos de cada rol, los permisos, los sistemas externos, una **lista de paridad** verificable
+de lo que la nueva version debe reproducir, lo que conviene **no** recrear, las preguntas que solo tu
+puedes responder, y el plan por etapas.
+
+No canoniza los defectos: lo que parece un fallo y no una regla te lo pregunta en lugar de copiarlo
+a la version nueva. Para arrancarla, copia esa carpeta al proyecto nuevo y ejecuta `/kickoff`
+senalandola; ahi es donde se elige la tecnologia, contigo delante.
 
 **3. Trabajar.** Es el comando del dia a dia. Una orden, y el equipo explora, disena, implementa y
 verifica, con el esfuerzo ajustado al tamano de la tarea: un cambio pequeno lo resuelve la sesion sin
@@ -235,6 +258,7 @@ economico
   | `/redesign` | Capturas por script a disco, prototipos acotados, sin prototipos en el nivel pulir |
   | `/uitest` | Recorrido escrito como pruebas y ejecutado, navegador interactivo solo para lo que falte |
   | `/ship`, `/release` | La sesion hace el trabajo de git; `git-manager` solo para conflictos o casos enredados |
+  | `/spec` | Niveles rapida (sin especialistas), estandar y completa; en economico, solo los cuatro documentos que nadie puede deducir despues |
   | `/standup` | Se apoya en el indice y en `log.md`, sin abrir informes enteros |
 
   En modo economico, todos ademas rebajan los modelos al convocar agentes.
@@ -268,6 +292,7 @@ claude plugin marketplace add /opt/devteam
 | `/audit [area]` | Revision global de salud y consistencia: ejecuta, revisa cada capa en paralelo y cruza donde se tocan. No modifica codigo; devuelve informe y tareas. |
 | `/redesign [objetivo]` | Revisa toda la interfaz, te hace elegir el nivel de cambio (pulir, evolucionar, redisenar) y lo planifica por etapas. |
 | `/uitest [pantallas]` | Recorre la interfaz en un navegador como un usuario y comprueba que botones, formularios, tablas y ventanas funcionan. No modifica codigo. |
+| `/spec [area]` | **Para recrear la aplicacion con otra tecnologia.** Extrae que hace, quien lo usa y con que reglas, sin nombrar ni un framework, mas la lista de paridad y el plan por etapas. No modifica codigo. |
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
 | `/ship` | Sincroniza, hace commit, sube la rama y abre el pull request, con tu confirmacion en cada paso que publica. |
 | `/release [version]` | Calcula el numero de version, actualiza el CHANGELOG, y crea tag y release. |
@@ -385,6 +410,7 @@ El detalle esta en la skill `devteam-protocol`.
 ├── audits/<fecha>/         # historia: linea base, informes por capa y report.md de cada /audit
 ├── redesign/<fecha>/       # historia: capturas, diagnostico, prototipos y plan de cada /redesign
 ├── uitest/<fecha>/         # historia: cobertura, fallos con reproduccion y report.md de cada /uitest
+├── spec/<fecha>/           # especificacion para recrear: overview, reglas, dominio, paridad y plan
 └── tasks/
     ├── index.md            # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/             # historia: foto del momento, no se actualiza

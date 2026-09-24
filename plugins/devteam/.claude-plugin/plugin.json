@@ -1,7 +1,7 @@
 {
   "name": "devteam",
   "description": "Equipo de agentes especializados para desarrollo fullstack: arquitectura, backend, frontend, bases de datos, QA, seguridad, DevOps, automatizacion y documentacion",
-  "version": "0.8.3",
+  "version": "0.9.0",
   "author": {
     "name": "Oscar Garcia",
     "url": "https://github.com/agarciaec"

@@ -99,6 +99,7 @@ que algo quedo sin terminar vale mas que el silencio.
 ├── audits/<fecha>/            # historia: cada /audit, con su linea base, informes y report.md
 ├── redesign/<fecha>/          # historia: capturas, diagnosis.md, prototipos y plan.md de cada /redesign
 ├── uitest/<fecha>/            # historia: cobertura, fallos con reproduccion y report.md de cada /uitest
+├── spec/<fecha>/              # especificacion agnostica de tecnologia de cada /spec, con su plan de recreacion
 └── tasks/
     ├── index.md               # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/                # historia: foto del momento, no se actualiza
@@ -151,6 +152,7 @@ Playwright mediante scripts.
 | Documentacion y CLAUDE.md | `docs-writer` |
 | Ramas, commits, sincronizacion, PR, versiones, conflictos | `git-manager` |
 | Salud y consistencia del proyecto entero | `/audit`, que convoca a todos por capas y cruza |
+| Rehacer la aplicacion con otra tecnologia | `/spec`, que extrae que hace y con que reglas sin atarlo a la tecnologia actual, y luego `/kickoff` en el proyecto nuevo |
 
 **Tarea frente a auditoria.** `/feature` revisa lo que acaba de cambiar; `/audit` revisa el
 proyecto entero y, sobre todo, donde se tocan sus capas. Cada parte puede estar bien por separado y
