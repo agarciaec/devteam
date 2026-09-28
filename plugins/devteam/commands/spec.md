@@ -104,8 +104,11 @@ implementacion**.
   codigo. Contra un entorno local o de pruebas, nunca produccion. Con script antes que con navegador
   interactivo. Si no se puede arrancar, dilo: la especificacion queda como derivada solo del codigo.
 
-**En modo de consumo economico**, pasa `model` sonnet a todos, y quedate en `capabilities.md`,
-`rules.md`, `data.md` y `screens.md`: son las cuatro que nadie puede deducir despues.
+Todos corren en `sonnet` por defecto; no hace falta pasar el modelo. Solo en **modo maximo** convoca
+a `security-auditor` y `ui-designer` con `model` `opus`.
+
+**En modo economico**, ademas quedate en `capabilities.md`, `rules.md`, `data.md` y `screens.md`: son
+las cuatro que nadie puede deducir despues.
 
 Si una capa no existe en el sistema, no convoques a su especialista.
 

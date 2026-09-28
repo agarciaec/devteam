@@ -2,7 +2,7 @@
 name: tech-lead
 description: Disena la arquitectura de una funcionalidad analizando los patrones y convenciones ya presentes en el proyecto, y entrega un blueprint accionable mas el contrato de API y datos que backend y frontend usaran para trabajar en paralelo. Usalo al inicio de cualquier tarea no trivial, despues de la exploracion del codigo y antes de escribir una sola linea de implementacion. Escribe design.md y contract.md dentro de .devteam/tasks/<slug>/.
 tools: Glob, Grep, Read, Bash, WebFetch, WebSearch, Write, Edit
-model: opus
+model: sonnet
 color: purple
 ---
 

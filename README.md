@@ -205,15 +205,17 @@ proyecto, asi que la siguiente tarea empieza sabiendo mas que la anterior.
 
 El texto del plugin cuesta poco: unos 3.000 tokens fijos por sesion y entre 1.000 y 2.500 por cada
 agente que se invoca. Lo que agota los limites es el trabajo: cada agente arranca en frio y vuelve a
-leer el proyecto, los roles de criterio usan Opus, y manejar el navegador cuesta miles de tokens por
-pantalla. Por eso `/feature` ajusta el esfuerzo a la tarea en lugar de usar siempre el equipo entero.
+leer el proyecto, y manejar el navegador cuesta miles de tokens por pantalla. Por eso `/feature`
+ajusta el esfuerzo a la tarea en lugar de usar siempre el equipo entero, y ningun agente usa Opus por
+defecto: `tech-lead`, `ui-designer` y `security-auditor` corren en Sonnet salvo en modo maximo o en
+seguridad sobre datos sensibles.
 
 **Niveles de `/feature`.** Los elige solo segun el tamano y el riesgo, y te dice cual uso:
 
 | Nivel | Para | Que hace |
 |---|---|---|
-| Ligero | Cambios acotados en una capa: la mayoria | Sin subagentes: explora e implementa la sesion directamente; pruebas y, si el diff lo merece, una revision |
-| Estandar | Funcionalidades que cruzan capas | Un explorador como mucho, `tech-lead` solo si hay contrato, implementa la sesion; revision y pruebas en paralelo |
+| Ligero | Cambios acotados en una capa: la mayoria | Sin subagentes: explora e implementa la sesion directamente; verificacion segun el modo de consumo |
+| Estandar | Funcionalidades que cruzan capas | Un explorador como mucho, `tech-lead` solo si hay contrato, implementa la sesion; verificacion segun el modo |
 | Completo | Autenticacion, pagos, datos sensibles, cambios grandes | El equipo entero, como describe el ciclo |
 
 Puedes forzarlo en la propia peticion:
@@ -225,24 +227,39 @@ Puedes forzarlo en la propia peticion:
 /feature completo: nuevo flujo de pagos con tarjeta
 ```
 
-**Modo de consumo del proyecto.** En `.devteam/context.md`, el apartado `## Modo de consumo` fija el
-comportamiento por defecto: `economico`, `equilibrado` o `maximo`. En economico, `/feature` usa
-siempre el nivel mas bajo posible y ademas rebaja los modelos al convocar agentes —Sonnet en lugar de
-Opus, Haiku para explorar y documentar—, salvo la auditoria de seguridad de datos sensibles, donde
-ahorrar no compensa. `/onboard` te lo pregunta; en fichas creadas antes de esta version, anade el
+**Modo de consumo del proyecto.** En `.devteam/context.md`, el apartado `## Modo de consumo` fija
+ademas cuantos agentes entran en la verificacion (Fase 4), independientemente del nivel:
+
+| Modo | Verificacion en ligero | Verificacion en estandar |
+|---|---|---|
+| Economico | La sesion revisa su propio diff y ejecuta las pruebas | Igual, mas `security-auditor` si hay datos sensibles |
+| Equilibrado | Igual que economico | Como mucho **un** agente: `code-reviewer`, o `security-auditor` si hay datos sensibles |
+| Maximo | `code-reviewer` | `code-reviewer` + `qa-tester`, mas `security-auditor` si aplica |
+
+En nivel completo entra siempre el equipo de verificacion completo, en cualquier modo. `/onboard`
+pregunta que plan de Claude usas y sugiere el modo; en fichas creadas antes de esta version, anade el
 apartado a mano:
 
 ```markdown
 ## Modo de consumo
-economico
+equilibrado
 ```
+
+Con **Claude Pro**, equilibrado es el punto de partida razonable; si haces desarrollo constante,
+economico. Tras el primer dia de uso normal, revisa `/usage`: si el consumo semanal sigue alto,
+economico es el siguiente paso.
 
 **Habitos que ahorran mas que cualquier ajuste del plugin:**
 
-- **Una tarea por sesion.** Al terminar un `/feature`, empieza una sesion nueva o limpia el contexto.
-  Cada mensaje de una sesion larga vuelve a cargar todo lo anterior: la decima tarea de una misma
-  sesion cuesta mucho mas que la primera. Lo que el equipo aprendio ya esta escrito en la ficha, asi
-  que no pierdes nada al empezar de cero.
+- **Sonnet como modelo de la sesion principal**, salvo que la tarea necesite de verdad el criterio
+  de Opus. La sesion es quien mas texto procesa: es el mayor gasto de todos, y el plugin no lo puede
+  ajustar por ti.
+- **Una tarea por sesion.** Al terminar un `/feature`, empieza una sesion nueva o limpia el contexto
+  con `/clear`; el propio comando te lo recuerda al cerrar. Cada mensaje de una sesion larga vuelve a
+  cargar todo lo anterior: la decima tarea de una misma sesion cuesta mucho mas que la primera. Lo
+  que el equipo aprendio ya esta escrito en la ficha, asi que no pierdes nada al empezar de cero.
+  Si le pides varias tareas inconexas de una vez en economico o equilibrado, `/feature` hace la
+  primera y te entrega el resto como comandos para abrir en sesiones nuevas, en lugar de encadenarlas.
 - **Peticiones concretas.** "Arregla el filtro de fecha de la tabla de facturas" cuesta una fraccion
   de "revisa la pantalla de facturas", porque no obliga a explorar.
 - **`/audit`, `/redesign` y `/uitest` son caros por naturaleza**: recorren todo. Tienen sentido de vez
@@ -251,7 +268,7 @@ economico
 
   | Comando | Como ahorra |
   |---|---|
-  | `/feature` | Niveles ligero, estandar y completo; en los dos primeros implementa la sesion sin subagentes |
+  | `/feature` | Niveles ligero, estandar y completo; presupuesto de verificacion segun el modo de consumo; salidas largas a `run.log` |
   | `/audit` | Niveles rapida (sin especialistas), estandar (solo capas con indicios) y completa; las salidas largas van a archivo |
   | `/onboard` | Deduce de manifiestos, configuracion y muestras, no leyendo todo el codigo |
   | `/kickoff` | Dos direcciones visuales sobre una pantalla, y solo los agentes que condicionan la decision |
@@ -261,7 +278,7 @@ economico
   | `/spec` | Niveles rapida (sin especialistas), estandar y completa; en economico, solo los cuatro documentos que nadie puede deducir despues |
   | `/standup` | Se apoya en el indice y en `log.md`, sin abrir informes enteros |
 
-  En modo economico, todos ademas rebajan los modelos al convocar agentes.
+  Ningun comando usa Opus por defecto: solo en modo maximo, o en seguridad sobre datos sensibles.
 
 - **Pruebas con script antes que navegador interactivo.** `qa-tester` ya prefiere escribir el
   recorrido como prueba de Playwright y ejecutarlo: le vuelve solo el resultado, y la prueba queda.
@@ -302,18 +319,21 @@ claude plugin marketplace add /opt/devteam
 
 | Agente | Modelo | Para que |
 |---|---|---|
-| `tech-lead` | opus | Arquitectura, eleccion de stack y contrato de API |
+| `tech-lead` | sonnet (opus en maximo o completo) | Arquitectura, eleccion de stack y contrato de API |
 | `backend` | sonnet | Lado servidor en cualquier lenguaje y framework |
-| `ui-designer` | opus | Experiencia y diseno visual: flujos, sistema de diseno, animacion, prototipo navegable |
+| `ui-designer` | sonnet (opus en maximo) | Experiencia y diseno visual: flujos, sistema de diseno, animacion, prototipo navegable |
 | `frontend` | sonnet | Interfaz en cualquier framework, o sin ninguno |
 | `db-specialist` | sonnet | Modelado, migraciones, consultas e indices |
 | `qa-tester` | sonnet | Pruebas automaticas, y recorrido de la aplicacion en marcha en un navegador como un usuario |
 | `code-reviewer` | sonnet | Defectos de correctitud sobre el diff |
-| `security-auditor` | opus | OWASP, secretos, datos sensibles |
+| `security-auditor` | sonnet (opus en maximo o datos sensibles) | OWASP, secretos, datos sensibles |
 | `devops` | sonnet | Construccion, despliegue, contenedores, entorno |
 | `automation-bot` | sonnet | Automatizacion de navegador y procesos desatendidos |
 | `docs-writer` | haiku | README, CHANGELOG, CLAUDE.md |
 | `git-manager` | sonnet | Ramas, commits, sincronizacion, pull requests, versiones y conflictos |
+
+Ningun agente usa Opus por defecto: solo entra explicitamente en modo maximo, en `tech-lead` de
+nivel completo, o en `security-auditor` sobre datos sensibles.
 
 ## Principio de diseno: generico por oficio, especializado por proyecto
 

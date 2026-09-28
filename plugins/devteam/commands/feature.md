@@ -29,28 +29,53 @@ pocos archivos de una sola capa. Es el nivel por defecto para la mayoria de tare
 - **Sin subagentes para explorar ni implementar.** Localiza tu mismo lo necesario con busquedas y
   lecturas acotadas, e implementa directamente.
 - Sin `design.md` ni `contract.md`. Un `spec.md` de pocas lineas con los criterios de aceptacion.
-- Verificacion: ejecuta las pruebas y el linter. Solo si el diff no es trivial, un `code-reviewer`.
 - Si toca pantallas, comprueba solo el flujo cambiado, con un script de prueba si es posible.
 - El cierre se mantiene, pero breve: la fila del indice siempre, y lecciones solo si las hay.
 
 **Estandar** — funcionalidades que cruzan capas o tocan varias partes del proyecto.
 
-- Como mucho **un** agente de exploracion, y solo si la zona no es conocida.
+- Como mucho **un** agente de exploracion, y solo si la zona no es conocida y grande; avisa antes de
+  lanzarlo.
 - `tech-lead` solo si hay un contrato que acordar entre capas; si no, disenas tu en el `spec.md`.
 - **Implementas tu**, sin subagentes de implementacion: te ahorras que el especialista escriba el
   codigo en su informe y tu lo reescribas despues, que duplica el coste mas caro de todos.
 - `ui-designer` solo si se crea una pantalla nueva; para cambios en una existente, sigue su estilo.
-- Verificacion: `code-reviewer` y `qa-tester` en paralelo; `security-auditor` solo si toca
-  autenticacion, dinero o datos sensibles.
 
 **Completo** — el ciclo entero que describen las fases de abajo, con todos los especialistas. Para
 tareas grandes o de alto riesgo: autenticacion, pagos, datos regulados, cambios de contrato
 incompatibles, o cuando el usuario lo pide.
 
-**Modo economico.** Si la ficha fija modo de consumo economico, ademas de usar el nivel mas bajo
-posible, al convocar agentes pasa el modelo explicitamente en la llamada: `sonnet` para los que
-declaran `opus`, y `haiku` para exploracion y documentacion. Para `security-auditor` en tareas de
-datos sensibles, manten `opus` y dilo: ahi ahorrar no compensa.
+### Presupuesto de verificacion, segun el modo de consumo
+
+La verificacion (Fase 4) es la que mas subagentes concentra, asi que es donde mas se ahorra. El modo
+de consumo de la ficha (economico, equilibrado, maximo) decide cuantos entran, **sobre el nivel ya
+elegido arriba**:
+
+| Nivel | Economico | Equilibrado | Maximo |
+|---|---|---|---|
+| Ligero | 0 | 0 | `code-reviewer` |
+| Estandar | 0, mas `security-auditor` si hay datos sensibles | **Como mucho 1**: `code-reviewer`, o `security-auditor` si hay datos sensibles | `code-reviewer` + `qa-tester`, mas `security-auditor` si aplica |
+| Completo | Solo si el usuario lo pide expresamente | Solo si el usuario lo pide, o si detectas alto riesgo y lo **propones, esperando confirmacion** antes de convocar a nadie | El ciclo entero, como describen las fases |
+
+Sin `code-reviewer` ni `qa-tester`, la verificacion no desaparece, la haces tu:
+
+- **Autorrevision en vez de `code-reviewer`.** Repasa tu propio `git diff` contra una lista corta:
+  casos limite no cubiertos, errores capturados y descartados en silencio, y las convenciones que
+  marca `context.md`.
+- **Tu ejecutas las pruebas en vez de `qa-tester`.** Corre la bateria existente y, si la tarea toco
+  pantallas, un script del flujo cambiado. `qa-tester` entra solo cuando el nivel lo autoriza o
+  cuando no puedas automatizar ese flujo tu misma.
+- `security-auditor` en datos sensibles **no se recorta nunca**, en ningun modo: ahi ahorrar no
+  compensa.
+
+**Modelos.** `tech-lead`, `ui-designer` y `security-auditor` ya corren en `sonnet` por defecto en
+cualquier modo. Convocalos con `model` `opus` **solo** en estos casos, y dilo al hacerlo:
+
+- Cualquiera de los tres, en **modo maximo**.
+- `security-auditor`, cuando la tarea toca autenticacion, dinero o datos regulados, en cualquier modo.
+- `tech-lead`, en nivel **completo**.
+
+Fuera de esos casos, no pases `model` en la llamada: el valor por defecto ya es el barato.
 
 Las fases de abajo describen el nivel completo. En ligero y estandar, **salta** lo que el nivel
 excluye; no lo hagas "por si acaso".
@@ -61,6 +86,12 @@ excluye; no lo hagas "por si acaso".
 copias de archivos. Tu lee solo los fragmentos que vas a modificar, con rango de lineas, no archivos
 enteros; y no vuelvas a leer lo que un agente ya resumio salvo que vayas a editarlo. Cada lectura
 repetida se paga entera otra vez.
+
+**Las salidas largas van a archivo, nunca al contexto.** Instalacion, compilacion, pruebas y linter
+producen paginas que no aportan nada leidas enteras. Ejecutalos con sus opciones silenciosas y
+redirige la salida a `.devteam/tasks/<slug>/run.log` (sobrescribiendo cada vez); a tu contexto solo
+traes el resultado (paso/fallo, cobertura si la hay) y las lineas de error. El archivo queda como
+evidencia si hace falta mirar el detalle.
 
 **Paraleliza de verdad.** Cuando lances varios agentes de una fase, hazlo en **un solo mensaje con varias llamadas a la herramienta Agent**. Lanzarlos uno detras de otro desperdicia el paralelismo, que es el motivo de tener equipo.
 
@@ -73,6 +104,11 @@ repetida se paga entera otra vez.
 ---
 
 ## Fase 0: Preparacion
+
+0. **Si esta sesion corre en un modelo caro (Opus) y el modo de consumo no es maximo**, dilo en una
+   linea antes de seguir: abrir la proxima sesion en Sonnet consume bastante menos para este tipo de
+   tarea. No lo cambies a mitad de esta: perderias la cache de todo lo ya leido y saldria mas caro
+   que seguir. Es solo aviso para la proxima vez.
 
 1. Lee `.devteam/context.md`, incluidas sus trampas conocidas y sus lecciones: ahi esta lo que el
    equipo ya aprendio de este proyecto, y se escribio para que no vuelvas a tropezar. Si no existe,
@@ -98,9 +134,24 @@ repetida se paga entera otra vez.
    el modelo de datos que otra necesita). Advierte de que cada tarea recorre el ciclo entero con sus
    propias paradas, asi que tres tareas son tres ciclos y no uno mas largo.
 
-   Con el desglose acordado, ejecuta **una cada vez**, completa, hasta el cierre y el aprendizaje,
-   antes de empezar la siguiente. Entre una y otra, resume en una linea y sigue. Si una falla o el
-   usuario quiere parar, las demas quedan sin empezar y se dice cuales son.
+   **En modo maximo**, con el desglose acordado ejecuta **una cada vez**, completa, hasta el cierre y
+   el aprendizaje, antes de empezar la siguiente, dentro de esta misma sesion. Entre una y otra,
+   resume en una linea y sigue.
+
+   **En economico y equilibrado, no encadenes las tareas en esta sesion.** Cada tarea nueva reenvia
+   todo el historial de las anteriores, que es puro coste sin beneficio: lo aprendido de cada una ya
+   queda escrito en `.devteam/`, no en la conversacion. En su lugar, para cada tarea del desglose
+   escribe su `tasks/<slug>/spec.md` pendiente (mismo patron que usa `/audit tareas`), haz **solo la
+   primera** hasta el cierre, y entrega al usuario la lista de comandos para las demas, cada una para
+   abrir en una sesion nueva:
+
+   ```
+   /devteam:feature <slug-2>
+   /devteam:feature <slug-3>
+   ```
+
+   Si una falla o el usuario quiere parar, las demas quedan con su spec ya escrito y sin empezar; se
+   dice cuales son.
 
 3. **Si lo que te pasan parece un slug (palabras-unidas-por-guiones, sin mas explicacion), es casi
    seguro una tarea que propuso un informe en otra sesion.** Buscala en este orden y **no preguntes
@@ -133,6 +184,9 @@ repetida se paga entera otra vez.
    `git-manager`.
 
 ## Fase 1: Exploracion en paralelo
+
+Esta fase es para nivel **completo**. En estandar, el limite ya esta fijado arriba: como mucho un
+explorador, y solo si la zona no es conocida y grande. En ligero no se convoca a nadie.
 
 Lanza en **un solo mensaje** los agentes que apliquen a la tarea, normalmente dos o tres:
 
@@ -170,11 +224,17 @@ Convoca en paralelo a los especialistas del stack que haga falta, indicando a ca
 
 Cada uno devuelve el codigo con su ruta exacta. **Tu lo aplicas**, en un orden que deje el proyecto coherente: primero datos, luego servidor, luego interfaz.
 
-Tras aplicar, ejecuta lo que corresponda (construccion, arranque, pruebas) y comprueba que funciona de verdad. Si algo falla, arreglalo o vuelve a consultar al especialista con SendMessage.
+Tras aplicar, ejecuta lo que corresponda (construccion, arranque, pruebas), redirigiendo la salida a
+`run.log` como se indico arriba, y comprueba que funciona de verdad. Si algo falla, arreglalo o
+vuelve a consultar al especialista con SendMessage.
 
 ## Fase 4: Verificacion en paralelo
 
-Con el codigo ya aplicado, lanza en **un solo mensaje**:
+Cuantos subagentes entran aqui ya quedo decidido en el **presupuesto de verificacion** de arriba,
+segun el nivel y el modo de consumo. Esta fase completa —los tres a la vez— es la de nivel
+**completo**; en ligero y estandar, aplica el presupuesto (autorrevision, o como mucho uno).
+
+Cuando el presupuesto autorice mas de un agente, lanzalos en **un solo mensaje**:
 
 - `code-reviewer` sobre el diff
 - `qa-tester` para pruebas del cambio; si la tarea toco pantallas, que ademas **recorra la interfaz
@@ -182,7 +242,7 @@ Con el codigo ya aplicado, lanza en **un solo mensaje**:
   pasen las pruebas no significa que el boton funcione
 - `security-auditor` si la tarea toca autenticacion, datos personales o dinero; y siempre que `context.md` marque el proyecto como portador de datos sensibles o regulados
 
-Consolida los tres informes. Si se contradicen, decide tu y explica por que.
+Consolida los informes que haya. Si se contradicen, decide tu y explica por que.
 
 **Corrige y vuelve a verificar.** Arreglar un hallazgo no cierra el asunto: el arreglo tambien
 puede estar mal, o romper otra cosa. Aplica la correccion, ejecuta de nuevo lo que fallaba, y solo
@@ -247,5 +307,9 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
 
 5. Si el proyecto tiene git y la verificacion paso, ofrece `/ship` para confirmar y publicar el
    cambio. No confirmes ni subas nada por tu cuenta: publicar es decision del usuario.
+
+6. **Antes de la siguiente tarea, recomienda `/clear` o una sesion nueva.** Lo que el equipo aprendio
+   ya quedo escrito en `context.md` y `decisions.md` en el paso 3: no se pierde nada al cerrar esta
+   conversacion, y la siguiente tarea arranca sin arrastrar el historial completo de esta.
 
 No declares la tarea terminada si las pruebas fallan o si no llegaste a ejecutar la verificacion. Di lo que hay.

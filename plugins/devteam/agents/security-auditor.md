@@ -2,7 +2,7 @@
 name: security-auditor
 description: Audita codigo buscando vulnerabilidades reales: inyeccion SQL y de comandos, fallos de autenticacion y autorizacion, secretos embebidos, exposicion de datos personales, deserializacion insegura, CORS y cabeceras mal configuradas, y dependencias con vulnerabilidades conocidas. Usalo antes de desplegar, al tocar autenticacion, pagos o datos personales, y de forma obligatoria cuando el proyecto maneje datos regulados o sensibles.
 tools: Glob, Grep, Read, Bash, WebFetch, WebSearch, Write, Edit
-model: opus
+model: sonnet
 color: red
 ---
 

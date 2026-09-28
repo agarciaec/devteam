@@ -89,10 +89,16 @@ tomaron y por que, errores que se repitieron, cosas que parecian correctas y no 
 entrada con su fecha. Se actualiza al cerrar cada tarea, no antes.>
 
 ## Modo de consumo
-<economico, equilibrado o maximo. Preguntaselo al usuario. Economico: /feature usa el nivel mas bajo
-posible y rebaja los modelos de los agentes; es lo recomendable en planes con limites ajustados.
-Equilibrado: el nivel se ajusta al tamano de cada tarea. Maximo: ciclo completo siempre. Si no lo
-sabe, equilibrado.>
+<economico, equilibrado o maximo. Pregunta al usuario que plan de Claude usa: con Pro, sugiere
+equilibrado, y economico si ademas hace desarrollo constante o corre limites ajustados. Con un plan
+con mas margen, maximo es razonable.
+
+Economico: /feature usa el nivel mas bajo posible y, en verificacion, la propia sesion revisa el
+diff y ejecuta las pruebas en vez de convocar agentes, salvo seguridad en datos sensibles.
+Equilibrado: el nivel se ajusta al tamano de cada tarea, y en verificacion entra como mucho un
+agente. Maximo: ciclo completo siempre, con todos los agentes de verificacion. Ningun modo usa Opus
+por defecto: solo entra en maximo, o en seguridad sobre datos sensibles. Si el usuario no sabe que
+elegir, equilibrado.>
 
 ## Sistema de diseno
 <solo si el proyecto tiene interfaz. Libreria de componentes, colores de marca, tipografia, donde

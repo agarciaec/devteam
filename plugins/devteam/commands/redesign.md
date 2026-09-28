@@ -77,9 +77,10 @@ sobre sus pantallas reales, no sobre un ejemplo generico. En el nivel 3, dos dir
 cada una sobre **una** pantalla; la elegida se extiende despues a la segunda. El nivel 1 no necesita
 prototipos: son correcciones que se describen y se ven al implementarlas.
 
-**En modo de consumo economico**, convoca a `ui-designer` con modelo `sonnet`, sin `frontend` en la
-Fase 1 —la viabilidad la revisas tu sobre el plan de la Fase 4, que es mucho mas corto que el
-inventario entero—, y con un solo prototipo por direccion.
+`ui-designer` ya corre en `sonnet` por defecto; en **modo maximo**, convocalo con `model` `opus`.
+
+**En modo economico**, ademas sin `frontend` en la Fase 1 —la viabilidad la revisas tu sobre el plan
+de la Fase 4, que es mucho mas corto que el inventario entero—, y con un solo prototipo por direccion.
 
 **No sigas sin la decision del usuario.** Registra el nivel elegido y la direccion en
 `.devteam/decisions.md`: es una decision que condiciona todo el trabajo de interfaz de aqui en

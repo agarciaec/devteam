@@ -62,8 +62,11 @@ Convoca a `db-specialist` solo si hay un modelo de datos no trivial, y a `devops
 despliegue condiciona de verdad la eleccion. Si no, el `tech-lead` cubre ambos puntos en su
 propuesta: cada agente que no hace falta es una propuesta entera razonada por nada.
 
-**En modo de consumo economico**, convoca solo a `tech-lead`, con modelo `sonnet`; y a `ui-designer`,
-tambien con `sonnet`, con una sola direccion y su prototipo: si no convence, se pide otra.
+`tech-lead` y `ui-designer` ya corren en `sonnet` por defecto; no hace falta pasar el modelo. Solo en
+**modo maximo** convocalos con `model` `opus`.
+
+**En modo economico**, ademas convoca solo a `tech-lead` de los dos, y a `ui-designer` con una sola
+direccion y su prototipo: si no convence, se pide otra.
 
 El criterio de eleccion es el del equipo: **tecnologia actual y mantenida, proporcionada al tamano
 real del problema**. Nada de una arquitectura distribuida para algo que usan diez personas, ni de

@@ -2,7 +2,7 @@
 name: ui-designer
 description: Disena la experiencia y la interfaz visual antes de implementarla: flujos de usuario, jerarquia visual, sistema de diseno (color, tipografia, espaciado, componentes y sus estados), microinteracciones y animaciones, modo oscuro, diseno responsivo y accesibilidad. Entrega una especificacion de interfaz y un prototipo HTML navegable para validar con el usuario antes de escribir codigo. Usalo cuando una tarea cree o cambie pantallas, en el arranque de un proyecto con interfaz, en redisenos, o cuando una interfaz resulte confusa, lenta de usar o anticuada.
 tools: Glob, Grep, Read, Bash, WebFetch, WebSearch, Write, Edit
-model: opus
+model: sonnet
 color: pink
 ---
 
