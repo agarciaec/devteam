@@ -1,16 +1,21 @@
 ---
-description: Ejecuta de corrido todas las tareas pendientes: una sola ronda de preguntas al principio y despues trabaja sin interrumpirte, saltando y reportando lo que no pueda avanzar
-argument-hint: Opcional, slugs concretos, "criticas", "altas", "auditoria" o "max N" para acotar que tareas se ejecutan
+description: Para cuando hay muchas tareas pendientes y no puedes estar delante: el equipo organiza y recomienda todo el plan, tu lo apruebas de una vez y despues trabaja solo, saltando y reportando lo que no pueda avanzar
+argument-hint: Normalmente vacio, el equipo decide que tareas, en que orden y cuantas. Opcional, para forzarlo, slugs concretos, "criticas", "altas", "auditoria" o "max N"
 ---
 
 # Sprint: tareas pendientes de corrido
 
-Vas a ejecutar varias tareas pendientes seguidas **sin que el usuario tenga que estar presente**.
-Todo lo que hubiera obligado a parar se pregunta **una sola vez, al principio**. Despues, nada de
-preguntas: lo que no pueda avanzar se salta, se documenta y se reporta al final. El objetivo es
-cerrar tantas tareas como se pueda.
+Este comando es para cuando hay **muchas tareas por completar y el usuario no puede estar pendiente
+todo el rato**. Tu trabajo empieza antes de ejecutar nada: **organizar, dimensionar y recomendar el
+plan entero** con tu mejor criterio, para que el usuario solo tenga que aprobarlo, no disenarlo.
+Despues lo ejecutas sin interrumpirle. Lo que no pueda avanzar se salta, se documenta y se reporta
+al final. El objetivo es cerrar tantas tareas como se pueda.
 
-Tareas a ejecutar: $ARGUMENTS
+**Sin argumentos es el uso normal**, y significa "decide tu": que tareas entran, en que orden, con
+que nivel de esfuerzo, cuantas caben en esta tanda y cuales conviene dejar fuera. Los argumentos solo
+sirven para forzar una eleccion concreta; el usuario no tiene que saber que existen.
+
+Argumentos recibidos (puede estar vacio): $ARGUMENTS
 
 ## Como se reparte el trabajo
 
@@ -39,19 +44,51 @@ el usuario despues con `/ship`.
    tarea no cerrada en lugar de empezar otro sprint. Es lo que permite continuar si se agotaron los
    limites a mitad.
 3. **Reune las tareas candidatas**: las filas **pendiente** o **parcial** de
-   `.devteam/tasks/index.md` y las carpetas `tasks/*/spec.md` con estado pendiente. Aplica el filtro
-   de `$ARGUMENTS`: slugs concretos, `criticas` o `altas` (por gravedad), `auditoria` (solo las que
-   vienen de un informe), `max N` (las N primeras tras ordenar).
+   `.devteam/tasks/index.md` y las carpetas `tasks/*/spec.md` con estado pendiente. Si el usuario
+   paso argumentos, aplicalos como filtro: slugs concretos, `criticas` o `altas` (por gravedad),
+   `auditoria` (solo las que vienen de un informe), `max N` (las N primeras tras ordenar). Sin
+   argumentos, todas son candidatas y **decides tu** cuales entran.
 4. **Lee solo la cabecera de cada spec**: origen, gravedad, nivel sugerido, dependencias y preguntas
    abiertas. No abras los informes de origen ni el codigo: eso es trabajo del implementador.
-5. **Ordena**: primero por dependencias (una tarea que produce el contrato o los datos que otra
-   necesita va antes), despues por gravedad.
-6. **Estado de git.** Si el proyecto tiene git, trae el remoto (`git fetch`) y comprueba que la rama
+5. **Clasifica cada candidata** en uno de estos grupos. Es la parte donde se nota si organizas bien:
+
+   - **Entra en el sprint**: es trabajo de codigo, esta bien especificado y es ejecutable sin
+     personas. Es el caso normal.
+   - **Entra, con una decision previa**: tiene preguntas abiertas o riesgo, pero el usuario puede
+     resolverlas en la ronda de preguntas de la Fase 1.
+   - **Fuera, con motivo y con el comando que si sirve**. Dejala fuera, y di que hacer con ella:
+     - *No es trabajo de codigo*: publicar, subir un respaldo remoto, desplegar, abrir una cuenta,
+       un tramite manual. Eso es `/ship`, `/release` o algo que solo puede hacer el usuario.
+     - *Necesita lo que el sprint no puede dar*: credenciales reales, acceso a produccion, una
+       decision de negocio que no esta escrita en ningun sitio. Entrara cuando la desbloquee.
+     - *Depende de otra que queda fuera*: no se puede ejecutar antes.
+     - *Alto riesgo e irreversible* (migracion que borra datos, cambio de autenticacion o de dinero
+       sin contrato): proponla aparte, con el ciclo completo y el usuario delante.
+   - **Probablemente ya resuelta**: otra tarea o un commit posterior la arreglo. Entra, pero el
+     implementador la cerrara sin cambios si comprueba que ya no aplica; es barato y evita duplicar.
+   - **Duplicada o solapada con otra**: unifica las dos en una sola propuesta, y dilo.
+
+6. **Ordena** las que entran: primero por dependencias (una tarea que produce el contrato o los
+   datos que otra necesita va antes), despues por gravedad, y a igualdad, **las pequenas primero**:
+   dan resultados antes y dejan menos trabajo a medias si se agotan los limites.
+7. **Dimensiona la tanda.** Sin `max N` del usuario, tu decides cuantas caben, segun el modo de
+   consumo de la ficha, y **dices por que**:
+
+   - **Economico o equilibrado**: tandas de **3 o 4 tareas**, o de unas 2 si alguna es de nivel
+     completo. Es lo que cabe sin agotar el limite semanal de un plan con limites ajustados. Las
+     demas quedan **para la tanda siguiente**, ya ordenadas, listas para otro `/sprint`.
+   - **Maximo**: todas las que entran, salvo que sean tantas que el sprint no se pueda reanudar con
+     comodidad; en ese caso, tandas de unas 8.
+
+   Una tanda corta que se cierra entera vale mas que una larga que se queda a medias.
+8. **Estado de git.** Si el proyecto tiene git, trae el remoto (`git fetch`) y comprueba que la rama
    principal esta actualizada y el arbol limpio. Si no lo esta, no sigas por tu cuenta: lo preguntas
    en la Fase 1. **Si no tiene git**, lo avisas y exiges aceptacion explicita en la Fase 1: los
    cambios seran irreversibles, y se trabaja sin ramas ni commits.
 
-Si no hay ninguna tarea pendiente, dilo y sugiere `/audit` o `/audit tareas`. Termina ahi.
+Si no hay ninguna tarea pendiente, dilo y sugiere `/audit` o `/audit tareas`. Termina ahi. Si hay
+tareas pero **ninguna entra** en el sprint, di por que cada una queda fuera y que hacer con ella:
+tambien es un resultado util.
 
 ## Fase 1: La ronda unica de preguntas
 
@@ -72,21 +109,45 @@ Esta es la **unica interaccion** del sprint. Recoge de todas las tareas, de una 
   con nombre (reversible), o parar para que los confirme el usuario. Nunca los descartes ni los
   mezcles con una tarea
 
+**Tu decides primero y el usuario aprueba despues.** Para cada una de esas cuestiones, antes de
+preguntar, **elige tu la respuesta recomendada** con tu mejor criterio: la que sigue el sistema
+visual existente, la mas conservadora, la que se puede revertir. El usuario no tiene que elaborar
+nada: solo corregir lo que no le convenza.
+
+Una respuesta recomendada **nunca puede autorizar algo irreversible ni inventar una regla**. Si una
+cuestion es de producto, de dinero, de datos o necesita una credencial, y no hay una respuesta segura,
+tu recomendacion es **saltar esa parte y reportarla**, no una apuesta.
+
 **Presentalo asi:**
 
-1. **El plan, primero.** Lista corta: orden de las tareas, nivel de cada una, agentes previstos y el
-   modo de consumo. **Con el coste a la vista**: cada tarea es al menos un arranque en frio del
-   implementador mas su verificacion, asi que `N` tareas son bastante mas que una. Si son muchas y el
-   plan del usuario tiene limites ajustados, sugiere `max 3` y repetir.
-2. **Las preguntas despues**, agrupadas en rondas seguidas de `AskUserQuestion` (hasta cuatro por
-   llamada), con una opcion recomendada en cada una. Pregunta solo lo que cambia lo que se hara; si
-   el spec ya lo resuelve, no lo repitas.
-3. **En la misma ronda**, la confirmacion de las reglas del sprint: un commit local por tarea en su
-   propia rama, y **nada se sube**.
+1. **El plan recomendado, primero y en pocas lineas:**
+   - **Entran**, en orden, cada una con su nivel y **en una frase por que va ahi**.
+   - **Quedan fuera**, cada una con su motivo y el comando que si sirve (`/ship`, `/release`, lo que
+     solo puede hacer el usuario).
+   - **Quedan para la tanda siguiente**, si las hay, y por que esta tanda acaba donde acaba.
+   - **Las respuestas que has elegido** para las cuestiones de arriba, una linea por cada una.
+   - **El coste a la vista**: cada tarea es al menos un arranque en frio del implementador mas su
+     verificacion, asi que `N` tareas son bastante mas que una.
+   - **Las reglas del sprint**: un commit local por tarea en su propia rama, y **nada se sube**.
+2. **Una primera pregunta de aprobacion** (`AskUserQuestion`), con tres opciones y la primera como
+   recomendada:
+   - **Aprobar el plan tal cual** y empezar. Es lo normal: **cero preguntas mas**.
+   - **Revisar las decisiones una por una**: solo entonces haces las preguntas concretas de abajo.
+   - **Ajustar el plan**: el usuario indica que tareas anadir, quitar o reordenar, o cambia el tamano
+     de la tanda. Rehaz el plan con eso y vuelve a presentarlo.
+3. **Solo si pide revisar**, las preguntas, agrupadas en rondas seguidas de `AskUserQuestion` (hasta
+   cuatro por llamada), cada una con tu respuesta recomendada como primera opcion. Pregunta solo lo
+   que cambia lo que se hara; si el spec ya lo resuelve, no lo repitas.
 
-**Que guardar.** Las respuestas de cada tarea van a su `spec.md`, bajo un encabezado **Decisiones
-previas (sprint <fecha>)**; el implementador las lee y mandan sobre su criterio. El plan y una tabla
-de estado van a `.devteam/runs/<fecha>/run.md` (si ya hay uno terminado de hoy, anade `-2`).
+Si hay **una unica cosa** que el plan no puede decidir por su cuenta (una decision de producto sin
+respuesta segura, por ejemplo), pregunta solo esa, junto con la aprobacion, en lugar de pedir al
+usuario que revise todo.
+
+**Que guardar.** Las decisiones de cada tarea van a su `spec.md`, bajo un encabezado **Decisiones
+previas (sprint <fecha>)**, tanto las que el usuario eligio como las recomendadas que aprobo sin
+tocar (marcadas como "recomendada y aprobada"); el implementador las lee y mandan sobre su criterio.
+El plan aprobado, lo que quedo fuera y la tanda siguiente, mas una tabla de estado, van a
+`.devteam/runs/<fecha>/run.md` (si ya hay uno terminado de hoy, anade `-2`).
 
 **A partir de aqui no preguntas nada mas hasta el informe final.** Si surge una duda a mitad, no la
 resuelves preguntando: la clasificas como lo hace el implementador (decision menor, que asumes y
@@ -166,9 +227,12 @@ Escribe `.devteam/runs/<fecha>/report.md` y resume al usuario, **de mas urgente 
 3. **Decisiones asumidas para revisar**: lo que el implementador decidio por su cuenta. Es poco
    probable que sea un error, pero el usuario no estaba delante, y conviene que lo sepa.
 4. **Hallazgos de verificacion abiertos**: lo que los revisores vieron y no se resolvio en dos rondas.
-5. **No iniciadas**, con el motivo.
-6. **Siguientes pasos**: `/ship` en cada rama cerrada, **en orden** si hay ramas apiladas; y volver a
-   lanzar `/sprint` cuando se hayan resuelto los bloqueos, que retomara las parciales.
+5. **No iniciadas y fuera del sprint**, cada una con su motivo y con el comando que si sirve para
+   ella, tal como quedo en el plan.
+6. **Siguientes pasos**, en este orden: `/ship` en cada rama cerrada, **en orden** si hay ramas
+   apiladas; resolver lo de "Necesita tu intervencion"; y **otro `/sprint` sin argumentos** para la
+   tanda siguiente y para las parciales ya desbloqueadas. Dile cuantas tareas quedan pendientes en
+   total, para que el usuario sepa cuanto camino falta.
 
 No declares cerrada una tarea cuyas pruebas fallen o cuya verificacion no se haya ejecutado. Di
 exactamente lo que hay, tarea por tarea.

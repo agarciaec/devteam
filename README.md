@@ -17,7 +17,7 @@ El ciclo completo, de instalar a trabajar.
 | 2d. Probar la interaccion | Antes de una version, tras un rediseno, o si algo no responde | `/uitest` |
 | 2e. Especificar para recrear | Cuando vas a rehacer la aplicacion con otra tecnologia | `/spec` |
 | 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
-| 3b. Trabajar sin estar presente | Cuando hay varias tareas pendientes de un informe | `/sprint` |
+| 3b. Trabajar sin estar presente | Cuando hay muchas tareas pendientes y no puedes estar pendiente | `/sprint` |
 | 4. Publicar | Al terminar cada cambio | `/ship` |
 | 5. Versionar | Al cerrar una version | `/release` |
 | 6. Retomar | Al volver dias despues | `/standup` |
@@ -165,23 +165,33 @@ listar, crear y cancelar reservas es una sola funcionalidad. Si le pides cosas i
 desglosa, te propone el orden y las hace una a una en lugar de mezclarlas en un unico contrato.
 
 **3b. Ejecutar las tareas pendientes de corrido.** `/audit`, `/uitest` y `/redesign` dejan tareas
-pendientes, y `/feature` se para a preguntarte en cada una. `/sprint` es para cuando no quieres estar
-delante: lee todas las pendientes y te hace **una sola ronda de preguntas al principio**, con todo lo
-que habria hecho falta preguntar por el camino. Despues trabaja sin interrumpirte.
+pendientes, y `/feature` se para a preguntarte en cada una. `/sprint` es para cuando hay **muchas
+tareas por completar y no puedes estar pendiente**. Se usa **sin argumentos**:
 
 ```
 /sprint
 ```
-```
-/sprint criticas
-```
-```
-/sprint max 3
-```
+
+Sin argumentos significa "decide tu". El equipo **organiza y recomienda el plan entero**: que tareas
+entran y en que orden, con que nivel de esfuerzo, cuantas caben en esta tanda segun tu modo de
+consumo, y cuales dejar fuera —las que no son codigo, como subir un respaldo remoto, las que
+necesitan credenciales reales o las de alto riesgo irreversible—, cada una con el motivo y el comando
+que si sirve. Tambien elige una respuesta recomendada para cada duda de cada tarea.
+
+Tu solo apruebas. La primera pregunta es **"aprobar el plan tal cual"** (lo normal: cero preguntas
+mas), **"revisar las decisiones una por una"** o **"ajustar el plan"**. Con la aprobacion, trabaja sin
+interrumpirte hasta el informe. Una respuesta recomendada nunca autoriza algo irreversible ni
+inventa una regla: si no hay respuesta segura, su recomendacion es saltar esa parte y reportarla.
+
+Los argumentos existen solo para forzar una eleccion: `/sprint criticas`, `/sprint max 3` o
+`/sprint <slug> <slug>`.
 
 - **Cada tarea la hace un agente `implementer` nuevo**, uno a la vez, en su propia rama y con su
   commit local. La sesion solo orquesta y no lee codigo, asi que no arrastra el historial de una
   tarea a la siguiente, y si se agotan los limites a mitad puedes reanudar.
+- **Dimensiona la tanda por ti.** En economico o equilibrado propone 3 o 4 tareas por vez y deja las
+  demas ordenadas para el siguiente `/sprint`: una tanda corta que se cierra entera vale mas que una
+  larga que se queda a medias.
 - **Lo que no puede avanzar se salta, no se adivina.** Una decision de producto, de dinero o de
   seguridad, o una credencial que falta, deja esa parte bloqueada y documentada; el resto de la
   tarea y las demas tareas siguen. Las decisiones menores las asume y te las lista.
@@ -189,7 +199,7 @@ que habria hecho falta preguntar por el camino. Despues trabaja sin interrumpirt
   tienes un informe con el estado de cada tarea y, arriba del todo, **lo que necesita tu
   intervencion**; despues publicas cada rama con `/ship`.
 - **Consume mas que una tarea suelta**, porque cada una arranca un implementador en frio mas su
-  verificacion. Con Claude Pro, acota con `max 3` y usa modo equilibrado o economico.
+  verificacion. Con Claude Pro no hace falta que lo acotes tu: en economico o equilibrado ya propone tandas de 3 o 4 tareas.
 
 **4. Publicar.** Con la tarea verificada, `/ship` la lleva a GitHub: sincroniza con el remoto,
 resuelve conflictos volviendo a probar, redacta el commit con la convencion del repositorio, sube
@@ -303,7 +313,7 @@ economico es el siguiente paso.
   | `/redesign` | Capturas por script a disco, prototipos acotados, sin prototipos en el nivel pulir |
   | `/uitest` | Recorrido escrito como pruebas y ejecutado, navegador interactivo solo para lo que falte |
   | `/ship`, `/release` | La sesion hace el trabajo de git; `git-manager` solo para conflictos o casos enredados |
-  | `/sprint` | La sesion no lee codigo y no arrastra historial entre tareas; limita con `max N` y respeta el presupuesto de verificacion |
+  | `/sprint` | La sesion no lee codigo y no arrastra historial entre tareas; dimensiona la tanda segun el modo de consumo y respeta el presupuesto de verificacion |
   | `/spec` | Niveles rapida (sin especialistas), estandar y completa; en economico, solo los cuatro documentos que nadie puede deducir despues |
   | `/standup` | Se apoya en el indice y en `log.md`, sin abrir informes enteros |
 
@@ -338,7 +348,7 @@ claude plugin marketplace add /opt/devteam
 | `/audit [area]` | Revision global de salud y consistencia: ejecuta, revisa cada capa en paralelo y cruza donde se tocan. No modifica codigo; devuelve informe y tareas. |
 | `/redesign [objetivo]` | Revisa toda la interfaz, te hace elegir el nivel de cambio (pulir, evolucionar, redisenar) y lo planifica por etapas. |
 | `/uitest [pantallas]` | Recorre la interfaz en un navegador como un usuario y comprueba que botones, formularios, tablas y ventanas funcionan. No modifica codigo. |
-| `/sprint [filtro]` | **Tareas pendientes de corrido.** Una sola ronda de preguntas al principio; despues un `implementer` por tarea, en serie y en su rama, sin interrumpirte. Lo que no avanza se salta y se reporta al final. No publica nada. |
+| `/sprint` | **Muchas tareas pendientes, sin estar presente.** Sin argumentos: el equipo organiza y recomienda el plan (que entra, orden, tanda, que dejar fuera) y tu lo apruebas de una vez; despues un `implementer` por tarea, en serie y en su rama, sin interrumpirte. Lo que no avanza se salta y se reporta al final. No publica nada. |
 | `/spec [area]` | **Para recrear la aplicacion con otra tecnologia.** Extrae que hace, quien lo usa y con que reglas, sin nombrar ni un framework, mas la lista de paridad y el plan por etapas. No modifica codigo. |
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
 | `/ship` | Sincroniza, hace commit, sube la rama y abre el pull request, con tu confirmacion en cada paso que publica. |

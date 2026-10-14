@@ -153,7 +153,7 @@ Playwright mediante scripts.
 | Documentacion y CLAUDE.md | `docs-writer` |
 | Ramas, commits, sincronizacion, PR, versiones, conflictos | `git-manager` |
 | Salud y consistencia del proyecto entero | `/audit`, que convoca a todos por capas y cruza |
-| Ejecutar varias tareas pendientes sin estar presente | `/sprint`: una ronda de preguntas al principio, despues un `implementer` por tarea, en serie, con commit local en su rama |
+| Muchas tareas pendientes y el usuario no puede estar presente | `/sprint` sin argumentos: el equipo organiza y recomienda el plan, el usuario lo aprueba, y despues un `implementer` por tarea, en serie, con commit local en su rama |
 | Rehacer la aplicacion con otra tecnologia | `/spec`, que extrae que hace y con que reglas sin atarlo a la tecnologia actual, y luego `/kickoff` en el proyecto nuevo |
 
 **Tarea frente a auditoria.** `/feature` revisa lo que acaba de cambiar; `/audit` revisa el
