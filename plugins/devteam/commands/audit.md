@@ -181,7 +181,8 @@ Si algo del arreglo es una decision de producto que no puedes tomar tu, escribel
 abierta en el spec en lugar de inventar la respuesta.
 
 Presenta al usuario la lista y propon empezar por los criticos, cada uno con `/feature <slug>`.
-**No empieces ninguno sin que lo apruebe.**
+**No empieces ninguno sin que lo apruebe.** Si son varias y el usuario prefiere no estar presente,
+ofrece `/sprint`: las ejecuta de corrido tras una sola ronda de preguntas, cada una en su rama.
 
 Actualiza tambien:
 

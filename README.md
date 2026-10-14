@@ -17,6 +17,7 @@ El ciclo completo, de instalar a trabajar.
 | 2d. Probar la interaccion | Antes de una version, tras un rediseno, o si algo no responde | `/uitest` |
 | 2e. Especificar para recrear | Cuando vas a rehacer la aplicacion con otra tecnologia | `/spec` |
 | 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
+| 3b. Trabajar sin estar presente | Cuando hay varias tareas pendientes de un informe | `/sprint` |
 | 4. Publicar | Al terminar cada cambio | `/ship` |
 | 5. Versionar | Al cerrar una version | `/release` |
 | 6. Retomar | Al volver dias despues | `/standup` |
@@ -163,6 +164,33 @@ visual; en uno nuevo o en un rediseno, te propone dos o tres direcciones contras
 listar, crear y cancelar reservas es una sola funcionalidad. Si le pides cosas inconexas, las
 desglosa, te propone el orden y las hace una a una en lugar de mezclarlas en un unico contrato.
 
+**3b. Ejecutar las tareas pendientes de corrido.** `/audit`, `/uitest` y `/redesign` dejan tareas
+pendientes, y `/feature` se para a preguntarte en cada una. `/sprint` es para cuando no quieres estar
+delante: lee todas las pendientes y te hace **una sola ronda de preguntas al principio**, con todo lo
+que habria hecho falta preguntar por el camino. Despues trabaja sin interrumpirte.
+
+```
+/sprint
+```
+```
+/sprint criticas
+```
+```
+/sprint max 3
+```
+
+- **Cada tarea la hace un agente `implementer` nuevo**, uno a la vez, en su propia rama y con su
+  commit local. La sesion solo orquesta y no lee codigo, asi que no arrastra el historial de una
+  tarea a la siguiente, y si se agotan los limites a mitad puedes reanudar.
+- **Lo que no puede avanzar se salta, no se adivina.** Una decision de producto, de dinero o de
+  seguridad, o una credencial que falta, deja esa parte bloqueada y documentada; el resto de la
+  tarea y las demas tareas siguen. Las decisiones menores las asume y te las lista.
+- **Nada se publica.** Sin `push`, sin `merge`, sin saltar hooks, sin tocar produccion. Al final
+  tienes un informe con el estado de cada tarea y, arriba del todo, **lo que necesita tu
+  intervencion**; despues publicas cada rama con `/ship`.
+- **Consume mas que una tarea suelta**, porque cada una arranca un implementador en frio mas su
+  verificacion. Con Claude Pro, acota con `max 3` y usa modo equilibrado o economico.
+
 **4. Publicar.** Con la tarea verificada, `/ship` la lleva a GitHub: sincroniza con el remoto,
 resuelve conflictos volviendo a probar, redacta el commit con la convencion del repositorio, sube
 la rama y abre el pull request. Te pide confirmacion antes de cada paso que sale de tu maquina, y
@@ -275,6 +303,7 @@ economico es el siguiente paso.
   | `/redesign` | Capturas por script a disco, prototipos acotados, sin prototipos en el nivel pulir |
   | `/uitest` | Recorrido escrito como pruebas y ejecutado, navegador interactivo solo para lo que falte |
   | `/ship`, `/release` | La sesion hace el trabajo de git; `git-manager` solo para conflictos o casos enredados |
+  | `/sprint` | La sesion no lee codigo y no arrastra historial entre tareas; limita con `max N` y respeta el presupuesto de verificacion |
   | `/spec` | Niveles rapida (sin especialistas), estandar y completa; en economico, solo los cuatro documentos que nadie puede deducir despues |
   | `/standup` | Se apoya en el indice y en `log.md`, sin abrir informes enteros |
 
@@ -309,6 +338,7 @@ claude plugin marketplace add /opt/devteam
 | `/audit [area]` | Revision global de salud y consistencia: ejecuta, revisa cada capa en paralelo y cruza donde se tocan. No modifica codigo; devuelve informe y tareas. |
 | `/redesign [objetivo]` | Revisa toda la interfaz, te hace elegir el nivel de cambio (pulir, evolucionar, redisenar) y lo planifica por etapas. |
 | `/uitest [pantallas]` | Recorre la interfaz en un navegador como un usuario y comprueba que botones, formularios, tablas y ventanas funcionan. No modifica codigo. |
+| `/sprint [filtro]` | **Tareas pendientes de corrido.** Una sola ronda de preguntas al principio; despues un `implementer` por tarea, en serie y en su rama, sin interrumpirte. Lo que no avanza se salta y se reporta al final. No publica nada. |
 | `/spec [area]` | **Para recrear la aplicacion con otra tecnologia.** Extrae que hace, quien lo usa y con que reglas, sin nombrar ni un framework, mas la lista de paridad y el plan por etapas. No modifica codigo. |
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
 | `/ship` | Sincroniza, hace commit, sube la rama y abre el pull request, con tu confirmacion en cada paso que publica. |
@@ -331,6 +361,7 @@ claude plugin marketplace add /opt/devteam
 | `automation-bot` | sonnet | Automatizacion de navegador y procesos desatendidos |
 | `docs-writer` | haiku | README, CHANGELOG, CLAUDE.md |
 | `git-manager` | sonnet | Ramas, commits, sincronizacion, pull requests, versiones y conflictos |
+| `implementer` | sonnet | Implementa una tarea de punta a punta sin preguntar, con commit local; solo lo convoca `/sprint` |
 
 Ningun agente usa Opus por defecto: solo entra explicitamente en modo maximo, en `tech-lead` de
 nivel completo, o en `security-auditor` sobre datos sensibles.
@@ -412,7 +443,9 @@ Los subagentes de Claude Code no se comunican entre si: cada uno arranca en frio
 sesion principal. El equipo se construye sobre tres mecanismos reales:
 
 - La sesion principal actua de tech lead y es **la unica que escribe codigo fuente**, asi que dos
-  agentes nunca colisionan sobre el mismo archivo.
+  agentes nunca colisionan sobre el mismo archivo. La unica excepcion es `/sprint`, que delega cada
+  tarea en un `implementer`, pero **uno solo y en serie**: la regla de fondo, nunca dos escritores a
+  la vez, se mantiene.
 - El paralelismo es real cuando varios agentes se lanzan **en un mismo mensaje**.
 - El handoff se hace por archivos, en la carpeta `.devteam/` de cada proyecto.
 
@@ -431,6 +464,7 @@ El detalle esta en la skill `devteam-protocol`.
 ├── redesign/<fecha>/       # historia: capturas, diagnostico, prototipos y plan de cada /redesign
 ├── uitest/<fecha>/         # historia: cobertura, fallos con reproduccion y report.md de cada /uitest
 ├── spec/<fecha>/           # especificacion para recrear: overview, reglas, dominio, paridad y plan
+├── runs/<fecha>/           # historia: estado (permite reanudar) e informe de cada /sprint
 └── tasks/
     ├── index.md            # una linea por tarea: fecha, nombre, que hizo, estado
     └── <slug>/             # historia: foto del momento, no se actualiza

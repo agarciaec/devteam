@@ -108,7 +108,9 @@ de aceptacion, nivel sugerido, **estado: pendiente**) y su `ui.md`. Anotalas en
 
 Cada tarea del plan se hace con `/feature`, que ya integra la especificacion visual, la
 implementacion, la verificacion y la publicacion. Propon al usuario empezar por la primera y **no
-empieces ninguna sin su aprobacion**.
+empieces ninguna sin su aprobacion**. Si el usuario prefiere no estar presente, `/sprint` las
+ejecuta de corrido, pero solo las etapas que siguen el sistema visual ya aprobado: ofrecelo cuando
+el plan no cambie la direccion visual, no cuando la decida.
 
 Actualiza el apartado de sistema de diseno de `.devteam/context.md` a medida que el sistema nuevo se
 implante, para que el resto del equipo trabaje con el sistema vigente y no con el antiguo.

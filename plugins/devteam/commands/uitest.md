@@ -95,7 +95,7 @@ tarea, y anade a trampas de
 `.devteam/context.md` lo que se haya descubierto sobre como arrancar o probar la aplicacion.
 
 Presenta al usuario el resultado y propon empezar por los fallos mas graves. **No empieces ninguno
-sin su aprobacion.**
+sin su aprobacion.** Si son varios, ofrece tambien `/sprint` para ejecutarlos de corrido.
 
 ## Cierre
 

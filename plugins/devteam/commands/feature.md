@@ -151,7 +151,8 @@ evidencia si hace falta mirar el detalle.
    ```
 
    Si una falla o el usuario quiere parar, las demas quedan con su spec ya escrito y sin empezar; se
-   dice cuales son.
+   dice cuales son. Ofrece tambien `/sprint` para ejecutar el resto de corrido, sin abrir una sesion
+   por tarea.
 
 3. **Si lo que te pasan parece un slug (palabras-unidas-por-guiones, sin mas explicacion), es casi
    seguro una tarea que propuso un informe en otra sesion.** Buscala en este orden y **no preguntes
