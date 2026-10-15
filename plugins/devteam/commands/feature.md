@@ -97,9 +97,8 @@ evidencia si hace falta mirar el detalle.
 **Las pruebas no esperan al entorno, y son completas.** Que Docker, la base de datos o el servidor
 "no esten arriba" no es motivo para no probar: **lo levantas tu**.
 
-- Sigue `## Entorno de pruebas` de la ficha. Si falta o dice "sin verificar", deducelo de la
-  composicion, el `Makefile`, los scripts del manifiesto y la configuracion de Playwright o Cypress, y
-  corrige la ficha al cerrar.
+- Sigue `## Entorno de pruebas` de la ficha. Si falta, dice "sin verificar", o no sabes que base,
+  contenedor o dump usar, **recuperalo antes de rendirte** (ver abajo) y corrige la ficha al cerrar.
 - Si el servicio de contenedores esta parado, arrancalo cuando este instalado (Docker Desktop; en
   Linux, sin `sudo`). Levanta **solo los servicios que las pruebas necesitan**, y la aplicacion y su
   frontend en segundo plano, esperando a su comprobacion de salud con un tiempo maximo.
@@ -111,6 +110,21 @@ evidencia si hace falta mirar el detalle.
   segundo plano; no la sustituyas por un subconjunto sin decirlo.
 - Solo servicios locales o de pruebas: nunca produccion, ni cuentas ni servicios reales. Al terminar,
   baja solo lo que levantaste tu.
+
+**Si no sabes que levantar o que base usar, recupera lo que se hizo antes.** Lo que se descubrio en
+sesiones anteriores suele estar escrito, aunque no en la ficha. Busca con busquedas acotadas, sin
+leer archivos enteros:
+
+1. En las **tres tareas mas recientes** del indice: `grep -niE "docker|compose|dump|restore|psql|
+   mysql|sqlite|base de datos|database"` sobre su `log.md` y `findings/qa.md`, y el final de su
+   `run.log`.
+2. `docker ps -a`, `docker volume ls` y los archivos de composicion, `Makefile` y de entorno de
+   ejemplo: los contenedores, volumenes y bases que ya existen dicen mucho.
+3. El `git log` reciente, por mensajes que mencionen entorno, dumps o restauraciones.
+
+Con eso reconstruye la receta, **compruebala** y escribela en la ficha. Si tras buscar sigue sin
+estar claro que base o dump usar, **ni adivines una base ni sigas sin probar**: pregunta al usuario
+una sola cosa concreta. Nunca apuntes las pruebas a una base que no sea claramente de pruebas.
 
 **Paraleliza de verdad.** Cuando lances varios agentes de una fase, hazlo en **un solo mensaje con varias llamadas a la herramienta Agent**. Lanzarlos uno detras de otro desperdicia el paralelismo, que es el motivo de tener equipo.
 
@@ -280,7 +294,9 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
 ## Fase 5: Cierre y aprendizaje
 
 1. Convoca a `docs-writer` si el cambio afecta a como se usa o se configura el proyecto.
-2. Escribe `log.md` en la carpeta de la tarea: que se hizo, que decidio el equipo y que quedo pendiente.
+2. Escribe `log.md` en la carpeta de la tarea: que se hizo, que decidio el equipo y que quedo
+   pendiente, y una linea **Entorno de pruebas usado** (contenedores, base y dump), que es lo que
+   permite recuperarlo despues si la ficha no lo dice.
 
    Anade tambien una linea a `.devteam/tasks/index.md`, creandolo si no existe, con este formato:
 
@@ -302,8 +318,14 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
 
    **Corrige lo que resulto ser falso.** Si la ficha decia que las pruebas se ejecutan de una forma
    y era otra, arreglalo ahora. Una ficha que miente es peor que una incompleta, porque todos los
-   agentes la creen. Vale tambien para `## Entorno de pruebas`: si tuviste que descubrir como
-   levantar algo, deja la receta exacta y quita "sin verificar".
+   agentes la creen.
+
+   **`## Entorno de pruebas` es obligatorio siempre que las pruebas necesitaron algo levantado.**
+   No depende de que te haya costado descubrirlo. Antes de cerrar, comprueba que la seccion dice
+   exactamente lo que hiciste, de forma que una sesion nueva, sin esta conversacion, pueda repetirlo:
+   los contenedores y servicios con su nombre, la base de datos de pruebas, el dump que se restauro
+   (ruta) y el comando, los datos de prueba, como saber que esta sano y como bajarlo. Quita "sin
+   verificar" si ya lo comprobaste.
 
    **Anade a Trampas conocidas** lo que te costo descubrir y volvera a costar: una dependencia que
    se rompe, un paso manual que nadie documento, un comportamiento que sorprende.

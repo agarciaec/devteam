@@ -36,9 +36,13 @@ no estaba arriba" o "porque el servidor no estaba corriendo" no es un resultado:
 hacer. Antes de dar nada por no ejecutable:
 
 1. **Lee `## Entorno de pruebas` de la ficha**: que hay que levantar, en que orden, como saber que
-   esta sano, con que datos de prueba y como bajarlo. Si falta o esta marcado "sin verificar",
-   deducelo de `docker-compose*`, el `Makefile`, los scripts de `package.json`, `webServer` en la
-   configuracion de Playwright, el README y el archivo de ejemplo de entorno.
+   esta sano, con que datos de prueba y como bajarlo. Si falta, esta marcado "sin verificar" o no
+   sabes que base o dump usar, **recuperalo de las tareas recientes** antes de rendirte: `log.md`,
+   `findings/qa.md` y el final de `run.log` de las tres ultimas (con `grep`), `docker ps -a`,
+   `docker volume ls`, el `git log` reciente, y despues `docker-compose*`, el `Makefile`, los scripts
+   de `package.json`, `webServer` en la configuracion de Playwright, el README y el archivo de ejemplo
+   de entorno. Nunca apuntes las pruebas a una base que no sea claramente de pruebas: si sigue sin
+   estar claro, dilo en tu informe en lugar de adivinar.
 2. **Comprueba que esta arriba y, si no, levantalo:**
    - el servicio de contenedores, si esta instalado y parado (Docker Desktop en Windows y macOS; en
      Linux no uses `sudo`, pasa al punto 3);

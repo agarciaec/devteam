@@ -59,7 +59,9 @@ Cierra todo lo que se pueda cerrar. Que una parte se bloquee no es motivo para d
    esperando a su comprobacion de salud con un tiempo maximo. Si algo no se puede levantar, busca el
    sustituto (base de datos en memoria, doble de pruebas para servicios externos). **"No habia nada
    arriba" nunca es un motivo para no probar**; lo que de verdad no se pueda ejecutar se declara
-   **no ejecutado**, con el comando y su error. No bajes lo que levanto la sesion.
+   **no ejecutado**, con el comando y su error. No bajes lo que levanto la sesion. Si no sabes que
+   base o dump usar, busca antes en la ficha, en el `log.md` y el `run.log` de las tareas recientes y
+   en `docker ps -a`; nunca apuntes las pruebas a una base que no sea claramente de pruebas.
 2. **Ejecuta las pruebas completas de cada capa**: servidor, cliente y extremo a extremo con la
    aplicacion arriba, no un subconjunto. Probar solo el servidor deja la interfaz sin verificar. Mas
    el linter que marca la ficha. **Redirige la salida a `.devteam/tasks/<slug>/run.log`** y trae a tu
@@ -83,7 +85,8 @@ Cierra todo lo que se pueda cerrar. Que una parte se bloquee no es motivo para d
 2. **Commit local** con la convencion de commits de la ficha, solo con los archivos de esta tarea.
    Revisa `git status` antes: no arrastres cambios ajenos. Si la tarea quedo parcial, commitea lo que
    esta verificado y dilo en el mensaje.
-3. Escribe `.devteam/tasks/<slug>/log.md`: que se hizo, que decisiones asumiste y que quedo pendiente.
+3. Escribe `.devteam/tasks/<slug>/log.md`: que se hizo, que decisiones asumiste y que quedo
+   pendiente, mas una linea **Entorno de pruebas usado** (contenedores, base y dump).
 4. Devuelve tu informe, **de unas cuarenta lineas como maximo**, con este formato exacto:
 
 ```

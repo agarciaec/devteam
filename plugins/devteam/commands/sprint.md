@@ -164,7 +164,12 @@ al principio**, y los implementadores lo reutilizan:
 1. Levanta lo que las pruebas necesitan siguiendo `## Entorno de pruebas` de la ficha: el servicio
    de contenedores si esta parado (Docker Desktop; en Linux, sin `sudo`), solo los servicios que las
    pruebas usan, y la aplicacion y su frontend en segundo plano, esperando a su comprobacion de salud
-   con un tiempo maximo. Si la ficha no lo describe o dice "sin verificar", deducelo y corrigela.
+   con un tiempo maximo. Si la ficha no lo describe, dice "sin verificar" o no sabes que base o dump
+   usar, **recuperalo de las tareas anteriores** antes de rendirte: sus `log.md`, `findings/qa.md` y
+   el final de su `run.log` (con `grep`, sin leerlos enteros), `docker ps -a`, `docker volume ls`,
+   la composicion y el `git log` reciente. Compruebalo y **escribelo en la ficha**. Aqui no puedes
+   preguntar: si sigue sin estar claro que base es de pruebas, no la adivines; salta las pruebas que
+   la necesitan y reportalo.
 2. **Comprueba que son solo servicios locales o de pruebas**, sin bases de datos remotas ni cuentas
    reales. Si no puedes levantar algo, busca el sustituto (base de datos en memoria, doble de pruebas)
    antes de rendirte.
@@ -173,6 +178,9 @@ al principio**, y los implementadores lo reutilizan:
    regresion de un fallo antiguo.
 4. Anota en `run.md` **que levantaste tu**, para bajarlo al final aunque el sprint se corte, y no
    tocar lo que ya estaba corriendo.
+5. **Deja la receta escrita en `## Entorno de pruebas` de la ficha ahora, no al final**: contenedores
+   y servicios, base de datos de pruebas, dump y comando de restauracion, datos de prueba, como saber
+   que esta sano y como bajarlo. Si el sprint se corta, la proxima sesion la encuentra.
 
 Si tras intentarlo algo no se puede levantar, el sprint **sigue**, pero ese limite se reporta en el
 informe como "no verificado" en todas las tareas que dependen de ello.

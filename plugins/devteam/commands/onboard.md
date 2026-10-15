@@ -83,7 +83,8 @@ Crea `.devteam/context.md` con esta estructura, rellenada con datos reales del p
 <como se levanta todo lo que las pruebas necesitan, para que nadie dependa de que otro lo haya
 levantado: los servicios de los que depende (base de datos, cola, cache), el comando para levantarlos
 y para bajarlos, como saber que estan sanos, como arrancar la aplicacion y el frontend, y con que
-datos de prueba. Si el proyecto no necesita nada externo, dilo. No lo levantes ahora: escribe lo que
+datos de prueba: **que base de datos es la de pruebas, de donde sale su dump (ruta) y como se
+restaura.** Si el proyecto no necesita nada externo, dilo. No lo levantes ahora: escribe lo que
 dedujiste y marcalo "sin verificar"; el primer /feature, /audit o /uitest lo comprobara y lo corregira.>
 
 ## Estructura

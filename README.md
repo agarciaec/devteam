@@ -192,6 +192,13 @@ nunca produccion, y al terminar baja solo lo que levanto. La receta de cada proy
 seccion `## Entorno de pruebas` de su ficha: `/onboard` la deduce y la marca *sin verificar*, y el
 primer `/feature`, `/audit` o `/uitest` la comprueba y la corrige.
 
+Esa seccion es la **unica memoria** que pasa de una sesion a otra: los registros de tareas antiguas
+son historia y no se cargan. Por eso el cierre de cada tarea que uso un entorno **siempre** la deja
+actualizada —contenedores, base de pruebas, dump y como se restaura—, y el `log.md` anota que entorno
+uso. Si aun asi una sesion no sabe que base usar, antes de rendirse la **recupera** de las tres tareas
+recientes (`log.md`, `qa.md`, `run.log`), de `docker ps -a` y del `git log`; si sigue sin estar claro,
+te pregunta una cosa concreta en vez de adivinar una base o seguir sin probar.
+
 **Es una tarea por invocacion**, pero una tarea puede abarcar varias cosas si comparten contrato:
 listar, crear y cancelar reservas es una sola funcionalidad. Si le pides cosas inconexas, las
 desglosa, te propone el orden y las hace una a una en lugar de mezclarlas en un unico contrato.
