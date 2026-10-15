@@ -53,16 +53,27 @@ Cierra todo lo que se pueda cerrar. Que una parte se bloquee no es motivo para d
 
 ## Verificar y corregirse
 
-1. Ejecuta las pruebas y el linter que marca la ficha. **Redirige la salida a
-   `.devteam/tasks/<slug>/run.log`** y trae a tu contexto solo el resultado y las lineas de error.
-2. Cada **criterio de aceptacion** del spec se marca como cumplido solo con evidencia: una prueba que
+1. **Comprueba que el entorno de pruebas esta arriba, y si no, levantalo tu.** `/sprint` lo levanta
+   al empezar y te dice como, pero puede haberse caido. Sigue `## Entorno de pruebas` de la ficha:
+   contenedores y servicios que las pruebas necesitan, la aplicacion y su frontend en segundo plano,
+   esperando a su comprobacion de salud con un tiempo maximo. Si algo no se puede levantar, busca el
+   sustituto (base de datos en memoria, doble de pruebas para servicios externos). **"No habia nada
+   arriba" nunca es un motivo para no probar**; lo que de verdad no se pueda ejecutar se declara
+   **no ejecutado**, con el comando y su error. No bajes lo que levanto la sesion.
+2. **Ejecuta las pruebas completas de cada capa**: servidor, cliente y extremo a extremo con la
+   aplicacion arriba, no un subconjunto. Probar solo el servidor deja la interfaz sin verificar. Mas
+   el linter que marca la ficha. **Redirige la salida a `.devteam/tasks/<slug>/run.log`** y trae a tu
+   contexto solo el resultado y las lineas de error. Compara con la **linea base** que te pase la
+   sesion: un fallo que ya existia antes de tu cambio se reporta como anterior, no como tuyo.
+3. Cada **criterio de aceptacion** del spec se marca como cumplido solo con evidencia: una prueba que
    pasa, una salida, un `archivo:linea`. Sin evidencia, no esta cumplido.
-3. Si hay pantallas, comprueba el flujo cambiado, con un script de prueba antes que con navegador
-   interactivo. Si no puedes ejecutarlo, dilo: la interfaz queda como **no verificada en ejecucion**.
-4. Si algo falla, corrigelo y **vuelve a ejecutar lo que fallaba**: el arreglo tambien puede estar
+4. Si hay pantallas, el script de extremo a extremo de los flujos cambiados, contra la aplicacion en
+   marcha, antes que navegador interactivo. Si de verdad no puedes ejecutarlo tras intentar levantarlo,
+   dilo: la interfaz queda como **no verificada en ejecucion**.
+5. Si algo falla, corrigelo y **vuelve a ejecutar lo que fallaba**: el arreglo tambien puede estar
    mal. **Maximo dos intentos por fallo.** Despues, esa parte queda bloqueada con la salida real del
    error; no pruebes variaciones a ciegas.
-5. Si te piden una ronda de correccion de un revisor, aplica solo los hallazgos que traigan un
+6. Si te piden una ronda de correccion de un revisor, aplica solo los hallazgos que traigan un
    escenario concreto de fallo, y vuelve a verificar.
 
 ## Cierre
@@ -100,7 +111,9 @@ Aunque la tarea lo pida, y aunque ahorre tiempo, **no hagas nada de esto**:
   ajeno a la tarea, dejalo sin commitear, dilo en `SALTADO` y para.
 - Tocar entornos de produccion, bases de datos reales o servicios de terceros con cuentas reales
 - Borrar datos, o migraciones que los destruyan
-- Instalar software global o cambiar la configuracion del sistema
+- Instalar software global o cambiar la configuracion del sistema. Levantar **servicios locales o de
+  prueba** (contenedores, una base de datos de pruebas, servidores de desarrollo) si esta permitido y
+  se espera de ti; si Docker no esta instalado, no lo instales: usa un sustituto.
 - Leer, escribir o usar credenciales reales, y commitear nada que parezca un secreto
 - Saltarte o evadir controles de acceso, CAPTCHAs o deteccion de bots
 

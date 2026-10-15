@@ -19,8 +19,10 @@ Alcance indicado por el usuario: $ARGUMENTS
 
 Antes de nada, verifica las tres condiciones. Si falla alguna, para, di cual y como resolverla:
 
-1. **La aplicacion arranca en local** con el comando de `.devteam/context.md`. Si no hay ficha,
-   propon `/onboard` primero.
+1. **La aplicacion se puede levantar en local.** **Levantala tu**, con lo que necesite (contenedores,
+   base de datos de pruebas, backend y frontend), siguiendo `## Entorno de pruebas` de
+   `.devteam/context.md`; no esperes a que el usuario lo haya hecho. Solo si, tras intentarlo y
+   buscar un sustituto, no hay forma, para y di que fallo. Si no hay ficha, propon `/onboard` primero.
 2. **Hay una herramienta de navegador**: un servidor MCP de Playwright o de las herramientas de
    desarrollo del navegador, o Playwright o Cypress instalados en el proyecto. Si no hay ninguna,
    indica al usuario como anadir la de Playwright:

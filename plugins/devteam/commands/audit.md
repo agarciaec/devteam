@@ -49,9 +49,13 @@ salida real en `baseline.md`:
 
 - Instalacion de dependencias
 - Construccion o compilacion
-- Pruebas, con su resultado y su cobertura si esta disponible
+- Pruebas **completas de cada capa** —servidor, cliente y extremo a extremo—, con su resultado y su
+  cobertura si esta disponible
 - Linter y comprobacion de tipos
-- Arranque de la aplicacion, si es posible hacerlo en local sin sistemas reales
+- Arranque de la aplicacion, **levantando tu lo que necesite** (contenedores, base de datos de
+  pruebas, backend y frontend) segun `## Entorno de pruebas` de la ficha, en local y sin sistemas
+  reales. No esperes a que el usuario lo haya levantado; si falta algo, intentalo y busca un
+  sustituto antes de darlo por imposible
 
 **Redirige cada salida a un archivo** dentro de la carpeta de la auditoria y trae a tu contexto solo
 el final y las lineas de error o aviso. La instalacion, la compilacion y las pruebas producen miles de
@@ -119,7 +123,8 @@ Condiciones:
   mejor recorrer a fondo diez pantallas que tocar por encima cien.
 - **Declara la cobertura**: que pantallas se recorrieron y cuales no. Una pantalla no recorrida no esta
   verificada, y el informe tiene que decirlo.
-- Si la aplicacion no se puede arrancar o no hay forma de manejar un navegador, el recorrido no se
+- Si la aplicacion no se puede arrancar **tras intentar levantarla con todo lo que necesita**, o no
+  hay forma de manejar un navegador, el recorrido no se
   hace y la interfaz queda marcada como **no verificada en ejecucion**, no como correcta.
 
 Cada fallo encontrado se acompana de la prueba de extremo a extremo que lo detectaria: la siguiente

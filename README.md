@@ -160,6 +160,17 @@ vacio y error, y las animaciones reales. Lo apruebas o lo corriges *antes* de qu
 y `frontend` implementa exactamente eso. En un proyecto que ya tiene diseno, respeta su sistema
 visual; en uno nuevo o en un rediseno, te propone dos o tres direcciones contrastadas para elegir.
 
+**Las pruebas se ejecutan siempre, y completas.** El equipo no se salta las pruebas porque "no haya
+nada arriba": si Docker esta parado, lo arranca; levanta la base de datos y los servicios que las
+pruebas necesitan, y la aplicacion y su frontend en segundo plano, esperando a que respondan. Si algo
+no se puede levantar, busca un sustituto (base de datos en memoria, doble de pruebas para un servicio
+externo) antes de rendirse, y solo lo que de verdad no se pudo ejecutar se declara *no ejecutado*, con
+el comando y su error. Ejecuta la bateria **entera de cada capa** —servidor, cliente y extremo a
+extremo con la aplicacion arriba—, no solo el servidor. Todo contra servicios locales o de pruebas,
+nunca produccion, y al terminar baja solo lo que levanto. La receta de cada proyecto queda en la
+seccion `## Entorno de pruebas` de su ficha: `/onboard` la deduce y la marca *sin verificar*, y el
+primer `/feature`, `/audit` o `/uitest` la comprueba y la corrige.
+
 **Es una tarea por invocacion**, pero una tarea puede abarcar varias cosas si comparten contrato:
 listar, crear y cancelar reservas es una sola funcionalidad. Si le pides cosas inconexas, las
 desglosa, te propone el orden y las hace una a una en lugar de mezclarlas en un unico contrato.

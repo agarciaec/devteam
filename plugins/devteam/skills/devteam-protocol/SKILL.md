@@ -200,6 +200,10 @@ Ocurre, sobre todo entre `code-reviewer` y los implementadores. Reglas para reso
 - Convocar a un especialista antes de que exista el contrato: trabaja sobre suposiciones.
 - Aceptar el informe de un agente sin mirar el codigo que cita.
 - Dar por verificado algo que no se ejecuto. Si las pruebas no se corrieron, eso es lo que hay que decir.
+- Saltarse las pruebas porque "no habia nada arriba" (Docker, la base de datos, el servidor del
+  frontend). El entorno de pruebas se levanta, o se busca un sustituto; solo lo que de verdad no se
+  pudo ejecutar se declara no ejecutado, con el comando y su error. Y se prueban todas las capas, no
+  solo el servidor.
 - Dejar que dos agentes escriban codigo a la vez. Escribe solo el tech lead, con una excepcion:
   `/sprint` delega cada tarea en un `implementer`, pero **uno solo y en serie**; la regla de fondo,
   nunca dos escritores a la vez, se mantiene.

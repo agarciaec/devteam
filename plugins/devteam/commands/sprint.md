@@ -155,6 +155,30 @@ anotas; o decision que no te corresponde, que saltas y reportas).
 
 ## Fase 2: Ejecucion en serie
 
+### Antes de la primera tarea: el entorno de pruebas
+
+Con nadie delante, nadie va a levantar Docker ni el servidor por ti, y cada implementador descubriria
+por su cuenta que "no habia nada arriba" y se saltaria las pruebas. Lo evitas levantandolo **una vez,
+al principio**, y los implementadores lo reutilizan:
+
+1. Levanta lo que las pruebas necesitan siguiendo `## Entorno de pruebas` de la ficha: el servicio
+   de contenedores si esta parado (Docker Desktop; en Linux, sin `sudo`), solo los servicios que las
+   pruebas usan, y la aplicacion y su frontend en segundo plano, esperando a su comprobacion de salud
+   con un tiempo maximo. Si la ficha no lo describe o dice "sin verificar", deducelo y corrigela.
+2. **Comprueba que son solo servicios locales o de pruebas**, sin bases de datos remotas ni cuentas
+   reales. Si no puedes levantar algo, busca el sustituto (base de datos en memoria, doble de pruebas)
+   antes de rendirte.
+3. Ejecuta la **bateria completa sobre la rama principal**, con la salida a archivo, y guarda en
+   `run.md` la **linea base**: los fallos que ya existian. Es lo que permite despues distinguir una
+   regresion de un fallo antiguo.
+4. Anota en `run.md` **que levantaste tu**, para bajarlo al final aunque el sprint se corte, y no
+   tocar lo que ya estaba corriendo.
+
+Si tras intentarlo algo no se puede levantar, el sprint **sigue**, pero ese limite se reporta en el
+informe como "no verificado" en todas las tareas que dependen de ello.
+
+### Cada tarea
+
 Para cada tarea, en orden, hasta el final de la lista:
 
 ### Preparar la rama
@@ -181,8 +205,9 @@ Segun el nivel que sugiere el spec y el modo de consumo, como en `/feature`:
 ### Implementar
 
 Lanza **un** `implementer` con: el slug, la rama, la ruta de su `spec.md` y de los documentos de
-diseno, y el modo de consumo. Recuerdale que no puede preguntar. Anota su identificador, porque lo
-vas a necesitar para pedirle correcciones.
+diseno, el modo de consumo, **como esta levantado el entorno de pruebas y la linea base de fallos**.
+Recuerdale que no puede preguntar. Anota su identificador, porque lo vas a necesitar para pedirle
+correcciones.
 
 ### Verificar
 
@@ -233,6 +258,9 @@ Escribe `.devteam/runs/<fecha>/report.md` y resume al usuario, **de mas urgente 
    apiladas; resolver lo de "Necesita tu intervencion"; y **otro `/sprint` sin argumentos** para la
    tanda siguiente y para las parciales ya desbloqueadas. Dile cuantas tareas quedan pendientes en
    total, para que el usuario sepa cuanto camino falta.
+
+**Antes de terminar, baja lo que levantaste tu** (lo anotado en `run.md`) y nada mas: ni lo que ya
+estaba corriendo, ni volumenes o datos que no sean de pruebas.
 
 No declares cerrada una tarea cuyas pruebas fallen o cuya verificacion no se haya ejecutado. Di
 exactamente lo que hay, tarea por tarea.

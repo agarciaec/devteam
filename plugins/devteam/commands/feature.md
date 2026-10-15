@@ -29,7 +29,8 @@ pocos archivos de una sola capa. Es el nivel por defecto para la mayoria de tare
 - **Sin subagentes para explorar ni implementar.** Localiza tu mismo lo necesario con busquedas y
   lecturas acotadas, e implementa directamente.
 - Sin `design.md` ni `contract.md`. Un `spec.md` de pocas lineas con los criterios de aceptacion.
-- Si toca pantallas, comprueba solo el flujo cambiado, con un script de prueba si es posible.
+- Pruebas completas de cada capa (ver "Las pruebas no esperan al entorno") y, si toca pantallas, un
+  script de extremo a extremo de los flujos cambiados contra la aplicacion en marcha.
 - El cierre se mantiene, pero breve: la fila del indice siempre, y lecciones solo si las hay.
 
 **Estandar** — funcionalidades que cruzan capas o tocan varias partes del proyecto.
@@ -62,9 +63,9 @@ Sin `code-reviewer` ni `qa-tester`, la verificacion no desaparece, la haces tu:
 - **Autorrevision en vez de `code-reviewer`.** Repasa tu propio `git diff` contra una lista corta:
   casos limite no cubiertos, errores capturados y descartados en silencio, y las convenciones que
   marca `context.md`.
-- **Tu ejecutas las pruebas en vez de `qa-tester`.** Corre la bateria existente y, si la tarea toco
-  pantallas, un script del flujo cambiado. `qa-tester` entra solo cuando el nivel lo autoriza o
-  cuando no puedas automatizar ese flujo tu misma.
+- **Tu ejecutas las pruebas en vez de `qa-tester`.** Levanta el entorno, corre la bateria completa de
+  cada capa y, si la tarea toco pantallas, un script de extremo a extremo de los flujos cambiados.
+  `qa-tester` entra solo cuando el nivel lo autoriza o cuando no puedas automatizar ese flujo tu misma.
 - `security-auditor` en datos sensibles **no se recorta nunca**, en ningun modo: ahi ahorrar no
   compensa.
 
@@ -92,6 +93,24 @@ producen paginas que no aportan nada leidas enteras. Ejecutalos con sus opciones
 redirige la salida a `.devteam/tasks/<slug>/run.log` (sobrescribiendo cada vez); a tu contexto solo
 traes el resultado (paso/fallo, cobertura si la hay) y las lineas de error. El archivo queda como
 evidencia si hace falta mirar el detalle.
+
+**Las pruebas no esperan al entorno, y son completas.** Que Docker, la base de datos o el servidor
+"no esten arriba" no es motivo para no probar: **lo levantas tu**.
+
+- Sigue `## Entorno de pruebas` de la ficha. Si falta o dice "sin verificar", deducelo de la
+  composicion, el `Makefile`, los scripts del manifiesto y la configuracion de Playwright o Cypress, y
+  corrige la ficha al cerrar.
+- Si el servicio de contenedores esta parado, arrancalo cuando este instalado (Docker Desktop; en
+  Linux, sin `sudo`). Levanta **solo los servicios que las pruebas necesitan**, y la aplicacion y su
+  frontend en segundo plano, esperando a su comprobacion de salud con un tiempo maximo.
+- Si algo no se puede levantar, busca el sustituto antes de rendirte (base de datos en memoria, doble
+  de pruebas para los servicios externos). Lo que no se ejecute se declara **no ejecutado**, con el
+  comando y su error, nunca "no habia entorno".
+- **Baterias completas de cada capa**: servidor, cliente y extremo a extremo con la aplicacion
+  arriba. Probar solo el servidor deja la interfaz sin verificar. Si tarda mucho, ejecutala en
+  segundo plano; no la sustituyas por un subconjunto sin decirlo.
+- Solo servicios locales o de pruebas: nunca produccion, ni cuentas ni servicios reales. Al terminar,
+  baja solo lo que levantaste tu.
 
 **Paraleliza de verdad.** Cuando lances varios agentes de una fase, hazlo en **un solo mensaje con varias llamadas a la herramienta Agent**. Lanzarlos uno detras de otro desperdicia el paralelismo, que es el motivo de tener equipo.
 
@@ -225,8 +244,9 @@ Convoca en paralelo a los especialistas del stack que haga falta, indicando a ca
 
 Cada uno devuelve el codigo con su ruta exacta. **Tu lo aplicas**, en un orden que deje el proyecto coherente: primero datos, luego servidor, luego interfaz.
 
-Tras aplicar, ejecuta lo que corresponda (construccion, arranque, pruebas), redirigiendo la salida a
-`run.log` como se indico arriba, y comprueba que funciona de verdad. Si algo falla, arreglalo o
+Tras aplicar, levanta el entorno y ejecuta lo que corresponda (construccion, arranque, pruebas
+completas), redirigiendo la salida a `run.log` como se indico arriba, y comprueba que funciona de
+verdad. Si algo falla, arreglalo o
 vuelve a consultar al especialista con SendMessage.
 
 ## Fase 4: Verificacion en paralelo
@@ -278,7 +298,8 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
 
    **Corrige lo que resulto ser falso.** Si la ficha decia que las pruebas se ejecutan de una forma
    y era otra, arreglalo ahora. Una ficha que miente es peor que una incompleta, porque todos los
-   agentes la creen.
+   agentes la creen. Vale tambien para `## Entorno de pruebas`: si tuviste que descubrir como
+   levantar algo, deja la receta exacta y quita "sin verificar".
 
    **Anade a Trampas conocidas** lo que te costo descubrir y volvera a costar: una dependencia que
    se rompe, un paso manual que nadie documento, un comportamiento que sorprende.

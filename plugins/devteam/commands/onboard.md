@@ -29,6 +29,11 @@ Examina el proyecto y averigua:
 - **Como se instala, se ejecuta, se construye y se prueba.** Busca los comandos reales: scripts de `package.json`, `manage.py`, `Makefile`, scripts sueltos. Si no encuentras como se ejecutan las pruebas, dilo en lugar de inventarlo.
 - **Estructura**: donde vive el codigo, donde la configuracion, donde las pruebas.
 - **Base de datos**: motor, como se conecta, si usa ORM o SQL crudo, si hay migraciones.
+- **Entorno de pruebas**: que necesitan las pruebas para ejecutarse de verdad —base de datos, cola,
+  cache, contenedores, el servidor y el frontend en marcha para las de extremo a extremo— y como se
+  levanta todo. Mira la composicion de contenedores, el `Makefile`, los scripts del manifiesto, la
+  configuracion de Playwright o Cypress y el README. Que el equipo sepa levantarlo es lo que evita que
+  las pruebas se salten con "no habia nada arriba".
 - **Convenciones**: estilo de nombres, patron de organizacion, linters configurados. Deducelas de varios archivos, no de uno.
 - **Control de versiones**: si hay `.git`. Si no lo hay, es importante: los cambios no seran reversibles.
 - **Dominio**: que hace el sistema y si maneja datos sensibles como historias clinicas, facturacion o contabilidad.
@@ -73,6 +78,13 @@ Crea `.devteam/context.md` con esta estructura, rellenada con datos reales del p
 - Construir:
 - Probar:
 - Linter:
+
+## Entorno de pruebas
+<como se levanta todo lo que las pruebas necesitan, para que nadie dependa de que otro lo haya
+levantado: los servicios de los que depende (base de datos, cola, cache), el comando para levantarlos
+y para bajarlos, como saber que estan sanos, como arrancar la aplicacion y el frontend, y con que
+datos de prueba. Si el proyecto no necesita nada externo, dilo. No lo levantes ahora: escribe lo que
+dedujiste y marcalo "sin verificar"; el primer /feature, /audit o /uitest lo comprobara y lo corregira.>
 
 ## Estructura
 <las carpetas que importan y que hay en cada una>
