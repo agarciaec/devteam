@@ -16,6 +16,7 @@ El ciclo completo, de instalar a trabajar.
 | 2c. Revisar la interfaz | Cuando la interfaz se queda vieja o incomoda | `/redesign` |
 | 2d. Probar la interaccion | Antes de una version, tras un rediseno, o si algo no responde | `/uitest` |
 | 2e. Especificar para recrear | Cuando vas a rehacer la aplicacion con otra tecnologia | `/spec` |
+| 2f. Planificar solicitudes | Antes de pedir varias cosas, algo grande o algo vago | `/planear <lo que quieres>` |
 | 3. Trabajar | Cada funcionalidad o arreglo | `/feature <que quieres>` |
 | 3b. Trabajar sin estar presente | Cuando hay muchas tareas pendientes y no puedes estar pendiente | `/sprint` |
 | 4. Publicar | Al terminar cada cambio | `/ship` |
@@ -141,6 +142,26 @@ puedes responder, y el plan por etapas.
 No canoniza los defectos: lo que parece un fallo y no una regla te lo pregunta en lugar de copiarlo
 a la version nueva. Para arrancarla, copia esa carpeta al proyecto nuevo y ejecuta `/kickoff`
 senalandola; ahi es donde se elige la tecnologia, contigo delante.
+
+**2f. Planificar lo que vas a pedir.** `/planear` es el modo plan del equipo. Se usa cuando pides
+varias cosas a la vez, algo grande, algo vago, o cuando no sabes si ya esta hecho. Se parece al modo
+plan de Claude: no se toca el codigo hasta que apruebas. La diferencia es que **parte de lo que el
+equipo ya sabe**, en vez de explorar el proyecto de cero.
+
+```
+/planear quiero que los clientes puedan descargar sus facturas en PDF y que el admin vea quien las descargo
+```
+
+Lee la ficha, las decisiones vigentes, el indice de tareas y los informes anteriores, y con eso:
+desglosa lo que pediste en tareas, detecta **lo que ya esta hecho o ya esta pendiente** para no
+duplicarlo, avisa si algo **choca con una decision vigente** y por que se tomo, localiza donde se
+tocaria, y te pregunta solo lo que no puede saber. Cuanto investiga sigue tu modo de consumo: en
+economico lo hace la sesion sola, sin agentes.
+
+Despues del plan, con tu aprobacion, deja cada tarea escrita como `spec.md` pendiente. Se ejecutan con
+`/feature <slug>` una a una, o todas sin estar delante con `/sprint`. No usa el modo plan integrado de
+Claude porque ese lanza agentes que exploran sin conocer la ficha, y aqui lo primero es leer lo ya
+escrito.
 
 **3. Trabajar.** Es el comando del dia a dia. Una orden, y el equipo explora, disena, implementa y
 verifica, con el esfuerzo ajustado al tamano de la tarea: un cambio pequeno lo resuelve la sesion sin
@@ -324,6 +345,7 @@ economico es el siguiente paso.
   | `/redesign` | Capturas por script a disco, prototipos acotados, sin prototipos en el nivel pulir |
   | `/uitest` | Recorrido escrito como pruebas y ejecutado, navegador interactivo solo para lo que falte |
   | `/ship`, `/release` | La sesion hace el trabajo de git; `git-manager` solo para conflictos o casos enredados |
+  | `/planear` | Lee lo ya escrito antes que el codigo; sin agentes en economico, uno como mucho en equilibrado; solo escribe en `.devteam/` |
   | `/sprint` | La sesion no lee codigo y no arrastra historial entre tareas; dimensiona la tanda segun el modo de consumo y respeta el presupuesto de verificacion |
   | `/spec` | Niveles rapida (sin especialistas), estandar y completa; en economico, solo los cuatro documentos que nadie puede deducir despues |
   | `/standup` | Se apoya en el indice y en `log.md`, sin abrir informes enteros |
@@ -359,6 +381,7 @@ claude plugin marketplace add /opt/devteam
 | `/audit [area]` | Revision global de salud y consistencia: ejecuta, revisa cada capa en paralelo y cruza donde se tocan. No modifica codigo; devuelve informe y tareas. |
 | `/redesign [objetivo]` | Revisa toda la interfaz, te hace elegir el nivel de cambio (pulir, evolucionar, redisenar) y lo planifica por etapas. |
 | `/uitest [pantallas]` | Recorre la interfaz en un navegador como un usuario y comprueba que botones, formularios, tablas y ventanas funcionan. No modifica codigo. |
+| `/planear <solicitudes>` | **Modo plan del equipo.** Desglosa lo que pides en tareas usando la ficha, las decisiones y el indice; detecta lo ya hecho, lo duplicado y lo que choca con decisiones vigentes; te pregunta lo que no sabe y, con tu aprobacion, deja los specs pendientes. No toca codigo. |
 | `/sprint` | **Muchas tareas pendientes, sin estar presente.** Sin argumentos: el equipo organiza y recomienda el plan (que entra, orden, tanda, que dejar fuera) y tu lo apruebas de una vez; despues un `implementer` por tarea, en serie y en su rama, sin interrumpirte. Lo que no avanza se salta y se reporta al final. No publica nada. |
 | `/spec [area]` | **Para recrear la aplicacion con otra tecnologia.** Extrae que hace, quien lo usa y con que reglas, sin nombrar ni un framework, mas la lista de paridad y el plan por etapas. No modifica codigo. |
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
@@ -485,6 +508,7 @@ El detalle esta en la skill `devteam-protocol`.
 ├── redesign/<fecha>/       # historia: capturas, diagnostico, prototipos y plan de cada /redesign
 ├── uitest/<fecha>/         # historia: cobertura, fallos con reproduccion y report.md de cada /uitest
 ├── spec/<fecha>/           # especificacion para recrear: overview, reglas, dominio, paridad y plan
+├── plans/<fecha>/          # historia: plan de cada /planear, con las tareas propuestas, el orden y el coste
 ├── runs/<fecha>/           # historia: estado (permite reanudar) e informe de cada /sprint
 └── tasks/
     ├── index.md            # una linea por tarea: fecha, nombre, que hizo, estado

@@ -100,6 +100,7 @@ que algo quedo sin terminar vale mas que el silencio.
 ├── redesign/<fecha>/          # historia: capturas, diagnosis.md, prototipos y plan.md de cada /redesign
 ├── uitest/<fecha>/            # historia: cobertura, fallos con reproduccion y report.md de cada /uitest
 ├── spec/<fecha>/              # especificacion agnostica de tecnologia de cada /spec, con su plan de recreacion
+├── plans/<fecha>/             # historia: plan.md de cada /planear (tareas propuestas, orden, coste, preguntas)
 ├── runs/<fecha>/              # historia: run.md (estado, permite reanudar) y report.md de cada /sprint
 └── tasks/
     ├── index.md               # una linea por tarea: fecha, nombre, que hizo, estado
@@ -153,6 +154,7 @@ Playwright mediante scripts.
 | Documentacion y CLAUDE.md | `docs-writer` |
 | Ramas, commits, sincronizacion, PR, versiones, conflictos | `git-manager` |
 | Salud y consistencia del proyecto entero | `/audit`, que convoca a todos por capas y cruza |
+| Planificar solicitudes antes de ejecutarlas | `/planear`: las desglosa con la ficha, las decisiones y el indice, detecta duplicados y choques, y deja specs pendientes. No toca codigo |
 | Muchas tareas pendientes y el usuario no puede estar presente | `/sprint` sin argumentos: el equipo organiza y recomienda el plan, el usuario lo aprueba, y despues un `implementer` por tarea, en serie, con commit local en su rama |
 | Rehacer la aplicacion con otra tecnologia | `/spec`, que extrae que hace y con que reglas sin atarlo a la tecnologia actual, y luego `/kickoff` en el proyecto nuevo |
 

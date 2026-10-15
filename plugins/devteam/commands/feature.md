@@ -153,6 +153,10 @@ evidencia si hace falta mirar el detalle.
    el modelo de datos que otra necesita). Advierte de que cada tarea recorre el ciclo entero con sus
    propias paradas, asi que tres tareas son tres ciclos y no uno mas largo.
 
+   Si las solicitudes son muchas, grandes o vagas, o chocan con lo ya decidido, no las planifiques
+   aqui: ofrece `/planear`, que contrasta con las decisiones y las tareas existentes y deja los
+   specs escritos antes de ejecutar nada.
+
    **En modo maximo**, con el desglose acordado ejecuta **una cada vez**, completa, hasta el cierre y
    el aprendizaje, antes de empezar la siguiente, dentro de esta misma sesion. Entre una y otra,
    resume en una linea y sigue.
