@@ -23,6 +23,9 @@ critica, su ritmo, lo que ensena y las medidas que impone el movimiento del pers
    marcalos como provisionales.
 4. Mira los niveles ya disenados en `.gamedev/niveles/` (solo cabeceras) para no repetir
    estructura y para saber que ha aprendido ya el jugador al llegar aqui.
+5. Si la ficha del nivel tiene `documentacion: inventario`, salio de `/gamedev:gdd inventario`:
+   completala a partir de la escena que cita (lee su estructura) en lugar de disenarlo de nuevo,
+   y quita esa linea de la cabecera al terminar.
 
 ## El documento
 
@@ -32,7 +35,7 @@ Escribe `.gamedev/niveles/<slug>.md`:
 ---
 nivel: <nombre>
 slug:
-estado: borrador | blockout | jugable | final
+estado: borrador | blockout | jugable | implementada | final
 origen: <slug del lore, si viene de ahi>
 posicion: <acto o momento de la partida>
 duracion_objetivo: <minutos>

@@ -21,6 +21,11 @@ Eso es lo que entrega este comando.
    pertinente: la regla del mundo y la regla del juego no pueden contradecirse.
 4. Si ya hay codigo de juego, localiza con Grep si algo parecido existe implementado. Disenar en
    el vacio lo que ya esta a medias en el codigo es trabajo tirado.
+5. Si la ficha ya existe con `documentacion: inventario`, salio de `/gamedev:gdd inventario`:
+   **completala, no la rehagas**. Rellena las secciones `<sin documentar>` partiendo del codigo que
+   cita, conserva lo deducido con su `archivo:linea`, y quita esa linea de la cabecera al terminar.
+   Si el usuario quiere cambiar la mecanica, primero se documenta como esta y despues se propone
+   el cambio, para que se vea que cambia.
 
 ## Que se pide
 
@@ -39,7 +44,7 @@ Escribe `.gamedev/mecanicas/<slug>.md`:
 ---
 mecanica: <nombre>
 slug:
-estado: borrador | prototipo | validada | descartada
+estado: borrador | prototipo | implementada | validada | descartada
 pilares: [<los del GDD a los que sirve>]
 creado: <fecha>
 ---

@@ -20,6 +20,9 @@ vencerla. Las dos fichas se enlazan, no se duplican.
 3. Lee `.gamedev/bestiario/matriz.md` si existe: el reparto de roles actual.
 4. Busca curvas de combate en `.gamedev/balance/combate/` y las mecanicas del jugador en
    `mecanicas/`: los counters solo valen si el jugador tiene con que aplicarlos.
+5. Si la ficha tiene `documentacion: inventario`, salio de `/gamedev:gdd inventario`: completala a
+   partir del codigo y los datos que cita (estados, ataques, estadisticas reales) en lugar de
+   disenar otro enemigo, y quita esa linea de la cabecera al terminar.
 
 ## Que se pide
 
@@ -38,7 +41,7 @@ enemigo: <nombre>
 slug:
 lore: <slug de la criatura o del jefe, si existe>
 rol: carne de canon | tanque | distancia | apoyo | emboscada | elite | jefe
-estado: borrador
+estado: borrador | implementado | validado
 ---
 
 # <nombre>

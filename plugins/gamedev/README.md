@@ -30,6 +30,22 @@ Abre una sesion nueva de Claude Code para que aparezcan los comandos y los agent
 
 Para una game jam, todo lo anterior se sustituye por `/gamedev:jam <tema>`.
 
+### Proyecto ya empezado con devteam
+
+No se repite el onboarding: la ficha tecnica ya existe.
+
+1. Sesion nueva en el proyecto, y `/devteam:standup` si hace tiempo que no se toca.
+2. `/gamedev:gdd`: lee lo que ya hay, pregunta solo lo que falta y presenta los agentes de juego a
+   devteam.
+3. `/gamedev:gdd inventario`: recorre lo construido (acciones de entrada, personaje, niveles,
+   enemigos, sistemas, datos, narrativa), te lo ensena para que excluyas prototipos y pruebas, y
+   deja una ficha inicial de cada pieza con lo que el codigo demuestra y el resto marcado como
+   `<sin documentar>`. Cruza todo con el GDD en `.gamedev/inventario.md`.
+4. Completa solo las fichas de lo que vayas a tocar: `/gamedev:mecanica <slug>` completa una ficha
+   de inventario en lugar de rehacerla.
+5. Si hay historia escrita, `/gamedev:loremaster iniciar` y `fuente <ruta>` como tipo `propia`.
+6. Sigue con el ciclo normal: disenar, `implementar`, `/devteam:feature`.
+
 ## Principios heredados de devteam
 
 - **La memoria es un archivo.** Todo lo que el equipo descubre o crea queda en `.gamedev/` dentro
@@ -49,7 +65,7 @@ Para una game jam, todo lo anterior se sustituye por `/gamedev:jam <tema>`.
 
 | Comando | Que hace |
 |---|---|
-| `/gdd [iniciar \| actualizar \| consultar \| recortar]` | Documento de diseno vivo y corto: fantasia del jugador, pilares que deciden, bucles, alcance con lista de recortes y lo que el juego no es. Presenta los agentes de gamedev a devteam. |
+| `/gdd [iniciar \| inventario \| actualizar \| consultar \| recortar]` | Documento de diseno vivo y corto: fantasia del jugador, pilares que deciden, bucles, alcance con lista de recortes y lo que el juego no es. Presenta los agentes de gamedev a devteam. `inventario` deja fichas iniciales de lo ya construido en un proyecto empezado. |
 | `/loremaster` | Mundo y narrativa alimentados por fuentes: personajes, biografias, nombres, jefes, mazmorras, misiones, facciones, lugares, criaturas, objetos y eventos, con canon trazable. Detalle abajo. |
 | `/mecanica <idea>` | Mecanica implementable: reglas cerradas, parametros con unidad, estados, respuesta al jugador, casos limite, interacciones, como se ensena, como se mide y prototipo minimo. |
 | `/balance <tema>` | Numeros por simulacion: progresion, economia, botin, combate y dificultad, con un script que se puede volver a ejecutar. Busca paredes, estrategias dominantes, mala suerte extrema e inflacion. |
@@ -125,6 +141,7 @@ presupuesto del modo de consumo. Asi devteam no necesita saber nada de juegos.
 ```
 .gamedev/
   gdd.md               documento de diseno: lo leen todos los comandos
+  inventario.md        piezas ya construidas, sus fichas y los huecos frente al GDD
   lore/                biblia, indice, glosario, cronologia, fuentes y entidades (/loremaster)
   mecanicas/           una por archivo (/mecanica)
   balance/<tema>/      parametros, sim.py y resultados (/balance)
