@@ -2,8 +2,8 @@
 
 Equipo de diseno de videojuegos construido sobre la base de `devteam`. Donde `devteam` cubre el
 codigo (arquitectura, backend, frontend, pruebas, publicacion), `gamedev` cubre lo que hace que un
-juego sea un juego: mundo, narrativa y, en las siguientes versiones, mecanicas, niveles y
-equilibrio.
+juego sea un juego: el diseno, el mundo, los niveles, los numeros y las pruebas con jugadores. Y
+aporta a devteam los especialistas que el codigo de un juego necesita.
 
 Se instala junto a `devteam` desde el mismo marketplace, y funciona tambien sin el.
 
@@ -13,19 +13,54 @@ Se instala junto a `devteam` desde el mismo marketplace, y funciona tambien sin 
 claude plugin install gamedev@devteam-local
 ```
 
-Abre una sesion nueva de Claude Code para que aparezcan el comando y el agente.
+Abre una sesion nueva de Claude Code para que aparezcan los comandos y los agentes.
+
+## Uso rapido
+
+| Paso | Cuando | Comando |
+|---|---|---|
+| 1. Ficha tecnica | Una vez por proyecto | `/devteam:onboard` o `/devteam:kickoff` |
+| 2. Documento de diseno | Al empezar, y cuando algo cambia | `/gamedev:gdd` |
+| 3. Mundo | Si el juego tiene historia | `/gamedev:loremaster iniciar`, luego `fuente` y crear |
+| 4. Disenar | Cada pieza del juego | `/gamedev:mecanica`, `nivel`, `bestiario`, `dialogo`, `balance` |
+| 5. Construir | Cada pieza disenada | `implementar <slug>` en el comando de diseno, luego `/devteam:feature <slug>` |
+| 6. Probar con jugadores | Cada hito jugable | `/gamedev:playtest plan`, luego `analizar` |
+| 7. Producir | En paralelo al desarrollo | `/gamedev:assets`, `/gamedev:localizar` |
+| 8. Presentar | Antes de buscar publisher, tienda o prensa | `/gamedev:pitch` |
+
+Para una game jam, todo lo anterior se sustituye por `/gamedev:jam <tema>`.
 
 ## Principios heredados de devteam
 
 - **La memoria es un archivo.** Todo lo que el equipo descubre o crea queda en `.gamedev/` dentro
   del proyecto. Ningun agente recuerda nada entre sesiones; lo que si ocurre es que todos leen lo
-  escrito antes de trabajar.
-- **Genericos por oficio, especializados por proyecto.** Ni el comando ni el agente saben nada de
-  tu juego: la biblia del mundo se lo dice.
-- **Consumo contenido.** Respeta el `## Modo de consumo` de `.devteam/context.md` si existe. La
-  sesion principal crea; los agentes solo entran para leer fuentes largas, que es donde aislar la
-  lectura ahorra.
+  escrito antes de trabajar. El GDD es para el diseno lo que `context.md` para el codigo.
+- **Genericos por oficio, especializados por proyecto.** Ningun comando ni agente es de un motor:
+  Godot, Unity, Unreal o un framework web salen de la ficha del proyecto.
+- **Consumo contenido.** Respeta el `## Modo de consumo` de `.devteam/context.md`. La sesion
+  principal disena; los agentes solo entran para leer fuentes largas, revisar en modo maximo, o
+  implementar desde `/devteam:feature`.
+- **Lo que se disena se deja escrito como tarea.** Todos los comandos de diseno tienen
+  `implementar <slug>`, que deja `.devteam/tasks/<slug>/spec.md` pendiente para `/devteam:feature`
+  o `/devteam:sprint`.
 - **Solo la sesion principal escribe fuera de `.gamedev/`**, y siempre con aprobacion.
+
+## Comandos
+
+| Comando | Que hace |
+|---|---|
+| `/gdd [iniciar \| actualizar \| consultar \| recortar]` | Documento de diseno vivo y corto: fantasia del jugador, pilares que deciden, bucles, alcance con lista de recortes y lo que el juego no es. Presenta los agentes de gamedev a devteam. |
+| `/loremaster` | Mundo y narrativa alimentados por fuentes: personajes, biografias, nombres, jefes, mazmorras, misiones, facciones, lugares, criaturas, objetos y eventos, con canon trazable. Detalle abajo. |
+| `/mecanica <idea>` | Mecanica implementable: reglas cerradas, parametros con unidad, estados, respuesta al jugador, casos limite, interacciones, como se ensena, como se mide y prototipo minimo. |
+| `/balance <tema>` | Numeros por simulacion: progresion, economia, botin, combate y dificultad, con un script que se puede volver a ejecutar. Busca paredes, estrategias dominantes, mala suerte extrema e inflacion. |
+| `/nivel <idea o slug del lore>` | Nivel construible: flujo con llaves y cerraduras, ritmo, blockout medido con las metricas del personaje, ensenanza sin texto y orientacion. Comprueba que no hay bloqueos sin salida. |
+| `/bestiario <enemigo \| matriz>` | Enemigos jugables: rol, estadisticas por nivel, maquina de estados, ataques con aviso, counters, variantes, y la matriz de roles por zona. |
+| `/dialogo <escena>` | Dialogos ramificados con la voz de cada personaje del canon y las banderas de las misiones, validados (sin ramas muertas ni banderas huerfanas) y exportados a Ink, Yarn, JSON o el formato del motor. |
+| `/assets [inventario \| brief \| estado \| slice]` | Cruza lo que el diseno pide con lo que hay en el proyecto y prepara encargos con requisitos tecnicos del motor. |
+| `/playtest [plan \| analizar]` | Pruebas con jugadores alrededor de preguntas concretas; el analisis separa lo que hacen de lo que dicen y deja tareas escritas. |
+| `/localizar [auditar \| glosario \| contexto \| pseudo]` | Prepara la traduccion: textos incrustados, concatenaciones, espacio en la interfaz, fuentes tipograficas, glosario de terminos del mundo y pseudolocalizacion. |
+| `/pitch <pieza>` | Frase de venta, one-pager, pagina de tienda, guion de trailer, presentacion para publisher y kit de prensa, sin prometer nada que el juego no tenga. |
+| `/jam <tema>` | Plan de game jam: conceptos para el tema, alcance minimo jugable al 40% del tiempo, mejoras cortables en orden, bloques por horas y entrega. |
 
 ## /loremaster
 
@@ -49,9 +84,6 @@ crea contenido coherente con el canon y trazable hasta su inspiracion.
 | `/loremaster exportar` | Canon a datos para el motor (JSON, recursos de Godot, ScriptableObjects...) |
 | `/loremaster implementar jefe-abad` | Deja la tarea en `.devteam/tasks/` para `/devteam:feature` |
 
-Tipos que sabe crear: personaje, biografia, nombres, jefe, mazmorra, mision, faccion, lugar,
-criatura, objeto y evento.
-
 ### Derechos de las fuentes
 
 Cada fuente se clasifica al ingerirla, y la clasificacion decide que se puede tomar de ella:
@@ -72,65 +104,40 @@ Lo que crea `/loremaster` nace en `borrador` y no obliga a nada. Al canonizarlo 
 y desde entonces ninguna pieza nueva puede contradecirlo sin una decision explicita que queda
 anotada en la biblia. Lo descartado se conserva y libera sus nombres.
 
-### Estructura de `.gamedev/` en cada proyecto
+## Agentes
+
+| Agente | Oficio | Quien lo convoca |
+|---|---|---|
+| `lore-researcher` | Lee una fuente larga (PDF, EPUB, web, carpeta o tema) y la reduce a una ficha util para el juego, respetando sus derechos | `/loremaster fuente` |
+| `game-designer` | Revisa mecanicas, niveles, enemigos y ritmo frente a los pilares, en documentos o en lo implementado. No escribe codigo | `/mecanica` y `/nivel` en modo maximo; `/devteam:feature` al verificar |
+| `gameplay-programmer` | Codigo de juego en cualquier motor: bucle, entrada, fisica, camaras, estados, IA, combate, guardado | `/devteam:feature`, en lugar de `frontend` y `backend` |
+| `engine-specialist` | Estructura del proyecto en el motor, exportacion por plataforma, tiendas y rendimiento medido | `/devteam:feature` |
+
+### Como entran en devteam
+
+`/gamedev:gdd` anade a `.devteam/context.md` una seccion `## Especialistas adicionales` que
+nombra a los tres agentes de juego y para que sirve cada uno. Desde devteam 0.13.2, `/feature` lee
+esa seccion y los convoca en lugar de los especialistas web, o ademas de ellos, respetando el
+presupuesto del modo de consumo. Asi devteam no necesita saber nada de juegos.
+
+## Estructura de `.gamedev/` en cada proyecto
 
 ```
 .gamedev/
-  lore/
-    biblia.md          premisa, tono, reglas del mundo y estilo de nombres
-    index.md           registro de entidades con sus datos clave
-    glosario.md        nombres en uso
-    cronologia.md      eventos del mundo
-    fuentes/           index.md y una ficha por fuente
-    nombres/           bancos de nombres por cultura
-    personajes/ jefes/ mazmorras/ misiones/ facciones/ lugares/ criaturas/ objetos/ eventos/
-    revisiones/        informes de continuidad
+  gdd.md               documento de diseno: lo leen todos los comandos
+  lore/                biblia, indice, glosario, cronologia, fuentes y entidades (/loremaster)
+  mecanicas/           una por archivo (/mecanica)
+  balance/<tema>/      parametros, sim.py y resultados (/balance)
+  niveles/             (/nivel)
+  bestiario/           enemigos y matriz.md (/bestiario)
+  dialogos/            (/dialogo)
+  assets/              index.md y briefs/ (/assets)
+  playtest/<fecha>-<slug>/  plan.md y resultados.md (/playtest)
+  loc/                 auditorias y glosario de traduccion (/localizar)
+  pitch/               (/pitch)
+  jam/                 (/jam)
+  revisiones/          informes de game-designer sobre documentos
   export/              datos exportados cuando el proyecto no tiene formato propio
 ```
 
-Conviene versionarla con el proyecto: es el documento de diseno narrativo del juego.
-
-## Agentes
-
-| Agente | Oficio |
-|---|---|
-| `lore-researcher` | Lee una fuente larga (PDF, EPUB, web, carpeta o tema) y la reduce a una ficha util para el juego, respetando sus derechos |
-
-## Hoja de ruta
-
-Comandos recomendados para las siguientes versiones, en orden de valor. Todos siguen el mismo
-patron: leen `.gamedev/` y la ficha de devteam, crean en la sesion principal, dejan lo creado por
-escrito y ofrecen el puente a `/devteam:feature` para implementarlo.
-
-**Diseno** (siguientes en prioridad):
-
-| Comando | Para que |
-|---|---|
-| `/gdd` | Documento de diseno vivo: pilares, bucle principal, publico, alcance y lo que el juego no es. Es la referencia que todos los demas comandos leen, como la biblia lo es para el lore |
-| `/dialogo` | Arboles de dialogo con ramas y condiciones a partir de la voz de cada personaje del canon; exporta a Ink, Yarn o JSON |
-| `/mecanica` | Disena una mecanica: reglas, parametros, casos limite, como se ensena al jugador y como interactua con las demas |
-| `/balance` | Curvas de experiencia, economia, tablas de botin, dano y tiempo para matar, con simulacion por script en lugar de intuicion |
-| `/nivel` | Diseno de niveles: grafo de flujo, ritmo, llaves y cerraduras, ensenanza sin texto; convierte una mazmorra del lore en un blockout |
-| `/bestiario` | Enemigos con estadisticas, comportamiento de IA y counters, coherentes con las criaturas del lore |
-
-**Produccion**:
-
-| Comando | Para que |
-|---|---|
-| `/assets` | Lista de recursos de arte y audio por entidad del lore, con su estado y briefs para artistas |
-| `/playtest` | Plan de sesion de prueba, encuesta y analisis de las respuestas convertido en tareas |
-| `/localizar` | Extrae los textos, mantiene un glosario de terminos del mundo para traductores y vigila longitudes en la interfaz |
-| `/pitch` | One-pager, texto de tienda, guion de trailer o presentacion para un publisher, a partir del GDD |
-| `/jam` | Recorta una idea al alcance de una game jam de 48 o 72 horas |
-
-**Tecnico**, que conviene resolver como agentes de `gamedev` usados desde los comandos de
-`devteam` y no como comandos nuevos:
-
-| Agente | Oficio |
-|---|---|
-| `gameplay-programmer` | Bucle de juego, entradas, fisica, camaras, maquinas de estado, IA de enemigos, en cualquier motor |
-| `engine-specialist` | Estructura del proyecto en el motor, escenas, recursos, exportacion por plataforma y rendimiento (tiempo de fotograma, llamadas de dibujo, memoria) |
-| `game-designer` | Revisa mecanicas, ritmo y curva de dificultad de lo implementado frente al GDD |
-
-Siguiendo la regla de devteam, ninguno es por motor: `gameplay-programmer` cubre Godot, Unity,
-Unreal o un framework web, y el motor concreto sale de la ficha del proyecto.
+Conviene versionarla con el proyecto: es la documentacion de diseno del juego.

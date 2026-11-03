@@ -19,7 +19,7 @@
     },
     {
       "name": "gamedev",
-      "description": "Equipo de diseno de videojuegos sobre la base de devteam: lore y narrativa alimentados por fuentes historicas y literarias, con canon trazable y puente a devteam para implementar",
+      "description": "Equipo de diseno de videojuegos sobre la base de devteam: GDD, lore con fuentes historicas y literarias, mecanicas, niveles, enemigos, dialogos, balance, playtest, assets, localizacion y pitch, mas agentes de jugabilidad y motor para devteam",
       "author": {
         "name": "Oscar Garcia",
         "url": "https://github.com/agarciaec"

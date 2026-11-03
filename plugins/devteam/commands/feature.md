@@ -260,6 +260,11 @@ Convoca en paralelo a los especialistas del stack que haga falta, indicando a ca
 - `db-specialist` para migraciones
 - `automation-bot` si hay automatizacion
 
+Si `context.md` tiene una seccion `## Especialistas adicionales` (la anaden otros plugins, como
+`gamedev` en los juegos), convoca a esos especialistas para lo que la seccion indique, en lugar de
+los de esta lista o ademas de ellos, y a los de verificacion que nombre en la Fase 4 dentro del
+presupuesto de verificacion del modo de consumo.
+
 Cada uno devuelve el codigo con su ruta exacta. **Tu lo aplicas**, en un orden que deje el proyecto coherente: primero datos, luego servidor, luego interfaz.
 
 Tras aplicar, levanta el entorno y ejecuta lo que corresponda (construccion, arranque, pruebas

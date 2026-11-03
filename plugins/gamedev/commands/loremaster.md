@@ -93,8 +93,9 @@ aunque no este entre las fuentes.
 ## iniciar
 
 1. Si ya hay biblia, muestrala resumida y pregunta que cambiar en lugar de rehacerla.
-2. Antes de preguntar, busca lo que ya este escrito: `README`, un GDD o `docs/` del proyecto y
-   `.devteam/context.md`. No preguntes lo que ya sabes.
+2. Antes de preguntar, busca lo que ya este escrito: `.gamedev/gdd.md` (si existe, genero,
+   publico y tono salen de ahi), `README`, `docs/` del proyecto y `.devteam/context.md`. No
+   preguntes lo que ya sabes.
 3. Pregunta en una sola tanda lo que falte, con opciones concretas y una recomendada:
    - **Juego**: genero, perspectiva y el bucle principal en una frase.
    - **Tono**: oscuro, heroico, picaresco, melancolico, humoristico...
