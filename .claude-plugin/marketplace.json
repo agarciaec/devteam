@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "devteam-local",
-  "description": "Marketplace local de Oscar Garcia para el equipo de agentes de desarrollo fullstack",
+  "description": "Marketplace local de Oscar Garcia para los equipos de agentes de desarrollo fullstack (devteam) y de diseno de videojuegos (gamedev)",
   "owner": {
     "name": "Oscar Garcia",
     "url": "https://github.com/agarciaec"
@@ -16,6 +16,16 @@
       },
       "source": "./plugins/devteam",
       "category": "development"
+    },
+    {
+      "name": "gamedev",
+      "description": "Equipo de diseno de videojuegos sobre la base de devteam: lore y narrativa alimentados por fuentes historicas y literarias, con canon trazable y puente a devteam para implementar",
+      "author": {
+        "name": "Oscar Garcia",
+        "url": "https://github.com/agarciaec"
+      },
+      "source": "./plugins/gamedev",
+      "category": "gaming"
     }
   ]
 }

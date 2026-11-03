@@ -4,6 +4,10 @@ Equipo de agentes especializados para desarrollo fullstack, disponible en cualqu
 
 Este repositorio es a la vez el marketplace (`devteam-local`) y el plugin (`devteam`).
 
+Incluye un segundo plugin, [`gamedev`](plugins/gamedev/README.md), para proyectos de videojuegos:
+lore y narrativa con `/loremaster`, y puente a `/feature` para implementar lo disenado. Se instala
+aparte con `claude plugin install gamedev@devteam-local`.
+
 ## Uso rapido
 
 El ciclo completo, de instalar a trabajar.
