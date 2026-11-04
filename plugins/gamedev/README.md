@@ -21,7 +21,7 @@ Abre una sesion nueva de Claude Code para que aparezcan los comandos y los agent
 |---|---|---|
 | 1. Ficha tecnica | Una vez por proyecto | `/devteam:onboard` o `/devteam:kickoff` |
 | 2. Documento de diseno | Al empezar, y cuando algo cambia | `/gamedev:gdd` |
-| 3. Mundo | Si el juego tiene historia | `/gamedev:loremaster iniciar`, luego `fuente` y crear |
+| 3. Mundo | Si el juego tiene historia | `/gamedev:loremaster historia <idea>` (o `iniciar`), luego `mundo`, `fuente` y crear |
 | 4. Disenar | Cada pieza del juego | `/gamedev:mecanica`, `nivel`, `bestiario`, `dialogo`, `balance` |
 | 5. Construir | Cada pieza disenada | `implementar <slug>` en el comando de diseno, luego `/devteam:feature <slug>` |
 | 6. Probar con jugadores | Cada hito jugable | `/gamedev:playtest plan`, luego `analizar` |
@@ -66,7 +66,7 @@ No se repite el onboarding: la ficha tecnica ya existe.
 | Comando | Que hace |
 |---|---|
 | `/gdd [iniciar \| inventario \| actualizar \| consultar \| recortar]` | Documento de diseno vivo y corto: fantasia del jugador, pilares que deciden, bucles, alcance con lista de recortes y lo que el juego no es. Presenta los agentes de gamedev a devteam. `inventario` deja fichas iniciales de lo ya construido en un proyecto empezado. |
-| `/loremaster` | Mundo y narrativa alimentados por fuentes: personajes, biografias, nombres, jefes, mazmorras, misiones, facciones, lugares, criaturas, objetos y eventos, con canon trazable. Detalle abajo. |
+| `/loremaster` | Mundo y narrativa alimentados por fuentes: historias a partir de un concepto, expansion natural del mundo por capas (con investigacion web si se pide), personajes, biografias, nombres, jefes, mazmorras, misiones, facciones, lugares, criaturas, objetos y eventos, con canon trazable. Detalle abajo. |
 | `/mecanica <idea>` | Mecanica implementable: reglas cerradas, parametros con unidad, estados, respuesta al jugador, casos limite, interacciones, como se ensena, como se mide y prototipo minimo. |
 | `/balance <tema>` | Numeros por simulacion: progresion, economia, botin, combate y dificultad, con un script que se puede volver a ejecutar. Busca paredes, estrategias dominantes, mala suerte extrema e inflacion. |
 | `/nivel <idea o slug del lore>` | Nivel construible: flujo con llaves y cerraduras, ritmo, blockout medido con las metricas del personaje, ensenanza sin texto y orientacion. Comprueba que no hay bloqueos sin salida. |
@@ -80,13 +80,18 @@ No se repite el onboarding: la ficha tecnica ya existe.
 
 ## /loremaster
 
-El maestro del lore. Se alimenta de fuentes (historia, novelas, mitos, documentos del equipo) y
-crea contenido coherente con el canon y trazable hasta su inspiracion.
+El maestro del lore. Se alimenta de fuentes (historia, novelas, mitos, documentos del equipo),
+imagina la historia a partir de una idea, hace crecer el mundo a su alrededor y crea contenido
+coherente con el canon y trazable hasta su inspiracion.
 
 | Uso | Que hace |
 |---|---|
-| `/loremaster` | Estado del mundo: fuentes, entidades y borradores pendientes |
+| `/loremaster` | Estado del mundo: historias, fuentes, entidades, borradores e hilos abiertos |
 | `/loremaster iniciar` | Crea la biblia: juego, tono, ambientacion, reglas, estilo de nombres |
+| `/loremaster historia un pueblo de salineros cuya sal guarda los recuerdos de los muertos` | Tres lecturas del concepto, y desarrolla la elegida en actos con su traduccion al juego, giros con sus pistas y finales. Si ya hay historia, la continua o abre una precuela o un arco paralelo |
+| `/loremaster historia ... --web` | Igual, investigando antes la epoca, el oficio o el mito en que se apoya, con cada hallazgo como fuente con ficha |
+| `/loremaster mundo` | Hace crecer el mundo desde la historia por capas (macro, media, micro), por causas y no por listas: geografia, eras, culturas, economia, poder, vida cotidiana, rumores |
+| `/loremaster mundo el norte --web` | Expande solo un enfoque, apoyandose en referencias reales investigadas |
 | `/loremaster fuente ./docs/cronica.pdf` | Ingiere una fuente y deja su ficha |
 | `/loremaster fuente la peste negra en Florencia` | Investiga un tema en la web y deja su ficha |
 | `/loremaster jefe para el acto 2` | Propone tres conceptos y desarrolla el elegido |
@@ -142,7 +147,7 @@ presupuesto del modo de consumo. Asi devteam no necesita saber nada de juegos.
 .gamedev/
   gdd.md               documento de diseno: lo leen todos los comandos
   inventario.md        piezas ya construidas, sus fichas y los huecos frente al GDD
-  lore/                biblia, indice, glosario, cronologia, fuentes y entidades (/loremaster)
+  lore/                biblia, indice, glosario, cronologia, fuentes, historia/, mundo/ y entidades (/loremaster)
   mecanicas/           una por archivo (/mecanica)
   balance/<tema>/      parametros, sim.py y resultados (/balance)
   niveles/             (/nivel)
