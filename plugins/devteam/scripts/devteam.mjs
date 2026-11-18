@@ -904,6 +904,52 @@ export function guardia(entrada) {
   return { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: r.decision, permissionDecisionReason: `devteam: ${r.motivo}` } };
 }
 
+// ---------------------------------------------------------------- cierre (Stop)
+// Stop salta al final de cada turno, tambien cuando /feature se para a esperar al usuario. Por eso
+// solo actua sobre tareas de esta sesion que dicen estar terminadas y no lo estan: una tarea
+// "en-curso" puede estar esperando una respuesta y no se toca.
+
+export function cierre(entrada) {
+  const sesion = entrada?.session_id;
+  if (!sesion) return null;
+  const root = buscarRaiz(entrada.cwd || process.cwd());
+  if (!root) return null;
+  const pendientes = [];
+  for (const t of cargarTareas(root)) {
+    const marca = path.join(t.dir, '.activa');
+    if (!fs.existsSync(marca)) continue;
+    let activa;
+    try { activa = JSON.parse(leer(marca)); } catch { continue; }
+    if (activa.session_id !== sesion || t.antiguo || t.data.estado === 'en-curso') continue;
+    const r = comprobarTarea(root, t.slug);
+    if (r.ok) { fs.rmSync(marca, { force: true }); continue; }
+    pendientes.push({ t, marca, errores: r.errores });
+  }
+  if (!pendientes.length) return null;
+
+  if (!entrada.stop_hook_active) {
+    const detalle = pendientes.map(({ t, errores }) => `- ${t.slug} (${t.data.estado}):\n${errores.map((e) => `    - ${e}`).join('\n')}`).join('\n');
+    return {
+      decision: 'block',
+      reason: `devteam: hay tareas que dicen estar terminadas y no pasan la comprobacion de cierre:\n${detalle}\nArregla lo que falta, o deja el estado honesto con devteam set <slug> estado=parcial falta="...". Despues, devteam end <slug>.`,
+    };
+  }
+
+  // Segundo intento: no se atrapa la sesion, pero el estado queda diciendo la verdad.
+  const avisos = [];
+  for (const { t, marca, errores } of pendientes) {
+    const falta = `cierre sin cumplir el minimo: ${errores.map((e) => e.split(':')[0]).join('; ')}`.slice(0, 200);
+    const asignaciones = t.data.estado === 'cerrada' ? ['estado=parcial', `falta=${t.data.falta ? `${t.data.falta}; ${falta}` : falta}`]
+      : !t.data.falta ? [`falta=${falta}`] : [];
+    try { if (asignaciones.length) cambiarTarea(root, t.slug, asignaciones); } catch (e) { registrarErrorHook(e); }
+    fs.appendFileSync(path.join(t.dir, 'log.md'), `\n- ${hoy()}: el cierre no paso la comprobacion de devteam y se dejo asi:\n${errores.map((e) => `  - ${e}`).join('\n')}\n`);
+    fs.rmSync(marca, { force: true });
+    avisos.push(`${t.slug}${asignaciones.some((a) => a === 'estado=parcial') ? ' quedo como parcial' : ''}`);
+  }
+  regenerarIndice(root);
+  return { systemMessage: `devteam: ${avisos.join(', ')}: el cierre no paso la comprobacion (detalle en su log.md).` };
+}
+
 function registrarErrorHook(e) {
   try {
     fs.appendFileSync(path.join(os.homedir(), '.claude', 'devteam-hooks.log'), `${new Date().toISOString()} ${e?.stack || e}\n`);
@@ -920,8 +966,8 @@ function leerEntradaHook() {
 
 async function hook(nombre, io, entrada = leerEntradaHook()) {
   try {
-    if (nombre === 'pre-bash') {
-      const r = guardia(entrada);
+    if (nombre === 'pre-bash' || nombre === 'stop') {
+      const r = nombre === 'stop' ? cierre(entrada) : guardia(entrada);
       if (r) io.out(JSON.stringify(r));
       return 0;
     }

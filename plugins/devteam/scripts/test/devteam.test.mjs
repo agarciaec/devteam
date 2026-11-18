@@ -428,3 +428,61 @@ test('la guardia lee la ficha y el sprint en curso del proyecto', async () => {
   assert.equal(guardia({ cwd: root, session_id: 's-1', tool_input: { command: 'git push origin feat/x' } }).hookSpecificOutput.permissionDecision, 'deny');
   assert.equal(guardia({ cwd: root, session_id: 'otra', tool_input: { command: 'git push origin feat/x' } }), null);
 });
+
+// ---------------------------------------------------------------- cierre (Stop)
+
+import { cierre } from '../devteam.mjs';
+
+async function tareaActiva(root, slug, sesion, extra = []) {
+  await cli(root, 'new', slug, '--pantallas', 'si');
+  await main(['--root', root, 'begin', slug], { out: () => {}, err: () => {} }, { CLAUDE_CODE_SESSION_ID: sesion });
+  if (extra.length) await cli(root, 'set', slug, ...extra);
+}
+
+test('el cierre no toca tareas en curso: pueden estar esperando al usuario', async () => {
+  const root = proyecto();
+  await tareaActiva(root, 'esperando-diseno', 's-1');
+  assert.equal(cierre({ cwd: root, session_id: 's-1' }), null);
+});
+
+test('el cierre bloquea una tarea cerrada sin e2e y luego la rebaja a parcial', async () => {
+  const root = proyecto();
+  await tareaActiva(root, 'pantalla-sin-e2e', 's-1');
+  fs.writeFileSync(path.join(root, '.devteam/tasks/pantalla-sin-e2e/log.md'), 'Entorno de pruebas usado: ninguno\n');
+  await cli(root, 'set', 'pantalla-sin-e2e', 'estado=cerrada', 'verificacion.pruebas=ok');
+
+  const primero = cierre({ cwd: root, session_id: 's-1', stop_hook_active: false });
+  assert.equal(primero.decision, 'block');
+  assert.match(primero.reason, /e2e/);
+
+  assert.equal(cierre({ cwd: root, session_id: 'otra-sesion', stop_hook_active: false }), null, 'otra sesion no se ve afectada');
+
+  const segundo = cierre({ cwd: root, session_id: 's-1', stop_hook_active: true });
+  assert.match(segundo.systemMessage, /parcial/);
+  const { data } = parsearCabecera(leer(root, '.devteam/tasks/pantalla-sin-e2e/spec.md'));
+  assert.equal(data.estado, 'parcial');
+  assert.match(data.falta, /cierre sin cumplir/);
+  assert.match(leer(root, '.devteam/tasks/pantalla-sin-e2e/log.md'), /no paso la comprobacion/);
+  assert.match(leer(root, '.devteam/tasks/index.md'), /\| parcial \|/);
+  assert.equal(fs.existsSync(path.join(root, '.devteam/tasks/pantalla-sin-e2e/.activa')), false);
+  assert.equal(cierre({ cwd: root, session_id: 's-1' }), null, 'ya no vuelve a bloquear');
+});
+
+test('el cierre suelta la marca cuando la tarea cumple', async () => {
+  const root = proyecto();
+  await tareaActiva(root, 'bien-cerrada', 's-1');
+  fs.writeFileSync(path.join(root, '.devteam/tasks/bien-cerrada/log.md'), 'Entorno de pruebas usado: ninguno\n');
+  await cli(root, 'set', 'bien-cerrada', 'estado=cerrada', 'verificacion.pruebas=ok', 'verificacion.e2e=ok');
+  assert.equal(cierre({ cwd: root, session_id: 's-1' }), null);
+  assert.equal(fs.existsSync(path.join(root, '.devteam/tasks/bien-cerrada/.activa')), false);
+});
+
+test('el hook de cierre por linea de comandos responde JSON valido', async () => {
+  const root = proyecto();
+  await tareaActiva(root, 'via-cli', 's-9');
+  await cli(root, 'set', 'via-cli', 'estado=parcial');
+  const r = spawnSync(process.execPath, [path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'devteam.mjs'), 'hook', 'stop'],
+    { input: JSON.stringify({ cwd: root, session_id: 's-9', stop_hook_active: false }), encoding: 'utf8' });
+  assert.equal(r.status, 0);
+  assert.equal(JSON.parse(r.stdout).decision, 'block');
+});

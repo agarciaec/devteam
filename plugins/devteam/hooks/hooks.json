@@ -1,5 +1,5 @@
 {
-  "description": "devteam: al iniciar sesion inyecta el estado del proyecto; antes de cada comando de shell aplica la guardia (produccion, hooks de git, ramas principales, dumps, contenedores ajenos). No hace nada en proyectos sin .devteam/.",
+  "description": "devteam: al iniciar sesion inyecta el estado del proyecto; antes de cada comando de shell aplica la guardia (produccion, hooks de git, ramas principales, dumps, contenedores ajenos); al terminar cada turno comprueba que las tareas que dicen estar cerradas lo estan. No hace nada en proyectos sin .devteam/.",
   "hooks": {
     "SessionStart": [
       {
@@ -7,6 +7,17 @@
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/devteam.mjs\" hook session-start",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/devteam.mjs\" hook stop",
             "timeout": 10
           }
         ]

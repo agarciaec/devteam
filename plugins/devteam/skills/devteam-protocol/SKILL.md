@@ -107,6 +107,11 @@ Un hook **PreToolUse** sobre Bash aplica una guardia (desde 0.15): deniega conec
 `prefijo_contenedores` del proyecto, de `docker ... prune`, de `compose down -v` y de borrados
 recursivos fuera del proyecto. Si la guardia deniega algo, no se rodea: se cuenta al usuario.
 
+Un hook **Stop** (desde 0.16) comprueba al final de cada turno las tareas que la sesion marco con
+`devteam begin`: si una dice estar terminada y no pasa `check`, devuelve el turno con lo que falta;
+al segundo intento la deja `parcial` con el motivo en su `log.md`. No toca las que siguen
+`en-curso`, porque pueden estar esperando al usuario.
+
 ## Estructura de `.devteam/`
 
 ```

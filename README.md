@@ -574,6 +574,12 @@ poda—. Desde la 0.14, lo comprobable lo comprueba codigo:
   **pregunta**: borrar contenedores o volumenes sin el `prefijo_contenedores` del proyecto (varios
   proyectos comparten maquina), `docker ... prune`, `compose down -v` y borrados recursivos fuera del
   proyecto. Tarda unos 70 ms por comando y no lee nada si el comando no le concierne.
+- **Comprobacion de cierre al terminar cada turno.** Si una tarea de la sesion dice estar cerrada,
+  parcial o bloqueada sin cumplir el minimo (commit, pruebas en `ok`, prueba de extremo a extremo si
+  toca pantallas, que falta si es parcial), el turno no termina: se le devuelve al modelo lo que
+  falta. Si insiste, deja pasar, pero la tarea queda como `parcial` con el motivo en su `log.md`: el
+  indice nunca dice "cerrada" sin serlo. Las tareas que siguen "en curso" no se tocan, porque pueden
+  estar esperando tu respuesta.
 
 El repositorio del plugin tiene su propio `pre-commit` (`.githooks/`): no deja confirmar cambios de
 un plugin sin subir su version, ni un README que no cuadre con los comandos, ni la herramienta con

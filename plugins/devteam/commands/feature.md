@@ -221,6 +221,11 @@ una sola cosa concreta. Nunca apuntes las pruebas a una base que no sea claramen
       anteriores del plugin no escribian el slug, solo los hallazgos: el que agrupa esas palabras
       con gravedad alta o critica es la tarea.
 
+   **Si la tarea tiene mas de 21 dias** (`devteam status` la marca `revalidar`), antes de nada
+   comprueba en el codigo que su evidencia sigue siendo cierta: otra tarea o un cambio posterior
+   puede haberla arreglado o haber movido el problema. Si ya no aplica, cierrala como `abandonada`
+   con `falta="ya resuelta por ..."` en lugar de rehacerla.
+
    Si la encuentras con spec pendiente, esa es la tarea. Si la encuentras solo en un informe,
    **reconstruye el spec** desde sus hallazgos (evidencia, gravedad, arreglo) y escribelo. En ambos
    casos comprueba que la evidencia sigue siendo cierta en el codigo, usa el nivel sugerido, y di al
@@ -333,8 +338,14 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
    devteam set <slug> estado=cerrada commit=<hash> verificacion.pruebas=ok verificacion.e2e=ok entorno="<contenedores, base y dump usados, o ninguno>"
    ```
 
+   En proyectos moviles o nativos, registra tambien `verificacion.dispositivo`: `ok` solo si se
+   probo en un dispositivo o emulador (o en la version web, si el proyecto la tiene y cubre el
+   flujo); si no, `pendiente`, y la tarea queda `parcial` con "falta dispositivo".
+
    Si algo quedo sin hacer o sin verificar, el estado honesto es `parcial` (o `bloqueada`) con
-   `falta="..."` diciendo que exactamente; nunca `cerrada` con la nota escondida. Lo que solo espera
+   `falta="..."` diciendo que exactamente; nunca `cerrada` con la nota escondida. Si das la tarea
+   por cerrada sin cumplir el minimo, el hook de cierre te lo devuelve, y al segundo intento la deja
+   como `parcial` el mismo. Lo que solo espera
    a una accion del usuario —desplegar, publicar— puede ir como `cerrada` con esa nota en `falta`.
 
    **Despues, `devteam end <slug>`.** Comprueba las reglas de cierre: commit existente si hay git,
