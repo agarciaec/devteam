@@ -89,8 +89,10 @@ comprobacion final.
 Convierte el documento al formato del proyecto respetando sus convenciones (nombres de variables,
 etiquetas de personaje, claves de localizacion si las hay). **Escribir fuera de `.gamedev/`
 requiere aprobacion**: muestra antes la ruta destino. Si integrarlo exige codigo (un sistema de
-dialogos nuevo, eventos), deja la tarea en `.devteam/tasks/dialogo-<slug>/spec.md` con **estado:
-pendiente**, su fila en `.devteam/tasks/index.md`, y entrega `/devteam:feature dialogo-<slug>`.
+dialogos nuevo, eventos), crea la tarea con la herramienta de devteam (`devteam new dialogo-<slug>
+--titulo "..." --origen "gamedev dialogo"`; ruta en el inicio de sesion), que pone el estado
+pendiente y regenera el indice, describe en el cuerpo de su `spec.md` lo que hay que construir, y
+entrega `/devteam:feature dialogo-<slug>`.
 
 ## revisar
 

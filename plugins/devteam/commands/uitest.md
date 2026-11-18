@@ -87,13 +87,15 @@ Agrupa los fallos en tareas con el criterio de `/feature` y ordenalas por graved
 `qa-tester` deja propuesta la prueba de extremo a extremo que lo detectaria: al arreglarlo con
 `/feature`, esa prueba se anade y el fallo ya no puede volver sin que las pruebas lo digan.
 
-Deja cada tarea escrita en `.devteam/tasks/<slug>/spec.md`, porque se hara en otra sesion que solo
-recibira el slug: origen (ruta del informe), los fallos con sus pasos de reproduccion y evidencia, que
-se pide arreglar en concreto, criterios de aceptacion (incluida la prueba propuesta), nivel de
-esfuerzo sugerido y **estado: pendiente**.
+Deja cada tarea escrita, porque se hara en otra sesion que solo recibira el slug. Creala con la
+herramienta devteam (ruta en el inicio de sesion, o
+`ls -d ~/.claude/plugins/cache/devteam-local/devteam/*/scripts/devteam.mjs | sort -V | tail -1`):
+`devteam new <slug> --titulo "..." --origen "uitest <fecha>" --nivel <sugerido> --gravedad <g> --pantallas si`.
+Despues escribe el cuerpo de su `spec.md`: origen (ruta del informe), los fallos con sus pasos de
+reproduccion y evidencia, que se pide arreglar en concreto y criterios de aceptacion, incluida la
+prueba propuesta. El indice lo regenera la herramienta.
 
-Anota la prueba en `.devteam/tasks/index.md` con el enlace al informe, una fila **pendiente** por
-tarea, y anade a trampas de
+Anade a trampas de
 `.devteam/context.md` lo que se haya descubierto sobre como arrancar o probar la aplicacion.
 
 Presenta al usuario el resultado y propon empezar por los fallos mas graves. **No empieces ninguno

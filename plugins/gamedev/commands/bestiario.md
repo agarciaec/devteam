@@ -92,7 +92,9 @@ Actualizala cada vez que se anade un enemigo.
 
 `.devteam/tasks/enemigo-<slug>/spec.md` con origen, la maquina de estados y los ataques como
 alcance, los parametros en datos (no constantes en el codigo), criterios de aceptacion
-verificables y **estado: pendiente**. Fila pendiente en `.devteam/tasks/index.md` y entrega
+verificables. La tarea se crea con la herramienta de devteam (`devteam new enemigo-<slug> --titulo
+"..." --origen "gamedev bestiario"`; ruta en el inicio de sesion), que pone el estado pendiente y
+regenera el indice; lo anterior va en el cuerpo de su `spec.md`. Entrega
 `/devteam:feature enemigo-<slug>`.
 
 Escribe solo en `.gamedev/` (y en `.devteam/tasks/` al implementar).

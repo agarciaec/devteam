@@ -9,6 +9,23 @@ Coordinas al equipo de especialistas para sacar adelante esta tarea. Tu papel es
 
 Tarea: $ARGUMENTS
 
+## La herramienta devteam
+
+El estado de cada tarea vive en la **cabecera** de su `spec.md` y `tasks/index.md` se genera a partir
+de ellas. No los edites a mano: usa la herramienta, que valida el formato y mantiene el indice. Su ruta
+te la da el inicio de sesion ("Herramienta: node ..."); si no la tienes:
+`ls -d ~/.claude/plugins/cache/devteam-local/devteam/*/scripts/devteam.mjs | sort -V | tail -1`.
+Abajo, `devteam` significa `node <esa ruta>`.
+
+- `devteam new <slug> --titulo "..." --origen usuario --nivel ligero|estandar|completo --gravedad <g> --pantallas si|no`
+- `devteam begin <slug>` al empezar a trabajar; `devteam set <slug> clave=valor ...` para registrar
+  avances (`commit=`, `verificacion.pruebas=ok`, `verificacion.e2e=ok`, `entorno="..."`, `falta="..."`)
+- `devteam run <slug> <etiqueta> -- <comando>` para cada ejecucion de pruebas o construccion
+- `devteam end <slug>` al cerrar: comprueba que se puede cerrar y te dice que falta si no
+
+Si el inicio de sesion avisa de que el proyecto tiene el **formato anterior**, propon `/devteam:migrar`
+antes de crear la tarea.
+
 ## Nivel de esfuerzo: decidelo antes de convocar a nadie
 
 El equipo completo es caro: cada agente arranca en frio y vuelve a leer el proyecto. Usarlo para un
@@ -89,10 +106,10 @@ enteros; y no vuelvas a leer lo que un agente ya resumio salvo que vayas a edita
 repetida se paga entera otra vez.
 
 **Las salidas largas van a archivo, nunca al contexto.** Instalacion, compilacion, pruebas y linter
-producen paginas que no aportan nada leidas enteras. Ejecutalos con sus opciones silenciosas y
-redirige la salida a `.devteam/tasks/<slug>/run.log` (sobrescribiendo cada vez); a tu contexto solo
-traes el resultado (paso/fallo, cobertura si la hay) y las lineas de error. El archivo queda como
-evidencia si hace falta mirar el detalle.
+producen paginas que no aportan nada leidas enteras. Ejecutalos siempre con
+`devteam run <slug> <etiqueta> -- <comando>` (etiquetas como `backend`, `frontend`, `e2e`, `build`):
+guarda la salida completa en `tasks/<slug>/logs/<etiqueta>.log` y a tu contexto solo trae el
+resultado, la duracion y las lineas de error. Conserva el codigo de salida, asi que sabes si paso.
 
 **Las pruebas no esperan al entorno, y son completas.** Que Docker, la base de datos o el servidor
 "no esten arriba" no es motivo para no probar: **lo levantas tu**.
@@ -116,8 +133,8 @@ sesiones anteriores suele estar escrito, aunque no en la ficha. Busca con busque
 leer archivos enteros:
 
 1. En las **tres tareas mas recientes** del indice: `grep -niE "docker|compose|dump|restore|psql|
-   mysql|sqlite|base de datos|database"` sobre su `log.md` y `findings/qa.md`, y el final de su
-   `run.log`.
+   mysql|sqlite|base de datos|database"` sobre su `log.md` y `findings/qa.md`, el campo `entorno` de
+   su cabecera, y el final de sus registros en `logs/` (o `run.log` en tareas antiguas).
 2. `docker ps -a`, `docker volume ls` y los archivos de composicion, `Makefile` y de entorno de
    ejemplo: los contenedores, volumenes y bases que ya existen dicen mucho.
 3. El `git log` reciente, por mensajes que mencionen entorno, dumps o restauraciones.
@@ -178,7 +195,8 @@ una sola cosa concreta. Nunca apuntes las pruebas a una base que no sea claramen
    **En economico y equilibrado, no encadenes las tareas en esta sesion.** Cada tarea nueva reenvia
    todo el historial de las anteriores, que es puro coste sin beneficio: lo aprendido de cada una ya
    queda escrito en `.devteam/`, no en la conversacion. En su lugar, para cada tarea del desglose
-   escribe su `tasks/<slug>/spec.md` pendiente (mismo patron que usa `/audit tareas`), haz **solo la
+   crea su spec pendiente con `devteam new` y escribe su cuerpo (que se pide, que queda fuera,
+   criterios de aceptacion), haz **solo la
    primera** hasta el cierre, y entrega al usuario la lista de comandos para las demas, cada una para
    abrir en una sesion nueva:
 
@@ -210,8 +228,10 @@ una sola cosa concreta. Nunca apuntes las pruebas a una base que no sea claramen
    abierto: **no ofrezcas opciones inventadas** sobre que podria significar el nombre.
 
    Si la tarea ya esta cerrada, dilo y pregunta si es una continuacion. Solo si los tres pasos no
-   dan nada es una tarea nueva: elige un `<slug>` corto y crea `.devteam/tasks/<slug>/`.
-4. Escribe `spec.md`, o completa el que ya habia: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado.
+   dan nada es una tarea nueva: elige un `<slug>` corto y creala con `devteam new`, marcando
+   `--pantallas si` si va a tocar la interfaz (eso exigira prueba de extremo a extremo al cerrar).
+   Si reconstruiste el spec desde un informe, crealo igual con `devteam new ... --origen "audit <fecha>"`.
+4. Escribe el cuerpo de `spec.md`, o completa el que ya habia: que se pide, que queda fuera, y los **criterios de aceptacion** concretos con los que se sabra si esta terminado. Despues, `devteam begin <slug>`: marca la tarea en curso en esta sesion.
 5. Si el proyecto no tiene git, avisa al usuario: los cambios no seran reversibles ni revisables como diff.
 
    Si lo tiene, parte de una base limpia antes de tocar nada: comprueba que no hay cambios sin
@@ -268,7 +288,7 @@ presupuesto de verificacion del modo de consumo.
 Cada uno devuelve el codigo con su ruta exacta. **Tu lo aplicas**, en un orden que deje el proyecto coherente: primero datos, luego servidor, luego interfaz.
 
 Tras aplicar, levanta el entorno y ejecuta lo que corresponda (construccion, arranque, pruebas
-completas), redirigiendo la salida a `run.log` como se indico arriba, y comprueba que funciona de
+completas), cada una con `devteam run` como se indico arriba, y comprueba que funciona de
 verdad. Si algo falla, arreglalo o
 vuelve a consultar al especialista con SendMessage.
 
@@ -303,16 +323,25 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
    pendiente, y una linea **Entorno de pruebas usado** (contenedores, base y dump), que es lo que
    permite recuperarlo despues si la ficha no lo dice.
 
-   Anade tambien una linea a `.devteam/tasks/index.md`, creandolo si no existe, con este formato:
+   **Commit local** de la tarea, en su rama, con la convencion de commits de la ficha y solo con sus
+   archivos (revisa `git status`: nada ajeno). No es publicar: subir y abrir el PR sigue siendo cosa
+   de `/ship`, con confirmacion del usuario. Sin git, este paso no aplica.
+
+   **Registra el estado real en la cabecera**, en una sola llamada:
 
    ```
-   | 2026-09-21 | reserva-cancelacion | Cancelar reservas hasta 2h antes | cerrada |
+   devteam set <slug> estado=cerrada commit=<hash> verificacion.pruebas=ok verificacion.e2e=ok entorno="<contenedores, base y dump usados, o ninguno>"
    ```
 
-   Es el indice del proyecto: con veinte tareas, los nombres de carpeta ya no dicen nada y esta es
-   la unica forma de encontrar cuando se toco algo y donde quedo escrito. Una linea por tarea, la
-   mas reciente arriba, y el estado real: cerrada, parcial o abandonada. Una tarea que se dejo a
-   medias se marca como parcial y se dice que falto, nunca se borra la fila.
+   Si algo quedo sin hacer o sin verificar, el estado honesto es `parcial` (o `bloqueada`) con
+   `falta="..."` diciendo que exactamente; nunca `cerrada` con la nota escondida. Lo que solo espera
+   a una accion del usuario —desplegar, publicar— puede ir como `cerrada` con esa nota en `falta`.
+
+   **Despues, `devteam end <slug>`.** Comprueba las reglas de cierre: commit existente si hay git,
+   pruebas en `ok`, prueba de extremo a extremo si `toca_pantallas: si`, `falta` si es parcial,
+   `log.md` con el entorno, y la fila del indice al dia (el indice lo regenera la propia herramienta).
+   Si dice que no se puede cerrar, **arregla lo que falta o cambia el estado a parcial con su
+   motivo**; no lo rodees.
 
    Si la tarea fijo una decision de arquitectura que sigue vigente, comprueba que el `tech-lead` la
    registro en `.devteam/decisions.md`. Si no lo hizo, hazlo tu.
@@ -358,8 +387,9 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
 4. Resume al usuario: que cambio, que archivos, que se verifico **y con que resultado real**, que
    quedo abierto, y que aprendio el equipo sobre el proyecto.
 
-5. Si el proyecto tiene git y la verificacion paso, ofrece `/ship` para confirmar y publicar el
-   cambio. No confirmes ni subas nada por tu cuenta: publicar es decision del usuario.
+5. Si el proyecto tiene git y la verificacion paso, ofrece `/ship` para sincronizar, subir la rama
+   y abrir el pull request. El commit local ya esta hecho; no subas nada por tu cuenta: publicar es
+   decision del usuario.
 
 6. **Antes de la siguiente tarea, recomienda `/clear` o una sesion nueva.** Lo que el equipo aprendio
    ya quedo escrito en `context.md` y `decisions.md` en el paso 3: no se pierde nada al cerrar esta

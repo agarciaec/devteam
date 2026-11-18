@@ -86,9 +86,20 @@ que haya. El riesgo no es el peso, es que con veinte tareas los nombres de carpe
 nada y la informacion se vuelve inencontrable.
 
 Lo resuelve `tasks/index.md`: una linea por tarea con fecha, nombre, que hizo y en que estado quedo.
-Se escribe al cerrar cada tarea y es por donde se empieza a buscar, en lugar de abrir carpetas a
-ciegas. Las tareas que quedaron a medias se marcan como parciales y no se borran: una fila que dice
-que algo quedo sin terminar vale mas que el silencio.
+Es por donde se empieza a buscar, en lugar de abrir carpetas a ciegas. Las tareas que quedaron a
+medias se marcan como parciales y no se borran: una fila que dice que algo quedo sin terminar vale
+mas que el silencio.
+
+## Estado estructurado y herramienta (desde 0.14)
+
+El estado de cada tarea vive en la **cabecera YAML** de su `spec.md` (estado, nivel, origen,
+gravedad, dependencias, rama, commit, `toca_pantallas`, verificacion, entorno, `falta`), y
+`tasks/index.md` **se genera** a partir de ellas. Nadie los edita a mano: lo hace
+`scripts/devteam.mjs`, cuya ruta inyecta el hook de inicio de sesion (`new`, `set`, `begin`, `end`,
+`check`, `run`, `status`, `lint`, `migrate`). Asi las reglas de cierre son comprobables por codigo y
+no dependen de que el modelo las recuerde: una tarea no puede quedar `cerrada` sin commit (con git),
+sin pruebas en `ok` o, si toca pantallas, sin prueba de extremo a extremo. Lo que no se cumple queda
+`parcial` con `falta`. Los proyectos con el formato anterior se convierten con `/devteam:migrar`.
 
 ## Estructura de `.devteam/`
 
@@ -103,9 +114,10 @@ que algo quedo sin terminar vale mas que el silencio.
 ├── plans/<fecha>/             # historia: plan.md de cada /planear (tareas propuestas, orden, coste, preguntas)
 ├── runs/<fecha>/              # historia: run.md (estado, permite reanudar) y report.md de cada /sprint
 └── tasks/
-    ├── index.md               # una linea por tarea: fecha, nombre, que hizo, estado
+    ├── index.md               # generado por devteam index desde las cabeceras: no se edita a mano
     └── <slug>/                # historia: foto del momento, no se actualiza
-        ├── spec.md            # que se pide y criterios de aceptacion
+        ├── spec.md            # cabecera con el estado + que se pide y criterios de aceptacion
+        ├── logs/<etiqueta>.log  # salidas de devteam run (pruebas, construccion)
         ├── design.md          # decision de arquitectura
         ├── contract.md        # endpoints, esquemas, tipos e interfaces
         ├── ui.md              # especificacion visual, si la tarea toca pantallas

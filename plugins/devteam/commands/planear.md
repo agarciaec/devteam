@@ -121,12 +121,14 @@ Termina con una pregunta de aprobacion: **aprobar**, **ajustar** o **descartar**
 
 Con el plan aprobado:
 
-- Para cada tarea, crea `.devteam/tasks/<slug>/spec.md` con estado **pendiente**: origen (la ruta del
-  plan y la solicitud original), que se pide, que queda fuera, criterios de aceptacion, nivel
-  sugerido, dependencias, zonas probables y enfoque, riesgos, y las respuestas de la ronda anterior
-  bajo **Decisiones previas**. Es lo que leeran `/feature` y `/sprint` en otra sesion, sin haber
-  visto esta conversacion.
-- Anade a `.devteam/tasks/index.md` una fila **pendiente (plan <fecha>)** por tarea.
+- Para cada tarea nueva, creala con la herramienta devteam (ruta en el inicio de sesion, o
+  `ls -d ~/.claude/plugins/cache/devteam-local/devteam/*/scripts/devteam.mjs | sort -V | tail -1`):
+  `devteam new <slug> --titulo "..." --origen "plan <fecha>" --nivel <sugerido> --gravedad <g> --depende <a,b> --pantallas si|no`.
+  Si la tarea ya existia pendiente o parcial, no la dupliques: ajustala con `devteam set`.
+- Escribe el cuerpo de cada `spec.md`: origen (la ruta del plan y la solicitud original), que se
+  pide, que queda fuera, criterios de aceptacion, zonas probables y enfoque, riesgos, y las
+  respuestas de la ronda anterior bajo **Decisiones previas**. Es lo que leeran `/feature` y
+  `/sprint` en otra sesion, sin haber visto esta conversacion. El indice lo regenera la herramienta.
 - Si descubriste algo falso en la ficha, corrigelo. Si el plan fija una decision de arquitectura que
   sigue vigente, o cambia una, anotala en `.devteam/decisions.md`, marcando la anterior como superada
   en vez de borrarla.

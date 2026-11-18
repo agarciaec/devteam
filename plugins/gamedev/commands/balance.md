@@ -74,9 +74,11 @@ sistema de proteccion contra la mala racha), deja la tarea a devteam:
 
 ## implementar
 
-Escribe `.devteam/tasks/balance-<tema>/spec.md` con origen (la carpeta del modelo), los cambios,
-los criterios de aceptacion (el resultado esperado de la simulacion) y **estado: pendiente**;
-anade la fila pendiente a `.devteam/tasks/index.md` y entrega `/devteam:feature balance-<tema>`.
+Crea la tarea con la herramienta de devteam, que escribe la cabecera con el estado pendiente y
+regenera el indice (ruta en el inicio de sesion): `devteam new balance-<tema> --titulo "..." --origen
+"gamedev balance"`. En el cuerpo de su `spec.md` escribe el origen (la carpeta del modelo), los
+cambios y los criterios de aceptacion (el resultado esperado de la simulacion). Entrega
+`/devteam:feature balance-<tema>`.
 
 ## Reglas
 

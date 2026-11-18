@@ -62,4 +62,6 @@ existe para que alguien mas mire el cambio.
 ## Cierre
 
 Resume: rama, commits, enlace del PR, y el estado de las comprobaciones del CI si ya empezaron. Si
-el proyecto tiene `.devteam/tasks/index.md`, anota el enlace del PR en la fila de la tarea.
+la rama corresponde a una tarea de `.devteam/tasks/`, registra el enlace del PR en su cabecera con la
+herramienta devteam (`devteam set <slug> pr=<url>`; ruta en el inicio de sesion), sin editar el indice
+a mano.

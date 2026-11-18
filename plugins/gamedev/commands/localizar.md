@@ -45,9 +45,10 @@ Busca con Grep en el codigo y los datos, y procesa con script si los resultados 
 - Formatos de fecha, numero y moneda escritos a mano.
 
 Escribe `.gamedev/loc/auditoria-<fecha>.md` con cada hallazgo, su ruta y su arreglo. Los arreglos
-son codigo: cada grupo de hallazgos va a `.devteam/tasks/<slug>/spec.md` con origen, evidencia,
-criterios de aceptacion y **estado: pendiente**, con su fila en `.devteam/tasks/index.md`, previa
-aprobacion del usuario.
+son codigo: cada grupo de hallazgos, previa aprobacion del usuario, se crea como tarea con la
+herramienta de devteam (`devteam new <slug> --titulo "..." --origen "gamedev localizar" --pantallas
+si`; ruta en el inicio de sesion), que pone el estado pendiente y regenera el indice; en el cuerpo de
+su `spec.md` van el origen, la evidencia y los criterios de aceptacion.
 
 ## glosario
 

@@ -60,12 +60,14 @@ Cierra todo lo que se pueda cerrar. Que una parte se bloquee no es motivo para d
    sustituto (base de datos en memoria, doble de pruebas para servicios externos). **"No habia nada
    arriba" nunca es un motivo para no probar**; lo que de verdad no se pueda ejecutar se declara
    **no ejecutado**, con el comando y su error. No bajes lo que levanto la sesion. Si no sabes que
-   base o dump usar, busca antes en la ficha, en el `log.md` y el `run.log` de las tareas recientes y
+   base o dump usar, busca antes en la ficha, en el `log.md`, el campo `entorno` y los registros de las tareas recientes y
    en `docker ps -a`; nunca apuntes las pruebas a una base que no sea claramente de pruebas.
 2. **Ejecuta las pruebas completas de cada capa**: servidor, cliente y extremo a extremo con la
    aplicacion arriba, no un subconjunto. Probar solo el servidor deja la interfaz sin verificar. Mas
-   el linter que marca la ficha. **Redirige la salida a `.devteam/tasks/<slug>/run.log`** y trae a tu
-   contexto solo el resultado y las lineas de error. Compara con la **linea base** que te pase la
+   el linter que marca la ficha. Ejecuta cada una con la **herramienta devteam** que te pasa la
+   sesion: `node <ruta>/devteam.mjs run <slug> <etiqueta> -- <comando>` (etiquetas como `backend`,
+   `frontend`, `e2e`). Guarda la salida en `tasks/<slug>/logs/` y a tu contexto solo trae el
+   resultado y las lineas de error. Compara con la **linea base** que te pase la
    sesion: un fallo que ya existia antes de tu cambio se reporta como anterior, no como tuyo.
 3. Cada **criterio de aceptacion** del spec se marca como cumplido solo con evidencia: una prueba que
    pasa, una salida, un `archivo:linea`. Sin evidencia, no esta cumplido.
@@ -87,7 +89,17 @@ Cierra todo lo que se pueda cerrar. Que una parte se bloquee no es motivo para d
    esta verificado y dilo en el mensaje.
 3. Escribe `.devteam/tasks/<slug>/log.md`: que se hizo, que decisiones asumiste y que quedo
    pendiente, mas una linea **Entorno de pruebas usado** (contenedores, base y dump).
-4. Devuelve tu informe, **de unas cuarenta lineas como maximo**, con este formato exacto:
+4. **Registra el estado en la cabecera del spec** con la herramienta, nunca editando la cabecera ni
+   el indice a mano:
+
+   ```
+   node <ruta>/devteam.mjs set <slug> estado=cerrada|parcial|bloqueada commit=<hash> verificacion.pruebas=ok|fallo|no-ejecutadas verificacion.e2e=ok|pendiente|no-aplica entorno="..." falta="..."
+   ```
+
+   `cerrada` exige pruebas en `ok`, commit y, si la tarea toca pantallas, `e2e` en `ok`. Si no lo
+   tienes, el estado honesto es `parcial` con `falta`. Comprueba con
+   `node <ruta>/devteam.mjs check <slug>` y corrige hasta que pase o hasta que el estado diga la verdad.
+5. Devuelve tu informe, **de unas cuarenta lineas como maximo**, con este formato exacto:
 
 ```
 ESTADO: cerrada | parcial | bloqueada

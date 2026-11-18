@@ -1,0 +1,45 @@
+#!/bin/sh
+# Harness del repositorio del plugin: comprueba lo que antes se olvidaba al publicar.
+# Se activa una vez por clon con: git config core.hooksPath .githooks
+
+fallo=0
+staged=$(git diff --cached --name-only)
+n() { tr -d ' \r'; }
+
+# 1. Subir la version en cada publicacion: la cache del plugin va por version y, sin subirla,
+#    las demas maquinas creen que estan al dia y se quedan con la copia vieja.
+for p in devteam gamedev; do
+  if echo "$staged" | grep -q "^plugins/$p/"; then
+    if ! git diff --cached -U0 -- "plugins/$p/.claude-plugin/plugin.json" | grep -q '^+.*"version"'; then
+      echo "pre-commit: cambiaste plugins/$p/ sin subir \"version\" en plugins/$p/.claude-plugin/plugin.json"
+      fallo=1
+    fi
+  fi
+done
+
+# 2. El README principal describe todos los comandos y agentes de devteam.
+c=$(ls plugins/devteam/commands/*.md | wc -l | n)
+rc=$(grep -c '^| `/' README.md | n)
+if [ "$c" != "$rc" ]; then
+  echo "pre-commit: devteam tiene $c comandos y la tabla del README lista $rc"
+  fallo=1
+fi
+a=$(ls plugins/devteam/agents/*.md | wc -l | n)
+ra=$(grep -cE '^\| `[a-z-]+` \| (sonnet|haiku|opus)' README.md | n)
+if [ "$a" != "$ra" ]; then
+  echo "pre-commit: devteam tiene $a agentes y la tabla del README lista $ra"
+  fallo=1
+fi
+
+# 3. Las pruebas de la herramienta, si se toco algo de ella o de sus hooks.
+if echo "$staged" | grep -qE "^plugins/devteam/(scripts|hooks)/"; then
+  if ! node --test plugins/devteam/scripts/test/devteam.test.mjs >/dev/null 2>&1; then
+    echo "pre-commit: fallan las pruebas: node --test plugins/devteam/scripts/test/devteam.test.mjs"
+    fallo=1
+  fi
+fi
+
+if [ "$fallo" != 0 ]; then
+  echo "pre-commit: commit detenido. Corrige lo anterior; no uses --no-verify."
+fi
+exit $fallo

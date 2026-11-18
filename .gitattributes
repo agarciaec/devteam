@@ -1,0 +1,4 @@
+# Los scripts se ejecutan en Linux y WSL: un CRLF rompe el shebang y bash.
+.githooks/* text eol=lf
+*.sh text eol=lf
+*.mjs text eol=lf

@@ -49,9 +49,10 @@ alrededor de esas preguntas y, despues, convierte lo observado en decisiones.
    muestra.
 5. **Propone acciones**, y sigue la regla de devteam: cada tarea propuesta se deja escrita. Los
    cambios de diseno se senalan para el comando de gamedev que corresponda (`/gamedev:nivel
-   revisar`, `/gamedev:balance`...); los de codigo van a `.devteam/tasks/<slug>/spec.md` con
-   origen (la ruta de resultados), evidencia, que cambiar, criterios de aceptacion y **estado:
-   pendiente**, con su fila en `.devteam/tasks/index.md`. No empieces ninguna sin aprobacion.
+   revisar`, `/gamedev:balance`...); los de codigo se crean como tarea con la herramienta de devteam
+   (`devteam new <slug> --titulo "..." --origen "gamedev playtest"`; ruta en el inicio de sesion),
+   con origen (la ruta de resultados), evidencia, que cambiar y criterios de aceptacion en el cuerpo
+   de su `spec.md`. No empieces ninguna sin aprobacion.
 
 ## Reglas
 

@@ -110,11 +110,11 @@ tu con la lista de arriba.
 
 ## implementar
 
-Si hay `.devteam/`, escribe `.devteam/tasks/<slug>/spec.md` con origen (la ruta del documento), el
-prototipo minimo como alcance, los parametros expuestos para ajustarlos sin recompilar, criterios
-de aceptacion sacados de las reglas y los casos limite, nivel de esfuerzo sugerido y **estado:
-pendiente**. Anade la fila pendiente a `.devteam/tasks/index.md` y entrega
-`/devteam:feature <slug>`. Si no hay `.devteam/`, propon `/devteam:onboard` primero.
+Si hay `.devteam/`, crea la tarea con la herramienta de devteam (`devteam new <slug> --titulo "..."
+--origen "gamedev mecanica" --nivel <sugerido>`; ruta en el inicio de sesion), que pone el estado
+pendiente y regenera el indice. En el cuerpo de su `spec.md`: origen (la ruta del documento), el
+prototipo minimo como alcance, los parametros expuestos para ajustarlos sin recompilar y criterios
+de aceptacion sacados de las reglas y los casos limite. Entrega `/devteam:feature <slug>`. Si no hay `.devteam/`, propon `/devteam:onboard` primero.
 
 ## Informe
 

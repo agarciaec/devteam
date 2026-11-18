@@ -400,6 +400,7 @@ claude plugin marketplace add /opt/devteam
 | `/feature <descripcion>` | Ciclo completo: exploracion, diseno, implementacion y verificacion en paralelo. Desglosa en tareas si le pides cosas inconexas. |
 | `/ship` | Sincroniza, hace commit, sube la rama y abre el pull request, con tu confirmacion en cada paso que publica. |
 | `/release [version]` | Calcula el numero de version, actualiza el CHANGELOG, y crea tag y release. |
+| `/migrar` | Convierte un proyecto con el formato anterior de `.devteam` (indice en texto libre, specs sin cabecera) al estructurado que leen la herramienta y los hooks. Simulacro primero, sin perder nada. |
 | `/standup` | Donde quedo el trabajo y que falta. Con un tema, busca en el historial: `/standup por que elegimos esta autenticacion`. |
 
 ## Agentes
@@ -524,9 +525,10 @@ El detalle esta en la skill `devteam-protocol`.
 ├── plans/<fecha>/          # historia: plan de cada /planear, con las tareas propuestas, el orden y el coste
 ├── runs/<fecha>/           # historia: estado (permite reanudar) e informe de cada /sprint
 └── tasks/
-    ├── index.md            # una linea por tarea: fecha, nombre, que hizo, estado
+    ├── index.md            # generado desde las cabeceras de los spec.md: no se edita a mano
     └── <slug>/             # historia: foto del momento, no se actualiza
-        ├── spec.md         # que se pide y criterios de aceptacion
+        ├── spec.md         # cabecera con el estado + que se pide y criterios de aceptacion
+        ├── logs/           # salidas de pruebas y construccion (devteam run)
         ├── design.md       # decision de arquitectura
         ├── contract.md     # endpoints, esquemas, tipos
         ├── ui.md           # especificacion visual, si la tarea toca pantallas
@@ -546,6 +548,30 @@ agentes leen `context.md` y la tarea en curso, nada mas. Puedes acumular doscien
 el coste por sesion cambie. El riesgo no es el peso, sino que con veinte tareas los nombres de
 carpeta dejen de decir nada; para eso esta `tasks/index.md`, que `/standup` usa para buscar en
 lugar de abrir carpetas a ciegas.
+
+## Harness: lo que se comprueba solo
+
+Hasta la 0.13 el plugin era solo texto: reglas que el modelo debia recordar. El analisis de varios
+proyectos reales mostro que casi todos los fallos eran reglas escritas que no se aplicaron —tareas
+cerradas "sin verificar en navegador", indices con estados en texto libre, fichas que crecian sin
+poda—. Desde la 0.14, lo comprobable lo comprueba codigo:
+
+- **Estado estructurado.** Cada `spec.md` lleva una cabecera con su estado, nivel, dependencias,
+  commit, verificacion y lo que falta; el indice se genera de ahi.
+- **La herramienta `devteam`** (`plugins/devteam/scripts/devteam.mjs`, Node 18 o superior, sin
+  dependencias) crea y actualiza tareas, ejecuta las pruebas guardando la salida en
+  `tasks/<slug>/logs/`, y **comprueba el cierre**: sin commit, sin pruebas en `ok` o con pantallas
+  tocadas y sin prueba de extremo a extremo, la tarea no se puede dar por cerrada; queda `parcial`
+  con lo que falta.
+- **Al iniciar sesion**, un hook inyecta en pocas lineas el modo de consumo, el entorno de pruebas,
+  los pendientes con su antiguedad (los de mas de 21 dias se revalidan antes de ejecutarlos), lo
+  parcial y los sprints a medias. En proyectos sin `.devteam/` no hace nada.
+- **`/migrar`** convierte un proyecto con el formato anterior, con simulacro previo y sin perder nada:
+  el indice anterior queda guardado entero.
+
+El repositorio del plugin tiene su propio `pre-commit` (`.githooks/`): no deja confirmar cambios de
+un plugin sin subir su version, ni un README que no cuadre con los comandos, ni la herramienta con
+sus pruebas en rojo. Se activa una vez por clon con `git config core.hooksPath .githooks`.
 
 ## Modificar el equipo
 

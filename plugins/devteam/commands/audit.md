@@ -172,15 +172,22 @@ sentido propio, siguiendo el mismo criterio que usa `/feature`: lo que comparte 
 junto, lo inconexo va separado. Ordenalas por gravedad y por dependencia.
 
 **Deja cada tarea escrita**, porque se hara en otra sesion que no habra visto esta auditoria y solo
-recibira el slug. Para cada una crea `.devteam/tasks/<slug>/spec.md` con:
+recibira el slug. Creala con la herramienta devteam, que escribe la cabecera con su estado y
+regenera el indice (ruta en el inicio de sesion, o
+`ls -d ~/.claude/plugins/cache/devteam-local/devteam/*/scripts/devteam.mjs | sort -V | tail -1`):
+
+```
+devteam new <slug> --titulo "..." --origen "audit <fecha>" --nivel <sugerido> --gravedad <g> --depende <a,b> --pantallas si|no
+```
+
+Despues escribe el cuerpo de su `spec.md` con:
 
 - **Origen**: la ruta de `report.md` de esta auditoria.
 - **Problema**: los hallazgos que agrupa, con su gravedad y su evidencia (`archivo:linea` o salida).
 - **Que se pide**: el arreglo concreto, no el area. "Envolver el cobro y el envio en una transaccion
   para que un fallo no deje saldo descontado sin mensaje" y no "transacciones en mensajeria".
 - **Que queda fuera** y **criterios de aceptacion** verificables.
-- **Nivel de esfuerzo sugerido** (ligero, estandar o completo) y las tareas de las que depende.
-- **Estado: pendiente**, sin empezar.
+El estado (pendiente), el nivel, la gravedad y las dependencias van en la cabecera, no en el cuerpo.
 
 Si algo del arreglo es una decision de producto que no puedes tomar tu, escribelo como pregunta
 abierta en el spec en lugar de inventar la respuesta.
@@ -192,8 +199,8 @@ ofrece `/sprint`: las ejecuta de corrido tras una sola ronda de preguntas, cada 
 Actualiza tambien:
 
 - `.devteam/context.md`: corrige lo que la auditoria demostro falso y anade a trampas lo descubierto.
-- `.devteam/tasks/index.md`: una fila para la auditoria con el enlace al informe, y una fila por cada
-  tarea propuesta con estado **pendiente (auditoria <fecha>)**.
+- El indice ya lo regenero `devteam new`; no lo edites a mano. El informe queda enlazado desde el
+  origen de cada tarea.
 
 ## Cierre
 

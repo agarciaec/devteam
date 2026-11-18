@@ -13,12 +13,15 @@ Tarea consultada: $ARGUMENTS
 
 1. Si no hay `.devteam/` en este proyecto, dilo y sugiere `/onboard`. Termina ahi.
 
-2. Si el usuario indico un slug, informa solo de esa tarea. Si no, lee `.devteam/tasks/index.md` y
-   detalla la ultima tarea; de las anteriores da solo las filas del indice, y con mas de diez
-   quedate en las cinco mas recientes mas las que sigan marcadas como parciales. El indice existe
-   para no tener que abrir veinte carpetas: usalo en lugar de recorrerlas.
+2. Si el usuario indico un slug, informa solo de esa tarea. Si no, empieza por
+   `devteam status` (la herramienta; ruta en el inicio de sesion, o
+   `ls -d ~/.claude/plugins/cache/devteam-local/devteam/*/scripts/devteam.mjs | sort -V | tail -1`):
+   da en pocas lineas lo pendiente por gravedad y antiguedad, lo que esta en curso, lo parcial con
+   lo que le falta y los sprints sin terminar. Detalla solo la ultima tarea. El indice y la
+   herramienta existen para no tener que abrir veinte carpetas: usalos en lugar de recorrerlas.
 
-   Si no hay indice pero si carpetas de tareas, dilo y ofrece reconstruirlo leyendo sus `log.md`.
+   Si el proyecto tiene el formato anterior (lo dice el inicio de sesion o `devteam status`), usa
+   `tasks/index.md` tal como esta y propon `/devteam:migrar`.
 
 3. Para la tarea que detalles, lee sus documentos y reporta:
 

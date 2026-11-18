@@ -53,14 +53,28 @@ Hay cosas que no estan en el codigo. Si son relevantes, preguntaselas al usuario
 - Donde se despliega
 - Que partes son delicadas o no hay que tocar
 - Si hay sistemas externos que dependen de este
+- **Los servidores y bases de datos de produccion** (van a `hosts_produccion` de la cabecera: la
+  guardia de comandos impedira conectarse a ellos). Propon los que hayas visto en la configuracion y
+  pide confirmacion; nunca los inventes
+- Que plan de Claude usa, para el modo de consumo (ver la seccion de la plantilla)
 
-No preguntes lo que puedas averiguar leyendo.
+No preguntes lo que puedas averiguar leyendo. El prefijo de los contenedores deducelo de la
+composicion o de `docker ps -a`.
 
 ## Paso 4: Escribir la ficha
 
-Crea `.devteam/context.md` con esta estructura, rellenada con datos reales del proyecto:
+Crea `.devteam/context.md` con esta estructura, rellenada con datos reales del proyecto. La cabecera
+entre `---` la leen la herramienta devteam y los hooks: respeta su formato (`clave: valor`, listas
+`[a, b]`) y no inventes valores; lo que no sepas, preguntalo en el paso 3 o dejalo vacio.
 
 ```markdown
+---
+modo_consumo: equilibrado          # economico | equilibrado | maximo
+datos_prueba: sinteticos           # copia-produccion | sinteticos
+prefijo_contenedores:              # prefijo de los contenedores de este proyecto, p. ej. miapp-
+hosts_produccion: []               # servidores y bases de produccion: la guardia los bloquea
+datos_sensibles: no                # si | no
+---
 # Contexto del proyecto: <nombre>
 
 ## Que es

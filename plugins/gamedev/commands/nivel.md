@@ -98,9 +98,10 @@ misma lista, y entrega hallazgos con su arreglo sin cambiar nada.
 
 Escribe `.devteam/tasks/nivel-<slug>/spec.md`: origen, el blockout como alcance de la primera
 iteracion (geometria gris, sin arte), los encuentros y activadores que hacen falta, criterios de
-aceptacion (se completa de principio a fin, sin bloqueos, en la duracion objetivo) y **estado:
-pendiente**. Fila pendiente en `.devteam/tasks/index.md` y entrega
-`/devteam:feature nivel-<slug>`.
+aceptacion (se completa de principio a fin, sin bloqueos, en la duracion objetivo). La tarea se crea
+con la herramienta de devteam (`devteam new nivel-<slug> --titulo "..." --origen "gamedev nivel"`;
+ruta en el inicio de sesion), que pone el estado pendiente y regenera el indice; lo anterior va en el
+cuerpo de su `spec.md`. Entrega `/devteam:feature nivel-<slug>`.
 
 ## Reglas
 

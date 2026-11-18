@@ -546,10 +546,12 @@ El lore describe; devteam construye. `implementar <slug>` deja la pieza lista pa
 
 1. Si no hay `.devteam/`, dilo y propon `/devteam:onboard` primero.
 2. Si la entidad no es canon, avisa: implementar un borrador suele acabar en rehacer.
-3. Escribe `.devteam/tasks/<slug>/spec.md`: origen (la ruta del lore), que hay que construir en
-   concreto (mecanicas, datos, banderas de estado, dialogos, recursos de arte o audio pendientes),
-   criterios de aceptacion verificables, nivel de esfuerzo sugerido y **estado: pendiente**.
-4. Anade la fila **pendiente** a `.devteam/tasks/index.md` y entrega `/devteam:feature <slug>`.
+3. Crea la tarea con la herramienta de devteam (`devteam new <slug> --titulo "..." --origen
+   "gamedev loremaster" --nivel <sugerido>`; ruta en el inicio de sesion), que pone el estado
+   pendiente y regenera el indice.
+4. En el cuerpo de su `spec.md`: origen (la ruta del lore), que hay que construir en concreto
+   (mecanicas, datos, banderas de estado, dialogos, recursos de arte o audio pendientes) y criterios
+   de aceptacion verificables. Entrega `/devteam:feature <slug>`.
 
 ## Reglas generales
 

@@ -40,16 +40,22 @@ el usuario despues con `/ship`.
 
 1. Lee `.devteam/context.md`: modo de consumo, convenciones de commits y ramas, y si hay datos
    sensibles. Si no existe, para y propon `/onboard` primero.
+
+   El estado de las tareas lo lleva la **herramienta devteam** (ruta en el inicio de sesion, o
+   `ls -d ~/.claude/plugins/cache/devteam-local/devteam/*/scripts/devteam.mjs | sort -V | tail -1`;
+   abajo, `devteam`). Si el inicio de sesion dice que el proyecto tiene el **formato anterior**, el
+   sprint no puede llevar el estado: propon `/devteam:migrar` primero y termina ahi.
 2. **Si hay un `.devteam/runs/<fecha>/run.md` sin terminar**, ofrece reanudarlo desde la primera
    tarea no cerrada en lugar de empezar otro sprint. Es lo que permite continuar si se agotaron los
    limites a mitad.
-3. **Reune las tareas candidatas**: las filas **pendiente** o **parcial** de
-   `.devteam/tasks/index.md` y las carpetas `tasks/*/spec.md` con estado pendiente. Si el usuario
-   paso argumentos, aplicalos como filtro: slugs concretos, `criticas` o `altas` (por gravedad),
-   `auditoria` (solo las que vienen de un informe), `max N` (las N primeras tras ordenar). Sin
+3. **Reune las tareas candidatas** con `devteam status --json`: las pendientes (ya ordenadas por
+   gravedad, con sus dias y la marca `revalidar` si tienen mas de 21) y las parciales con lo que les
+   falta. Si el usuario paso argumentos, aplicalos como filtro: slugs concretos, `criticas` o `altas`
+   (por gravedad), `auditoria` (origen `audit`), `max N` (las N primeras tras ordenar). Sin
    argumentos, todas son candidatas y **decides tu** cuales entran.
-4. **Lee solo la cabecera de cada spec**: origen, gravedad, nivel sugerido, dependencias y preguntas
-   abiertas. No abras los informes de origen ni el codigo: eso es trabajo del implementador.
+4. **Lee de cada spec solo lo que la cabecera no dice**: las preguntas abiertas de su cuerpo. No abras
+   los informes de origen ni el codigo: eso es trabajo del implementador. Las marcadas `revalidar`
+   entran avisando de que el implementador comprobara primero si su evidencia sigue siendo cierta.
 5. **Clasifica cada candidata** en uno de estos grupos. Es la parte donde se nota si organizas bien:
 
    - **Entra en el sprint**: es trabajo de codigo, esta bien especificado y es ejecutable sin
@@ -147,7 +153,17 @@ usuario que revise todo.
 previas (sprint <fecha>)**, tanto las que el usuario eligio como las recomendadas que aprobo sin
 tocar (marcadas como "recomendada y aprobada"); el implementador las lee y mandan sobre su criterio.
 El plan aprobado, lo que quedo fuera y la tanda siguiente, mas una tabla de estado, van a
-`.devteam/runs/<fecha>/run.md` (si ya hay uno terminado de hoy, anade `-2`).
+`.devteam/runs/<fecha>/run.md` (si ya hay uno terminado de hoy, anade `-2`). Empieza ese archivo
+con una cabecera que la herramienta y el inicio de sesion leen:
+
+```
+---
+estado: en-curso
+session_id: <valor de $CLAUDE_CODE_SESSION_ID>
+---
+```
+
+Al escribir el informe final, cambia `estado: en-curso` por `estado: terminado`.
 
 **A partir de aqui no preguntas nada mas hasta el informe final.** Si surge una duda a mitad, no la
 resuelves preguntando: la clasificas como lo hace el implementador (decision menor, que asumes y
@@ -166,7 +182,8 @@ al principio**, y los implementadores lo reutilizan:
    pruebas usan, y la aplicacion y su frontend en segundo plano, esperando a su comprobacion de salud
    con un tiempo maximo. Si la ficha no lo describe, dice "sin verificar" o no sabes que base o dump
    usar, **recuperalo de las tareas anteriores** antes de rendirte: sus `log.md`, `findings/qa.md` y
-   el final de su `run.log` (con `grep`, sin leerlos enteros), `docker ps -a`, `docker volume ls`,
+   el campo `entorno` de su cabecera y el final de sus registros en `logs/` o `run.log` (con `grep`,
+   sin leerlos enteros), `docker ps -a`, `docker volume ls`,
    la composicion y el `git log` reciente. Compruebalo y **escribelo en la ficha**. Aqui no puedes
    preguntar: si sigue sin estar claro que base es de pruebas, no la adivines; salta las pruebas que
    la necesitan y reportalo.
@@ -212,10 +229,10 @@ Segun el nivel que sugiere el spec y el modo de consumo, como en `/feature`:
 
 ### Implementar
 
-Lanza **un** `implementer` con: el slug, la rama, la ruta de su `spec.md` y de los documentos de
-diseno, el modo de consumo, **como esta levantado el entorno de pruebas y la linea base de fallos**.
-Recuerdale que no puede preguntar. Anota su identificador, porque lo vas a necesitar para pedirle
-correcciones.
+Antes, `devteam begin <slug>`. Despues lanza **un** `implementer` con: el slug, la rama, la ruta de su
+`spec.md` y de los documentos de diseno, el modo de consumo, **la ruta de la herramienta devteam, como
+esta levantado el entorno de pruebas y la linea base de fallos**. Recuerdale que no puede preguntar.
+Anota su identificador, porque lo vas a necesitar para pedirle correcciones.
 
 ### Verificar
 
@@ -232,10 +249,13 @@ rondas, o lo que no traiga un escenario concreto, **no se arregla: se reporta** 
 
 Sin leer codigo, solo con su informe:
 
+- **`devteam end <slug>`**: comprueba el cierre que registro el implementador (estado, commit,
+  verificacion, `falta`, `log.md` con el entorno). Si no pasa, no lo arregles tu: si la causa es un
+  hallazgo concreto, una ronda mas al implementador; si no, `devteam set <slug> estado=parcial
+  falta="..."` con lo que el informe diga que falta, y que quede asi en el informe final. Una tarea
+  nunca queda `cerrada` sin pasar la comprobacion.
 - Actualiza la tabla de `run.md` con el estado, la rama y el commit de esa tarea. Esto es lo que
-  permite reanudar el sprint.
-- Actualiza su fila de `tasks/index.md` con el estado real: `cerrada`, `parcial` o `bloqueada`.
-  Nunca borres una fila.
+  permite reanudar el sprint. El indice lo regenera la herramienta.
 - Si el informe trae decisiones que siguen vigentes, anotalas en `decisions.md`; si trae lecciones
   que cumplen las **tres condiciones** de `/feature` (especifica del proyecto, volvera a importar,
   no esta ya escrita), anadelas a `context.md` y poda mientras escribes.
