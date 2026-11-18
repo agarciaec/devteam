@@ -518,6 +518,8 @@ El detalle esta en la skill `devteam-protocol`.
 .devteam/
 ├── context.md              # estado actual: stack, comandos, trampas, lecciones
 ├── decisions.md            # decisiones de arquitectura vigentes y su motivo
+├── decisions-historico.md  # decisiones superadas: por que se dejaron
+├── ref/                    # recetas largas de consulta: entorno de pruebas, despliegue, sistemas
 ├── audits/<fecha>/         # historia: linea base, informes por capa y report.md de cada /audit
 ├── redesign/<fecha>/       # historia: capturas, diagnostico, prototipos y plan de cada /redesign
 ├── uitest/<fecha>/         # historia: cobertura, fallos con reproduccion y report.md de cada /uitest
@@ -580,6 +582,16 @@ poda—. Desde la 0.14, lo comprobable lo comprueba codigo:
   falta. Si insiste, deja pasar, pero la tarea queda como `parcial` con el motivo en su `log.md`: el
   indice nunca dice "cerrada" sin serlo. Las tareas que siguen "en curso" no se tocan, porque pueden
   estar esperando tu respuesta.
+- **Ficha en dos niveles.** `context.md` es el nucleo que lee todo agente en cada arranque, con un
+  objetivo de 150 lineas, 25 trampas y 20 lecciones que `devteam lint` vigila. Las recetas largas
+  —como levantar el entorno de pruebas, como desplegar— van a `.devteam/ref/` y en la ficha queda su
+  resumen y el puntero. `/migrar` las mueve solo; consolidar trampas y lecciones lo propone el modelo
+  y lo aplica con tu confirmacion. Las decisiones sustituidas pasan a `decisions-historico.md`.
+- **Pruebas contra una copia local de produccion**, por defecto cuando hay dumps del proyecto en la
+  maquina: replica base mas una copia por tarea, solo en `127.0.0.1`, credenciales desechables, el
+  `.env` real anulado, y en informes y logs solo conteos y agregados. Los dumps los pones tu: el
+  equipo nunca se conecta a produccion para obtenerlos, y la guardia impide versionarlos. Sin dumps,
+  datos sinteticos (`datos_prueba` en la cabecera de la ficha).
 
 El repositorio del plugin tiene su propio `pre-commit` (`.githooks/`): no deja confirmar cambios de
 un plugin sin subir su version, ni un README que no cuadre con los comandos, ni la herramienta con

@@ -663,7 +663,83 @@ export function planearMigracion(root) {
     const k = `${normalizar(a.estadoAnterior).split(/[\s(:;,]/)[0] || '(sin fila)'} -> ${a.data.estado}`;
     traducciones[k] = (traducciones[k] || 0) + 1;
   }
-  return { necesaria: acciones.length > 0 || generado === false || !!fichaNueva, acciones, traducciones, dudas, noInterpretadas, fichaNueva, indiceAnterior: generado === false };
+  const fichaRef = planearFicha(root);
+  return {
+    necesaria: acciones.length > 0 || generado === false || !!fichaNueva || fichaRef.length > 0,
+    acciones, traducciones, dudas, noInterpretadas, fichaNueva, fichaRef, indiceAnterior: generado === false,
+  };
+}
+
+// ---------------------------------------------------------------- ficha en dos niveles
+// context.md es el nucleo que lee todo agente al arrancar; las recetas largas se mueven a
+// .devteam/ref/ y en el nucleo queda un resumen con el puntero.
+
+const DESTINOS_REF = [
+  [/^(entorno de pruebas|entorno de desarrollo|entorno local)/, 'entorno-pruebas.md', 8],
+  [/^(topologia|despliegue|produccion|servidores|infraestructura)/, 'despliegue.md', 8],
+  [/^sistemas/, 'sistemas.md', 8],
+];
+
+function partirSecciones(body) {
+  const lineas = body.split('\n');
+  const prefacio = [];
+  const secciones = [];
+  for (const l of lineas) {
+    if (/^## /.test(l)) secciones.push({ titulo: l.slice(3).trim(), lineas: [] });
+    else if (secciones.length) secciones.at(-1).lineas.push(l);
+    else prefacio.push(l);
+  }
+  return { prefacio, secciones };
+}
+
+export function planearFicha(root) {
+  const p = path.join(root, '.devteam', 'context.md');
+  if (!fs.existsSync(p)) return [];
+  const { body } = parsearCabecera(leer(p));
+  // Una ficha que ya cabe en el objetivo no se toca salvo por una receta muy larga: mover lo
+  // que no estorba solo hace que haya que abrir dos archivos.
+  const larga = body.split('\n').length > LIMITES.lineas;
+  const movimientos = [];
+  for (const s of partirSecciones(body).secciones) {
+    const destino = DESTINOS_REF.find(([re]) => re.test(normalizar(s.titulo)));
+    if (!destino) continue;
+    if (s.lineas.some((l) => /\.devteam\/ref\//.test(l))) continue;
+    const n = s.lineas.filter((l) => l.trim()).length;
+    if ((larga && n > destino[2]) || n > 30) movimientos.push({ titulo: s.titulo, destino: destino[1], lineas: n });
+  }
+  return movimientos;
+}
+
+function resumenDe(lineas) {
+  const utiles = [];
+  let enCodigo = false;
+  for (const l of lineas) {
+    if (/^\s*```/.test(l)) { enCodigo = !enCodigo; continue; }
+    if (enCodigo || !l.trim() || /^\s*\|/.test(l) || /^\s*</.test(l)) continue;
+    utiles.push(l);
+    if (utiles.length === 3) break;
+  }
+  return utiles;
+}
+
+export function aplicarFicha(root, movimientos) {
+  if (!movimientos.length) return;
+  const p = path.join(root, '.devteam', 'context.md');
+  const { data, body } = parsearCabecera(leer(p));
+  const { prefacio, secciones } = partirSecciones(body);
+  const dirRef = path.join(root, '.devteam', 'ref');
+  fs.mkdirSync(dirRef, { recursive: true });
+  const salida = [...prefacio];
+  for (const s of secciones) {
+    const m = movimientos.find((x) => x.titulo === s.titulo);
+    if (!m) { salida.push(`## ${s.titulo}`, ...s.lineas); continue; }
+    const ref = path.join(dirRef, m.destino);
+    const previo = fs.existsSync(ref) ? leer(ref).replace(/\n*$/, '\n\n') : `# ${m.destino.replace(/\.md$/, '').replace(/-/g, ' ')}\n\nMovido desde context.md el ${hoy()}. Se lee cuando hace falta, no en cada arranque.\n\n`;
+    fs.writeFileSync(ref, `${previo}## ${s.titulo}\n${s.lineas.join('\n').replace(/\n*$/, '\n')}`);
+    salida.push(`## ${s.titulo}`, ...resumenDe(s.lineas), '', `Receta completa: \`.devteam/ref/${m.destino}\`. Leela antes de levantar o probar nada.`, '');
+  }
+  const cuerpo = salida.join('\n').replace(/\n{3,}/g, '\n\n');
+  fs.writeFileSync(p, (data ? serializarCabecera(data, ORDEN_FICHA) + '\n' : '') + cuerpo);
 }
 
 export function aplicarMigracion(root, plan) {
@@ -690,6 +766,7 @@ export function aplicarMigracion(root, plan) {
     const p = path.join(root, '.devteam', 'context.md');
     fs.writeFileSync(p, serializarCabecera(plan.fichaNueva, ORDEN_FICHA) + '\n' + leer(p));
   }
+  aplicarFicha(root, plan.fichaRef || []);
   return regenerarIndice(root, { forzar: true });
 }
 
@@ -740,9 +817,12 @@ export function textoInicio(root, rutaScript, ahora = new Date()) {
     L.push(`Formato anterior: ${e.sinCabecera.length} spec.md sin cabecera${e.indiceAnterior ? ' e indice en texto libre' : ''}. Antes de crear o cerrar tareas, propon al usuario /devteam:migrar (simulacro y despues confirmacion).`);
   }
   L.push(`Modo de consumo: ${f.data.modo_consumo || 'sin declarar'}. Datos de prueba: ${f.data.datos_prueba || 'sin declarar'}${f.data.datos_sensibles === 'si' ? ' (datos sensibles: nunca copies datos personales a informes ni logs)' : ''}.`);
+  if (f.data.datos_prueba === 'copia-produccion') {
+    L.push(`Las pruebas usan una copia LOCAL de los dumps de produccion: solo en 127.0.0.1, una copia por tarea (${f.data.prefijo_contenedores || '<prefijo>'}task-<slug>-<motor>) que se borra al cerrar, credenciales desechables, el .env real anulado con variables exportadas. Los dumps los pone el usuario: nunca conectes a produccion para obtenerlos. En informes, specs y logs solo conteos y agregados, nunca datos personales.`);
+  }
   const receta = seccion(f.texto, /^entorno de pruebas/).map((l) => l.trim()).filter((l) => l && !l.startsWith('<') && !l.startsWith('```') && !l.startsWith('|'));
   L.push(receta.length
-    ? `Entorno de pruebas (resumen; la receta completa esta en la seccion "Entorno de pruebas" de la ficha): ${receta.slice(0, 2).join(' ').slice(0, 300)}`
+    ? `Entorno de pruebas (resumen; la receta completa esta en ${fs.existsSync(path.join(root, '.devteam', 'ref', 'entorno-pruebas.md')) ? '.devteam/ref/entorno-pruebas.md' : 'la seccion "Entorno de pruebas" de la ficha'}): ${receta.filter((l) => !/^Receta completa/.test(l)).slice(0, 2).join(' ').slice(0, 300)}`
     : 'Entorno de pruebas: sin receta en la ficha. Antes de probar, recuperala de las tareas recientes (log.md, logs/) y de docker ps -a, y escribela.');
   const c = e.cuenta;
   const viejos = e.pendientes.filter((p) => p.revalidar).length;
@@ -1121,6 +1201,7 @@ export async function main(argv, io = { out: (s) => process.stdout.write(s), err
         if (plan.dudas.length) io.out(`- a revisar (${plan.dudas.length}):\n${plan.dudas.slice(0, 40).map((d) => `    ${d.slug}: ${d.motivo}`).join('\n')}\n`);
         if (plan.noInterpretadas.length) io.out(`- filas sin slug reconocible (quedan en index-anterior.md, no se pierden): ${plan.noInterpretadas.length}\n${plan.noInterpretadas.slice(0, 10).map((f) => `    ${f}`).join('\n')}\n`);
         if (plan.fichaNueva) io.out(`- la ficha recibiria cabecera: modo_consumo=${plan.fichaNueva.modo_consumo || '?'}; faltaria completar datos_prueba, prefijo_contenedores y hosts_produccion\n`);
+        if (plan.fichaRef.length) io.out(`- la ficha moveria a .devteam/ref/, dejando un resumen y el puntero: ${plan.fichaRef.map((m) => `"${m.titulo}" (${m.lineas} lineas) -> ${m.destino}`).join('; ')}\n`);
         io.out('Para aplicarlo: devteam migrate --apply\n');
         return 0;
       }

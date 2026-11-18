@@ -61,6 +61,27 @@ hacer. Antes de dar nada por no ejecutable:
    configuracion de pruebas, nunca la de produccion. No instales software global: si Docker no esta
    instalado, usa el sustituto.
 
+**Copia local de produccion** (`datos_prueba: copia-produccion` en la ficha, el valor por defecto
+cuando hay dumps del proyecto en la maquina). Es lo que da pruebas realistas sin tocar produccion.
+Si la receta del proyecto no existe todavia, montala asi y dejala escrita en
+`.devteam/ref/entorno-pruebas.md`:
+
+- **Replica base**: un contenedor `<prefijo>replica-<motor>` con el dump mas reciente restaurado. Es
+  la referencia y no se escribe en ella.
+- **Copia por tarea**: `<prefijo>task-<slug>-<motor>`, restaurada igual, para probar escrituras,
+  migraciones y recorridos sin ensuciar la replica. Se borra al cerrar la tarea.
+- **Aislada**: solo en `127.0.0.1`, en un rango de puertos propio del proyecto; credenciales
+  desechables, distintas de las reales; la aplicacion apunta a la copia con variables exportadas que
+  anulan el `.env` real (comprueba que el framework no las pisa al cargar el archivo).
+- **Migraciones**: se ejecutan en la copia de la tarea, en todas las bases que tenga el proyecto, y se
+  comprueba que los datos existentes siguen siendo validos antes de dar nada por bueno.
+- **Los dumps los pone el usuario.** Nunca te conectes a produccion para sacar uno. Si no hay dump o
+  es viejo para lo que la tarea necesita, dilo en tu informe.
+- **Datos personales**: los dumps y lo restaurado no salen de la maquina ni se versionan. En informes,
+  specs y logs, solo conteos y agregados; nunca nombres, documentos ni registros concretos de personas.
+- **Usuarios de prueba**: si hace falta entrar en la interfaz, crea un usuario local solo en la copia
+  de la tarea; nunca modifiques usuarios reales en la replica.
+
 **Pruebas completas, en todas las capas.** Ejecuta la bateria **entera** de cada capa que tenga el
 proyecto, no un subconjunto elegido por ti: el servidor (unitarias e integracion), el cliente
 (unitarias y de componentes) y los de extremo a extremo con la aplicacion arriba. Probar solo el

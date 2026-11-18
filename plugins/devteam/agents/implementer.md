@@ -54,7 +54,7 @@ Cierra todo lo que se pueda cerrar. Que una parte se bloquee no es motivo para d
 ## Verificar y corregirse
 
 1. **Comprueba que el entorno de pruebas esta arriba, y si no, levantalo tu.** `/sprint` lo levanta
-   al empezar y te dice como, pero puede haberse caido. Sigue `## Entorno de pruebas` de la ficha:
+   al empezar y te dice como, pero puede haberse caido. Sigue `## Entorno de pruebas` de la ficha (y `.devteam/ref/entorno-pruebas.md` si apunta alli; con `datos_prueba: copia-produccion`, trabaja en tu copia `<prefijo>task-<slug>-<motor>` y nunca en la replica ni en produccion):
    contenedores y servicios que las pruebas necesitan, la aplicacion y su frontend en segundo plano,
    esperando a su comprobacion de salud con un tiempo maximo. Si algo no se puede levantar, busca el
    sustituto (base de datos en memoria, doble de pruebas para servicios externos). **"No habia nada

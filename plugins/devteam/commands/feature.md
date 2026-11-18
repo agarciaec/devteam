@@ -114,8 +114,15 @@ resultado, la duracion y las lineas de error. Conserva el codigo de salida, asi 
 **Las pruebas no esperan al entorno, y son completas.** Que Docker, la base de datos o el servidor
 "no esten arriba" no es motivo para no probar: **lo levantas tu**.
 
-- Sigue `## Entorno de pruebas` de la ficha. Si falta, dice "sin verificar", o no sabes que base,
+- Sigue `## Entorno de pruebas` de la ficha y, si apunta alli, la receta completa de
+  `.devteam/ref/entorno-pruebas.md`. Si falta, dice "sin verificar", o no sabes que base,
   contenedor o dump usar, **recuperalo antes de rendirte** (ver abajo) y corrige la ficha al cerrar.
+- Si la ficha dice `datos_prueba: copia-produccion`, las pruebas van contra una **copia local** de
+  los dumps de produccion, con las reglas que trae el inicio de sesion: solo `127.0.0.1`, una copia
+  por tarea (`<prefijo>task-<slug>-<motor>`) que borras al cerrar, credenciales desechables, el
+  `.env` real anulado con variables exportadas, y en informes y logs solo conteos y agregados. Los
+  dumps los pone el usuario: si faltan o son viejos para lo que pide la tarea, dilo; **nunca te
+  conectes a produccion para obtenerlos**.
 - Si el servicio de contenedores esta parado, arrancalo cuando este instalado (Docker Desktop; en
   Linux, sin `sudo`). Levanta **solo los servicios que las pruebas necesitan**, y la aplicacion y su
   frontend en segundo plano, esperando a su comprobacion de salud con un tiempo maximo.
@@ -387,10 +394,14 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
    Sobre todo anota el defecto que aparecio dos veces, la decision que se tomo y su motivo, y el
    supuesto que resulto equivocado.
 
-   **Poda mientras escribes.** Borra lo que dejo de ser cierto y lo que se volvio obvio porque el
-   codigo cambio. Esta seccion la leen todos los agentes en cada arranque: si crece sin control se
-   convierte en ruido que estorba mas de lo que ayuda. Si pasa de unas veinte entradas, consolida
-   las parecidas en una sola mejor escrita.
+   **Poda mientras escribes, en Lecciones y en Trampas.** Borra lo que dejo de ser cierto y lo que
+   se volvio obvio porque el codigo cambio. La ficha la leen todos los agentes en cada arranque: si
+   crece sin control se convierte en ruido que estorba mas de lo que ayuda. Los limites son 20
+   lecciones, 25 trampas y unas 150 lineas de ficha (`devteam lint` los comprueba); al pasarlos,
+   consolida las parecidas en una sola mejor escrita. Una receta larga (como levantar el entorno,
+   como desplegar) no va en la ficha: va en `.devteam/ref/`, y en la ficha queda su resumen y el
+   puntero. Si una decision de `decisions.md` quedo sustituida, marcala `superada` y muevela a
+   `decisions-historico.md`.
 
    Si la tarea no enseno nada que cumpla las condiciones, no escribas nada. Anotar por anotar
    degrada la ficha.

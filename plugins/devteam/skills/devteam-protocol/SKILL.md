@@ -112,12 +112,20 @@ Un hook **Stop** (desde 0.16) comprueba al final de cada turno las tareas que la
 al segundo intento la deja `parcial` con el motivo en su `log.md`. No toca las que siguen
 `en-curso`, porque pueden estar esperando al usuario.
 
+**Ficha en dos niveles** (desde 0.17): `context.md` es el nucleo (objetivo 150 lineas, 25 trampas,
+20 lecciones); las recetas largas viven en `.devteam/ref/` con un resumen y un puntero en la ficha.
+**Datos de prueba**: con dumps del proyecto en la maquina, las pruebas van contra una copia local
+(replica base y copia por tarea, solo `127.0.0.1`, sin datos personales en informes ni logs); los
+dumps los pone el usuario, nunca se obtienen conectando a produccion.
+
 ## Estructura de `.devteam/`
 
 ```
 .devteam/
 ├── context.md                 # estado actual: la lee todo agente al arrancar
 ├── decisions.md               # decisiones de arquitectura vigentes (la lee tech-lead)
+├── decisions-historico.md     # decisiones superadas, con su motivo
+├── ref/                       # recetas largas (entorno-pruebas.md, despliegue.md, sistemas.md): se leen cuando hacen falta
 ├── audits/<fecha>/            # historia: cada /audit, con su linea base, informes y report.md
 ├── redesign/<fecha>/          # historia: capturas, diagnosis.md, prototipos y plan.md de cada /redesign
 ├── uitest/<fecha>/            # historia: cobertura, fallos con reproduccion y report.md de cada /uitest

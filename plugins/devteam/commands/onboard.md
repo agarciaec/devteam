@@ -57,6 +57,10 @@ Hay cosas que no estan en el codigo. Si son relevantes, preguntaselas al usuario
   guardia de comandos impedira conectarse a ellos). Propon los que hayas visto en la configuracion y
   pide confirmacion; nunca los inventes
 - Que plan de Claude usa, para el modo de consumo (ver la seccion de la plantilla)
+- **Si hay dumps de produccion en esta maquina y donde** (por ejemplo `backups/`, que debe estar en
+  `.gitignore`). Con dumps, las pruebas usan una copia local de produccion (`datos_prueba:
+  copia-produccion`, el valor por defecto); sin ellos, datos sinteticos. Nunca propongas sacar un dump
+  conectandote a produccion: los dumps los pone el usuario
 
 No preguntes lo que puedas averiguar leyendo. El prefijo de los contenedores deducelo de la
 composicion o de `docker ps -a`.
@@ -70,7 +74,7 @@ entre `---` la leen la herramienta devteam y los hooks: respeta su formato (`cla
 ```markdown
 ---
 modo_consumo: equilibrado          # economico | equilibrado | maximo
-datos_prueba: sinteticos           # copia-produccion | sinteticos
+datos_prueba: copia-produccion     # copia-produccion (por defecto si hay dumps del proyecto) | sinteticos
 prefijo_contenedores:              # prefijo de los contenedores de este proyecto, p. ej. miapp-
 hosts_produccion: []               # servidores y bases de produccion: la guardia los bloquea
 datos_sensibles: no                # si | no
@@ -99,7 +103,13 @@ levantado: los servicios de los que depende (base de datos, cola, cache), el com
 y para bajarlos, como saber que estan sanos, como arrancar la aplicacion y el frontend, y con que
 datos de prueba: **que base de datos es la de pruebas, de donde sale su dump (ruta) y como se
 restaura.** Si el proyecto no necesita nada externo, dilo. No lo levantes ahora: escribe lo que
-dedujiste y marcalo "sin verificar"; el primer /feature, /audit o /uitest lo comprobara y lo corregira.>
+dedujiste y marcalo "sin verificar"; el primer /feature, /audit o /uitest lo comprobara y lo corregira.
+Si la receta pasa de unas quince lineas, va completa en `.devteam/ref/entorno-pruebas.md` y aqui
+quedan dos o tres lineas de resumen y el puntero: esta ficha la lee todo agente en cada arranque.>
+
+<La misma regla para cualquier otra receta larga de consulta: como desplegar o la topologia de
+produccion van a `.devteam/ref/despliegue.md`; los sistemas relacionados, a `.devteam/ref/sistemas.md`.
+La ficha apunta, no copia. Objetivo: unas 150 lineas como maximo.>
 
 ## Estructura
 <las carpetas que importan y que hay en cada una>

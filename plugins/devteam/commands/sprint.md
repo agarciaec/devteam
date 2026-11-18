@@ -177,7 +177,7 @@ Con nadie delante, nadie va a levantar Docker ni el servidor por ti, y cada impl
 por su cuenta que "no habia nada arriba" y se saltaria las pruebas. Lo evitas levantandolo **una vez,
 al principio**, y los implementadores lo reutilizan:
 
-1. Levanta lo que las pruebas necesitan siguiendo `## Entorno de pruebas` de la ficha: el servicio
+1. Levanta lo que las pruebas necesitan siguiendo `## Entorno de pruebas` de la ficha (y `.devteam/ref/entorno-pruebas.md` si apunta alli; con `datos_prueba: copia-produccion`, la replica base del dump): el servicio
    de contenedores si esta parado (Docker Desktop; en Linux, sin `sudo`), solo los servicios que las
    pruebas usan, y la aplicacion y su frontend en segundo plano, esperando a su comprobacion de salud
    con un tiempo maximo. Si la ficha no lo describe, dice "sin verificar" o no sabes que base o dump

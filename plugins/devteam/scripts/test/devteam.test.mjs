@@ -486,3 +486,30 @@ test('el hook de cierre por linea de comandos responde JSON valido', async () =>
   assert.equal(r.status, 0);
   assert.equal(JSON.parse(r.stdout).decision, 'block');
 });
+
+// ---------------------------------------------------------------- ficha en dos niveles
+
+import { planearFicha } from '../devteam.mjs';
+
+test('migrate mueve las recetas largas a ref/ y deja resumen y puntero', async () => {
+  const receta = Array.from({ length: 35 }, (_, i) => `- paso ${i}: docker run demo-pg-${i}`).join('\n');
+  const root = proyecto({
+    '.devteam/context.md': `---\nmodo_consumo: equilibrado\ndatos_prueba: copia-produccion\nprefijo_contenedores: demo-\n---\n# Ficha\n\n## Stack\nDjango\n\n## Entorno de pruebas\nCopia local del dump de backups/ en demo-replica-pg.\n${receta}\n\n## Topologia de produccion\n${receta}\n\n## Lecciones del proyecto\n- una\n`,
+  });
+  await cli(root, 'new', 'x-y');
+  assert.deepEqual(planearFicha(root).map((m) => m.destino), ['entorno-pruebas.md', 'despliegue.md']);
+  assert.equal((await cli(root, 'migrate', '--apply')).codigo, 0);
+  const ficha = leer(root, '.devteam/context.md');
+  assert.match(ficha, /^---\nmodo_consumo: equilibrado/);
+  assert.match(ficha, /## Entorno de pruebas\nCopia local del dump/);
+  assert.match(ficha, /Receta completa: `\.devteam\/ref\/entorno-pruebas\.md`/);
+  assert.doesNotMatch(ficha, /paso 34/);
+  assert.match(ficha, /## Lecciones del proyecto\n- una/);
+  assert.match(leer(root, '.devteam/ref/entorno-pruebas.md'), /paso 34/);
+  assert.match(leer(root, '.devteam/ref/despliegue.md'), /## Topologia de produccion/);
+  assert.equal(planearFicha(root).length, 0, 'no vuelve a moverla');
+  const t = textoInicio(root, '/r/devteam.mjs');
+  assert.match(t, /ref\/entorno-pruebas\.md/);
+  assert.match(t, /copia LOCAL de los dumps/);
+  assert.match(t, /demo-task-<slug>/);
+});

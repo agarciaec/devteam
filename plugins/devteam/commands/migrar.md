@@ -57,9 +57,22 @@ Este comando convierte un proyecto que tiene el formato anterior.
 
    Escribelos en la cabecera de `.devteam/context.md`.
 
-7. **Comprueba** con `devteam lint` y `devteam status`, y resume el resultado.
+7. **Ficha en dos niveles.** La migracion ya movio a `.devteam/ref/` las recetas largas (entorno de
+   pruebas, despliegue, sistemas), dejando en `context.md` un resumen y el puntero: revisa que ese
+   resumen diga lo esencial en dos o tres lineas y corrigelo si no. `context.md` es lo que lee todo
+   agente en cada arranque; lo de `ref/` se abre cuando hace falta.
 
-8. Si hay git, propon un commit local **solo con `.devteam/`** (`chore(devteam): migrar al formato
+8. **Consolidar lo que la maquina no puede.** Si `devteam lint` avisa de que la ficha pasa de 150
+   lineas o de que Trampas (limite 25) o Lecciones (limite 20) tienen demasiadas entradas, propon la
+   consolidacion: unir las entradas que dicen lo mismo, quitar las que dejaron de ser ciertas o se
+   volvieron obvias, y mover a `ref/` las secciones largas de consulta (estructura detallada, control
+   de versiones, procedimientos). Las decisiones sustituidas de `decisions.md` se marcan `superada` y
+   se mueven a `decisions-historico.md`. **Muestra al usuario el antes y el despues en numeros y las
+   entradas que propones quitar, y aplica solo con su confirmacion**: es conocimiento del proyecto.
+
+9. **Comprueba** con `devteam lint` y `devteam status`, y resume el resultado.
+
+10. Si hay git, propon un commit local **solo con `.devteam/`** (`chore(devteam): migrar al formato
    estructurado`). No hagas push.
 
 Cierra diciendo cuantas tareas quedaron en cada estado y cuales conviene revisar a mano.
