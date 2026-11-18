@@ -101,6 +101,12 @@ no dependen de que el modelo las recuerde: una tarea no puede quedar `cerrada` s
 sin pruebas en `ok` o, si toca pantallas, sin prueba de extremo a extremo. Lo que no se cumple queda
 `parcial` con `falta`. Los proyectos con el formato anterior se convierten con `/devteam:migrar`.
 
+Un hook **PreToolUse** sobre Bash aplica una guardia (desde 0.15): deniega conectarse a los
+`hosts_produccion` de la ficha, `--no-verify`, forzar push a ramas principales, push durante un
+`/sprint` de la sesion y versionar dumps; pregunta antes de borrar contenedores o volumenes sin el
+`prefijo_contenedores` del proyecto, de `docker ... prune`, de `compose down -v` y de borrados
+recursivos fuera del proyecto. Si la guardia deniega algo, no se rodea: se cuenta al usuario.
+
 ## Estructura de `.devteam/`
 
 ```

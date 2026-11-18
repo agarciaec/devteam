@@ -568,6 +568,12 @@ poda—. Desde la 0.14, lo comprobable lo comprueba codigo:
   parcial y los sprints a medias. En proyectos sin `.devteam/` no hace nada.
 - **`/migrar`** convierte un proyecto con el formato anterior, con simulacro previo y sin perder nada:
   el indice anterior queda guardado entero.
+- **Guardia antes de cada comando de shell.** Lo inequivoco se **deniega**: conectarse a un host que
+  la ficha declara en `hosts_produccion`, `--no-verify`, forzar el push a `main`/`master`/`develop`,
+  hacer push durante un `/sprint` y versionar dumps o respaldos. Lo que puede ser legitimo se
+  **pregunta**: borrar contenedores o volumenes sin el `prefijo_contenedores` del proyecto (varios
+  proyectos comparten maquina), `docker ... prune`, `compose down -v` y borrados recursivos fuera del
+  proyecto. Tarda unos 70 ms por comando y no lee nada si el comando no le concierne.
 
 El repositorio del plugin tiene su propio `pre-commit` (`.githooks/`): no deja confirmar cambios de
 un plugin sin subir su version, ni un README que no cuadre con los comandos, ni la herramienta con

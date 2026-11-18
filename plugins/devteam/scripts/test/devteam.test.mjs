@@ -358,3 +358,73 @@ test('migra indices sin cabecera de tabla y carpetas sin spec.md', () => {
   assert.equal(por['solo-con-log'].data.estado, 'parcial');
   assert.equal(plan.acciones.length, 3);
 });
+
+// ---------------------------------------------------------------- guardia de comandos
+
+import { evaluarComando, partirComando, guardia, RE_GUARDIA } from '../devteam.mjs';
+
+const ctxBase = { root: process.cwd(), prefijo: 'demo-', hostsProduccion: ['10.0.0.5', 'db.cliente.com'], sprintActivo: false, archivosSinVersionar: () => [] };
+const decide = (cmd, extra = {}) => evaluarComando(cmd, { ...ctxBase, ...extra }).decision;
+
+test('partirComando respeta comillas y separadores', () => {
+  assert.deepEqual(partirComando('git commit -m "a; b" && git push origin main'), [['git', 'commit', '-m', 'a; b'], ['git', 'push', 'origin', 'main']]);
+  assert.deepEqual(partirComando("echo 'x|y' | grep x"), [['echo', 'x|y'], ['grep', 'x']]);
+});
+
+test('la guardia deniega conexiones a produccion y pregunta por otras menciones', () => {
+  assert.equal(decide('psql -h 10.0.0.5 -U app sti_db'), 'deny');
+  assert.equal(decide('DATABASE_URL=postgres://u:p@db.cliente.com:5432/x npm test'), 'deny');
+  assert.equal(decide('ssh admin@db.cliente.com'), 'ask');
+  assert.equal(decide('psql -h 127.0.0.1 -p 55440 -U postgres sti_db'), 'allow');
+  assert.equal(decide('psql -h 10.0.0.50 x'), 'allow', 'otro host que solo comparte prefijo');
+});
+
+test('la guardia deniega saltarse hooks y forzar ramas principales', () => {
+  assert.equal(decide('git commit --no-verify -m x'), 'deny');
+  assert.equal(decide('git commit -n -m x'), 'deny');
+  assert.equal(decide('git push --force origin main'), 'deny');
+  assert.equal(decide('git push -f origin HEAD:master'), 'deny');
+  assert.equal(decide('git push --force-with-lease origin feat/x'), 'allow');
+  assert.equal(decide('git push -f'), 'ask');
+  assert.equal(decide('git push origin feat/x'), 'allow');
+  assert.equal(decide('git push origin feat/x', { sprintActivo: true }), 'deny');
+});
+
+test('la guardia no deja versionar dumps', () => {
+  assert.equal(decide('git add backups/sti_db_20261011.dump'), 'deny');
+  assert.equal(decide('git add -A', { archivosSinVersionar: () => ['src/a.py', 'backups/x.dump'] }), 'deny');
+  assert.equal(decide('git add -A', { archivosSinVersionar: () => ['src/a.py'] }), 'allow');
+  assert.equal(decide('git add src/a.py'), 'allow');
+});
+
+test('la guardia pregunta antes de tocar contenedores ajenos o borrar fuera', () => {
+  assert.equal(decide('docker rm -f demo-task-x-pg'), 'allow');
+  assert.equal(decide('docker rm -f otro-proyecto-db'), 'ask');
+  assert.equal(decide('docker volume rm rclinic_pgdata'), 'ask');
+  assert.equal(decide('docker stop otro-proyecto-db'), 'allow', 'parar es reversible');
+  assert.equal(decide('docker rm -f x', { prefijo: '' }), 'ask');
+  assert.equal(decide('docker system prune -af'), 'ask');
+  assert.equal(decide('docker compose down -v'), 'ask');
+  assert.equal(decide('docker compose down'), 'allow');
+  assert.equal(decide('rm -rf node_modules dist'), 'allow');
+  assert.equal(decide('rm -rf ~/proyectos'), 'ask');
+  assert.equal(decide('rm -rf /'), 'ask');
+});
+
+test('la guardia no hace nada con comandos ajenos ni fuera de un proyecto', () => {
+  assert.equal(RE_GUARDIA.test('npm test'), false);
+  assert.equal(guardia({ tool_input: { command: 'npm test' } }), null);
+  const fuera = fs.mkdtempSync(path.join(os.tmpdir(), 'sin-devteam-'));
+  assert.equal(guardia({ cwd: fuera, tool_input: { command: 'git push --force origin main' } }), null);
+});
+
+test('la guardia lee la ficha y el sprint en curso del proyecto', async () => {
+  const root = proyecto({ '.devteam/context.md': '---\nprefijo_contenedores: demo-\nhosts_produccion: [10.9.9.9]\n---\n# Ficha\n' });
+  const r = guardia({ cwd: root, tool_input: { command: 'mysql -h 10.9.9.9 app' } });
+  assert.equal(r.hookSpecificOutput.permissionDecision, 'deny');
+  assert.match(r.hookSpecificOutput.permissionDecisionReason, /produccion/);
+  fs.mkdirSync(path.join(root, '.devteam/runs/2026-11-18'), { recursive: true });
+  fs.writeFileSync(path.join(root, '.devteam/runs/2026-11-18/run.md'), '---\nestado: en-curso\nsession_id: s-1\n---\n# Sprint\n');
+  assert.equal(guardia({ cwd: root, session_id: 's-1', tool_input: { command: 'git push origin feat/x' } }).hookSpecificOutput.permissionDecision, 'deny');
+  assert.equal(guardia({ cwd: root, session_id: 'otra', tool_input: { command: 'git push origin feat/x' } }), null);
+});

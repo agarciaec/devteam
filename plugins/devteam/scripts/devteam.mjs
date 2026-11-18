@@ -755,6 +755,155 @@ export function textoInicio(root, rutaScript, ahora = new Date()) {
   return L.slice(0, 40).join('\n');
 }
 
+// ---------------------------------------------------------------- guardia de comandos
+// Solo deniega lo inequivoco (un host de produccion declarado, saltarse hooks, forzar la rama
+// principal, publicar en un sprint, versionar dumps). Lo que puede ser legitimo, lo pregunta.
+
+// Filtro rapido: si el comando no menciona nada de esto, la guardia no hace ni lee nada.
+export const RE_GUARDIA = /(psql|mysql|mariadb|mongo|sqlcmd|pg_dump|pg_restore|redis-cli|ssh|scp|rsync|curl|wget|:\/\/|_HOST=|--no-verify|\bgit\b|docker|podman|\brm\b)/i;
+
+export function partirComando(cmd) {
+  const segmentos = [];
+  let tokens = [];
+  let actual = '';
+  let comilla = null;
+  let enToken = false;
+  const cerrarToken = () => { if (enToken) tokens.push(actual); actual = ''; enToken = false; };
+  const cerrarSegmento = () => { cerrarToken(); if (tokens.length) segmentos.push(tokens); tokens = []; };
+  for (let i = 0; i < cmd.length; i++) {
+    const c = cmd[i];
+    if (comilla) { if (c === comilla) comilla = null; else actual += c; continue; }
+    if (c === '"' || c === "'") { comilla = c; enToken = true; continue; }
+    if (c === '\\' && i + 1 < cmd.length) { actual += cmd[++i]; enToken = true; continue; }
+    if (c === ';' || c === '\n' || c === '|' || c === '&') {
+      cerrarSegmento();
+      if ((c === '|' || c === '&') && cmd[i + 1] === c) i++;
+      continue;
+    }
+    if (/\s/.test(c)) { cerrarToken(); continue; }
+    actual += c;
+    enToken = true;
+  }
+  cerrarSegmento();
+  return segmentos;
+}
+
+const escaparRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const RE_DUMP = /(\.(dump|dmp|bak|sql\.gz|sql\.zip)$|(^|[/\\])backups?([/\\]|$))/i;
+const RAMAS_PRINCIPALES = /^(\+?(refs\/heads\/)?(main|master|develop|trunk|produccion|production))$/;
+
+function contiene(ruta, base) {
+  const r = path.resolve(base, ruta);
+  const rel = path.relative(base, r);
+  return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+}
+
+// ctx: { root, prefijo, hostsProduccion: [], sprintActivo: bool, archivosSinVersionar: () => [] }
+export function evaluarComando(cmd, ctx) {
+  const hosts = (ctx.hostsProduccion || []).filter(Boolean);
+  for (const h of hosts) {
+    const re = new RegExp(`(^|[^\\w.-])${escaparRe(h)}([^\\w.-]|$)`, 'i');
+    if (!re.test(cmd)) continue;
+    if (/(psql|mysql|mariadb|mongo|mongosh|sqlcmd|pg_dump|pg_restore|redis-cli|:\/\/|_HOST=)/i.test(cmd)) {
+      return { decision: 'deny', motivo: `el comando apunta a "${h}", declarado como produccion en hosts_produccion de la ficha. Las pruebas van contra la copia local o los contenedores de prueba del proyecto, nunca contra produccion.` };
+    }
+    return { decision: 'ask', motivo: `el comando menciona "${h}", declarado como produccion en la ficha. Confirma que es una accion tuya y no una prueba.` };
+  }
+  for (const seg of partirComando(cmd)) {
+    const [prog, ...args] = seg;
+    if (!prog) continue;
+    const base = path.basename(prog).toLowerCase();
+    if (base === 'git') {
+      const sub = args.find((a) => !a.startsWith('-'));
+      if (args.includes('--no-verify') || (sub === 'commit' && args.includes('-n'))) {
+        return { decision: 'deny', motivo: 'saltarse los hooks de git (--no-verify) no esta permitido: si un hook falla, arregla la causa o deja la tarea parcial y reportalo.' };
+      }
+      if (sub === 'push') {
+        if (ctx.sprintActivo) {
+          return { decision: 'deny', motivo: 'hay un /sprint en curso en esta sesion y el sprint no publica nada: los commits quedan locales y el usuario los sube despues con /ship.' };
+        }
+        const forzado = args.some((a) => a === '-f' || a === '--force' || a.startsWith('--force-with-lease') || /^\+/.test(a));
+        const destinos = args.filter((a) => !a.startsWith('-')).slice(2);
+        const refs = args.filter((a) => !a.startsWith('-')).slice(1);
+        if (forzado && refs.some((r) => RAMAS_PRINCIPALES.test(r.split(':').pop()))) {
+          return { decision: 'deny', motivo: 'forzar el push a una rama principal reescribe historial que otros ya tienen: no se hace.' };
+        }
+        if (forzado && !destinos.length) {
+          return { decision: 'ask', motivo: 'push forzado sin rama explicita: confirma que la rama actual no es compartida.' };
+        }
+      }
+      if (sub === 'add') {
+        const rutas = args.filter((a) => !a.startsWith('-') && a !== 'add');
+        const directas = rutas.filter((r) => RE_DUMP.test(r));
+        if (directas.length) {
+          return { decision: 'deny', motivo: `${directas.join(', ')} parece un dump o un respaldo de datos: nunca se versiona. Anadelo a .gitignore.` };
+        }
+        const masivo = args.includes('-A') || args.includes('--all') || rutas.includes('.') || rutas.includes('*');
+        if (masivo && ctx.archivosSinVersionar) {
+          const dumps = ctx.archivosSinVersionar().filter((r) => RE_DUMP.test(r));
+          if (dumps.length) {
+            return { decision: 'deny', motivo: `git add masivo incluiria datos: ${dumps.slice(0, 5).join(', ')}. Anadelos a .gitignore o anade solo los archivos de la tarea.` };
+          }
+        }
+      }
+    }
+    if (base === 'docker' || base === 'podman' || base === 'docker-compose') {
+      const resto = base === 'docker-compose' ? ['compose', ...args] : args;
+      const sinFlags = resto.filter((a) => !a.startsWith('-'));
+      const [s1, s2] = sinFlags;
+      if (['system', 'volume', 'container', 'image', 'network', 'builder'].includes(s1) && s2 === 'prune') {
+        return { decision: 'ask', motivo: `"docker ${s1} prune" borra recursos de todos los proyectos de esta maquina, no solo de este.` };
+      }
+      if (s1 === 'compose' && s2 === 'down' && resto.some((a) => a === '-v' || a === '--volumes')) {
+        return { decision: 'ask', motivo: '"compose down -v" borra los volumenes, con sus datos. Confirma que son solo de pruebas.' };
+      }
+      const destructivo = (s1 === 'rm' || s1 === 'kill' || s1 === 'rmi') ? sinFlags.slice(1)
+        : ((s1 === 'container' && ['rm', 'kill'].includes(s2)) || (s1 === 'volume' && s2 === 'rm')) ? sinFlags.slice(2) : null;
+      if (destructivo && destructivo.length) {
+        const ajenos = ctx.prefijo ? destructivo.filter((n) => !n.startsWith(ctx.prefijo)) : destructivo;
+        if (ajenos.length) {
+          return { decision: 'ask', motivo: ctx.prefijo
+            ? `${ajenos.join(', ')} no lleva el prefijo "${ctx.prefijo}" de este proyecto: puede ser de otro proyecto de la maquina.`
+            : `la ficha no declara prefijo_contenedores, asi que no se puede saber si ${ajenos.join(', ')} es de este proyecto.` };
+        }
+      }
+    }
+    if (base === 'rm' && args.some((a) => /^-[a-zA-Z]*[rR]/.test(a) || a === '--recursive')) {
+      const objetivos = args.filter((a) => !a.startsWith('-'));
+      const fuera = objetivos.filter((o) => /^(~|\$HOME|\$\{HOME\})/.test(o) || o === '/' || o === '*' || (ctx.root && !contiene(o, process.cwd()) && !contiene(o, ctx.root)));
+      if (fuera.length) {
+        return { decision: 'ask', motivo: `borrado recursivo fuera del proyecto: ${fuera.join(', ')}.` };
+      }
+    }
+  }
+  return { decision: 'allow' };
+}
+
+function sprintActivoDe(root, sessionId) {
+  if (!sessionId) return false;
+  return estadoProyecto(root).sprints.some((s) => s.estado === 'en-curso' && s.session_id === sessionId);
+}
+
+export function guardia(entrada) {
+  const cmd = entrada?.tool_input?.command;
+  if (typeof cmd !== 'string' || !RE_GUARDIA.test(cmd)) return null;
+  const root = buscarRaiz(entrada.cwd || process.cwd());
+  if (!root) return null;
+  const f = leerFicha(root).data;
+  const r = evaluarComando(cmd, {
+    root,
+    prefijo: typeof f.prefijo_contenedores === 'string' ? f.prefijo_contenedores : '',
+    hostsProduccion: Array.isArray(f.hosts_produccion) ? f.hosts_produccion : [],
+    sprintActivo: /\bgit\b[\s\S]*\bpush\b/.test(cmd) && sprintActivoDe(root, entrada.session_id),
+    archivosSinVersionar: () => {
+      const g = spawnSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' });
+      return g.status === 0 ? g.stdout.split('\n').filter(Boolean) : [];
+    },
+  });
+  if (r.decision === 'allow') return null;
+  return { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: r.decision, permissionDecisionReason: `devteam: ${r.motivo}` } };
+}
+
 function registrarErrorHook(e) {
   try {
     fs.appendFileSync(path.join(os.homedir(), '.claude', 'devteam-hooks.log'), `${new Date().toISOString()} ${e?.stack || e}\n`);
@@ -771,6 +920,11 @@ function leerEntradaHook() {
 
 async function hook(nombre, io, entrada = leerEntradaHook()) {
   try {
+    if (nombre === 'pre-bash') {
+      const r = guardia(entrada);
+      if (r) io.out(JSON.stringify(r));
+      return 0;
+    }
     const root = buscarRaiz(entrada.cwd || process.cwd());
     if (!root) return 0;
     if (nombre === 'session-start') {

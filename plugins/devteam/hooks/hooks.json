@@ -1,5 +1,5 @@
 {
-  "description": "devteam: al iniciar sesion inyecta el estado del proyecto (tareas, entorno de pruebas, modo de consumo) y la ruta de la herramienta devteam. No hace nada en proyectos sin .devteam/.",
+  "description": "devteam: al iniciar sesion inyecta el estado del proyecto; antes de cada comando de shell aplica la guardia (produccion, hooks de git, ramas principales, dumps, contenedores ajenos). No hace nada en proyectos sin .devteam/.",
   "hooks": {
     "SessionStart": [
       {
@@ -7,6 +7,18 @@
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/devteam.mjs\" hook session-start",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/devteam.mjs\" hook pre-bash",
             "timeout": 10
           }
         ]
