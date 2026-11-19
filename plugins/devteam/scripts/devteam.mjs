@@ -14,7 +14,7 @@ export const NIVELES = ['ligero', 'estandar', 'completo'];
 export const GRAVEDADES = ['critica', 'alta', 'media', 'baja', '-'];
 const SI_NO = ['si', 'no'];
 const VALORES_VERIFICACION = {
-  pruebas: ['ok', 'fallo', 'no-ejecutadas', 'desconocido'],
+  pruebas: ['ok', 'fallo', 'no-ejecutadas', 'no-aplica', 'desconocido'],
   e2e: ['ok', 'pendiente', 'no-aplica', 'desconocido'],
   dispositivo: ['ok', 'pendiente', 'no-aplica', 'desconocido'],
 };
@@ -357,6 +357,18 @@ function commitExiste(root, c) {
   return spawnSync('git', ['cat-file', '-e', `${c}^{commit}`], { cwd: root }).status === 0;
 }
 
+// Archivos de codigo que cambia un commit: todo lo que no es .devteam/ ni documentacion.
+function codigoDelCommit(root, c) {
+  const r = spawnSync('git', ['show', '--name-only', '--format=', c], { cwd: root, encoding: 'utf8' });
+  if (r.status !== 0) return [];
+  return r.stdout.split('\n').map((l) => l.trim()).filter((l) => l && !/^\.devteam\//.test(l) && !/\.(md|txt|rst)$/i.test(l));
+}
+
+function hayRegistros(dir) {
+  const logs = path.join(dir, 'logs');
+  return fs.existsSync(logs) && fs.readdirSync(logs).some((f) => f.endsWith('.log'));
+}
+
 export function comprobarTarea(root, slug) {
   const errores = [];
   const avisos = [];
@@ -372,11 +384,23 @@ export function comprobarTarea(root, slug) {
   if (d.estado === 'pendiente') errores.push(`el estado es "pendiente": si se trabajo en ella, fija el estado real (${fijar('estado=...')})`);
 
   if (d.estado === 'cerrada') {
-    if (enGit(root)) {
+    const git = enGit(root);
+    const commitValido = git && d.commit && commitExiste(root, d.commit);
+    if (git) {
       if (!d.commit) errores.push(`cerrada sin commit: haz el commit y registralo (${fijar('commit=<hash>')})`);
-      else if (!commitExiste(root, d.commit)) errores.push(`el commit "${d.commit}" no existe en este repositorio`);
+      else if (!commitValido) errores.push(`el commit "${d.commit}" no existe en este repositorio`);
     }
-    if (v.pruebas !== 'ok') errores.push(`cerrada con verificacion.pruebas="${v.pruebas ?? ''}": ejecuta las pruebas (devteam run) y registra ${fijar('verificacion.pruebas=ok')}, o deja la tarea parcial`);
+    if (v.pruebas === 'no-aplica') {
+      // Solo para tareas sin nada que probar: inventarios, analisis, documentacion.
+      if (d.toca_pantallas === 'si') errores.push('verificacion.pruebas="no-aplica" en una tarea que toca pantallas: ahi siempre hay algo que probar');
+      const codigo = commitValido ? codigoDelCommit(root, d.commit) : [];
+      if (codigo.length) errores.push(`verificacion.pruebas="no-aplica" pero el commit cambia codigo (${codigo.slice(0, 3).join(', ')}${codigo.length > 3 ? '...' : ''}): ejecuta las pruebas`);
+    } else if (v.pruebas !== 'ok') {
+      errores.push(`cerrada con verificacion.pruebas="${v.pruebas ?? ''}": ejecuta las pruebas (devteam run) y registra ${fijar('verificacion.pruebas=ok')}, o deja la tarea parcial (si la tarea no cambia codigo, ${fijar('verificacion.pruebas=no-aplica')})`);
+    }
+    if ((v.pruebas === 'ok' || v.e2e === 'ok') && !hayRegistros(t.dir)) {
+      avisos.push(`verificacion dice "ok" pero tasks/${slug}/logs/ no tiene registros: ejecuta las pruebas con devteam run para que quede la evidencia`);
+    }
     if (d.toca_pantallas === 'si' && v.e2e !== 'ok') errores.push(`toca pantallas y verificacion.e2e="${v.e2e ?? ''}": ejecuta el script de extremo a extremo y registra ${fijar('verificacion.e2e=ok')}, o marca la tarea parcial con falta`);
     if (v.dispositivo === 'pendiente') errores.push(`verificacion.dispositivo esta pendiente: pruebala en un dispositivo o emulador, o deja la tarea parcial con falta`);
   }
@@ -398,6 +422,31 @@ export function comprobarTarea(root, slug) {
     avisos.push('el indice no lo genera devteam (formato anterior): no se comprueba la fila');
   }
   return { ok: errores.length === 0, errores, avisos };
+}
+
+// Una tarea que se cierra sin cumplir el minimo y sin haberse trabajado en esta sesion (venia
+// parcial, bloqueada o pendiente) es un cierre deliberado, p. ej. "partir de cero" tras migrar:
+// se permite, pero queda escrito en su log.md. Desde en-curso no se anota: ese es el flujo normal
+// de /feature, donde el commit o la verificacion pueden registrarse en el siguiente set, y el hook
+// de cierre ya vigila el resultado.
+export function anotarCierreSinMinimo(root, slug, anterior, errores) {
+  if (!anterior || anterior === 'en-curso') return false;
+  const log = path.join(dirTareas(root), slug, 'log.md');
+  if (!fs.existsSync(log)) return false;
+  // Ojo: el motivo no puede contener "entorno de pruebas usado", que es justo la linea que busca check.
+  const motivos = errores.filter((e) => !/indice/.test(e))
+    .map((e) => (/entorno de pruebas usado/i.test(e) ? 'sin entorno registrado' : e.split(':')[0])).join('; ');
+  fs.appendFileSync(log, `\n- ${hoy()}: pasa de "${anterior}" a "cerrada" sin cumplir el minimo (${motivos}).\n`);
+  return true;
+}
+
+// La marca .activa es de la sesion, no del proyecto: no debe acabar en un commit.
+export function ignorarMarcas(root) {
+  const gi = path.join(root, '.devteam', '.gitignore');
+  const actual = fs.existsSync(gi) ? leer(gi) : '';
+  if (/^\.activa\s*$/m.test(actual)) return false;
+  fs.writeFileSync(gi, `${actual}${actual && !actual.endsWith('\n') ? '\n' : ''}# marcas de tarea en curso de cada sesion (devteam begin)\n.activa\n`);
+  return true;
 }
 
 // ---------------------------------------------------------------- estado del proyecto
@@ -818,7 +867,7 @@ export function textoInicio(root, rutaScript, ahora = new Date()) {
   }
   L.push(`Modo de consumo: ${f.data.modo_consumo || 'sin declarar'}. Datos de prueba: ${f.data.datos_prueba || 'sin declarar'}${f.data.datos_sensibles === 'si' ? ' (datos sensibles: nunca copies datos personales a informes ni logs)' : ''}.`);
   if (f.data.datos_prueba === 'copia-produccion') {
-    L.push(`Las pruebas usan una copia LOCAL de los dumps de produccion: solo en 127.0.0.1, una copia por tarea (${f.data.prefijo_contenedores || '<prefijo>'}task-<slug>-<motor>) que se borra al cerrar, credenciales desechables, el .env real anulado con variables exportadas. Los dumps los pone el usuario: nunca conectes a produccion para obtenerlos. En informes, specs y logs solo conteos y agregados, nunca datos personales.`);
+    L.push(`Las pruebas usan una copia LOCAL de los dumps de produccion: solo en 127.0.0.1, una copia por tarea (${[].concat(f.data.prefijo_contenedores || [])[0] || '<prefijo>'}task-<slug>-<motor>) que se borra al cerrar, credenciales desechables, el .env real anulado con variables exportadas. Los dumps los pone el usuario: nunca conectes a produccion para obtenerlos. En informes, specs y logs solo conteos y agregados, nunca datos personales.`);
   }
   const receta = seccion(f.texto, /^entorno de pruebas/).map((l) => l.trim()).filter((l) => l && !l.startsWith('<') && !l.startsWith('```') && !l.startsWith('|'));
   L.push(receta.length
@@ -869,7 +918,8 @@ export function partirComando(cmd) {
 }
 
 const escaparRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const RE_DUMP = /(\.(dump|dmp|bak|sql\.gz|sql\.zip)$|(^|[/\\])backups?([/\\]|$))/i;
+// Dumps y respaldos, tambien con numero al final (.dump2, .bak3) y comprimidos.
+const RE_DUMP = /(\.(dump|dmp|bak|backup|pgdump)\d*$|\.sql\.(gz|zip|bz2|xz|7z)$|(^|[/\\])backups?([/\\]|$))/i;
 const RAMAS_PRINCIPALES = /^(\+?(refs\/heads\/)?(main|master|develop|trunk|produccion|production))$/;
 
 function contiene(ruta, base) {
@@ -878,9 +928,10 @@ function contiene(ruta, base) {
   return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
 }
 
-// ctx: { root, prefijo, hostsProduccion: [], sprintActivo: bool, archivosSinVersionar: () => [] }
+// ctx: { root, prefijo (texto o lista), hostsProduccion: [], sprintActivo: bool, archivosSinVersionar: () => [] }
 export function evaluarComando(cmd, ctx) {
   const hosts = (ctx.hostsProduccion || []).filter(Boolean);
+  const prefijos = [].concat(ctx.prefijo || []).map((p) => String(p).trim()).filter(Boolean);
   for (const h of hosts) {
     const re = new RegExp(`(^|[^\\w.-])${escaparRe(h)}([^\\w.-]|$)`, 'i');
     if (!re.test(cmd)) continue;
@@ -940,10 +991,10 @@ export function evaluarComando(cmd, ctx) {
       const destructivo = (s1 === 'rm' || s1 === 'kill' || s1 === 'rmi') ? sinFlags.slice(1)
         : ((s1 === 'container' && ['rm', 'kill'].includes(s2)) || (s1 === 'volume' && s2 === 'rm')) ? sinFlags.slice(2) : null;
       if (destructivo && destructivo.length) {
-        const ajenos = ctx.prefijo ? destructivo.filter((n) => !n.startsWith(ctx.prefijo)) : destructivo;
+        const ajenos = prefijos.length ? destructivo.filter((n) => !prefijos.some((p) => n.startsWith(p))) : destructivo;
         if (ajenos.length) {
-          return { decision: 'ask', motivo: ctx.prefijo
-            ? `${ajenos.join(', ')} no lleva el prefijo "${ctx.prefijo}" de este proyecto: puede ser de otro proyecto de la maquina.`
+          return { decision: 'ask', motivo: prefijos.length
+            ? `${ajenos.join(', ')} no lleva el prefijo de este proyecto (${prefijos.map((p) => `"${p}"`).join(' o ')}): puede ser de otro proyecto de la maquina.`
             : `la ficha no declara prefijo_contenedores, asi que no se puede saber si ${ajenos.join(', ')} es de este proyecto.` };
         }
       }
@@ -972,7 +1023,7 @@ export function guardia(entrada) {
   const f = leerFicha(root).data;
   const r = evaluarComando(cmd, {
     root,
-    prefijo: typeof f.prefijo_contenedores === 'string' ? f.prefijo_contenedores : '',
+    prefijo: Array.isArray(f.prefijo_contenedores) || typeof f.prefijo_contenedores === 'string' ? f.prefijo_contenedores : '',
     hostsProduccion: Array.isArray(f.hosts_produccion) ? f.hosts_produccion : [],
     sprintActivo: /\bgit\b[\s\S]*\bpush\b/.test(cmd) && sprintActivoDe(root, entrada.session_id),
     archivosSinVersionar: () => {
@@ -1124,9 +1175,17 @@ export async function main(argv, io = { out: (s) => process.stdout.write(s), err
       }
       case 'set': {
         if (!args[0] || args.length < 2) throw new Error('uso: set <slug> clave=valor ...');
+        const anterior = cargarTareas(root).find((t) => t.slug === args[0])?.data?.estado || '';
         const d = cambiarTarea(root, args[0], args.slice(1));
         indexar();
         io.out(`${args[0]}: estado ${d.estado}\n`);
+        if (d.estado === 'cerrada' && anterior !== 'cerrada') {
+          const r = comprobarTarea(root, args[0]);
+          if (!r.ok) {
+            io.out(`aviso: cerrada sin cumplir el minimo:\n${r.errores.map((e) => `- ${e}`).join('\n')}\n`);
+            if (anotarCierreSinMinimo(root, args[0], anterior, r.errores)) io.out(`queda anotado en tasks/${args[0]}/log.md\n`);
+          }
+        }
         return 0;
       }
       case 'index': {
@@ -1164,6 +1223,7 @@ export async function main(argv, io = { out: (s) => process.stdout.write(s), err
         cambiarTarea(root, args[0], ['estado=en-curso']);
         const marca = { session_id: env.CLAUDE_CODE_SESSION_ID || '', desde: new Date().toISOString() };
         fs.writeFileSync(path.join(dirTareas(root), args[0], '.activa'), JSON.stringify(marca));
+        ignorarMarcas(root);
         indexar();
         io.out(`${args[0]}: en curso${marca.session_id ? '' : ' (sin session_id: el cierre no se vigilara por sesion)'}\n`);
         return 0;
@@ -1175,6 +1235,7 @@ export async function main(argv, io = { out: (s) => process.stdout.write(s), err
         if (!r.ok) { io.out(`${args[0]}: NO se puede cerrar todavia\n${r.errores.map((e) => `- ${e}`).join('\n')}\n`); return 1; }
         fs.rmSync(path.join(dirTareas(root), args[0], '.activa'), { force: true });
         io.out(`${args[0]}: cierre comprobado (${cargarTareas(root).find((t) => t.slug === args[0]).data.estado})\n`);
+        for (const a of r.avisos) io.out(`aviso: ${a}\n`);
         return 0;
       }
       case 'lint': {

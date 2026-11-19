@@ -193,6 +193,70 @@ test('begin y end marcan y cierran la tarea en curso', async () => {
   assert.equal(fs.existsSync(path.join(root, '.devteam/tasks/en-marcha/.activa')), false);
 });
 
+test('begin ignora la marca .activa en git', async () => {
+  const root = proyecto({ '.devteam/.gitignore': 'tmp/' });
+  await cli(root, 'new', 'una');
+  await cli(root, 'begin', 'una');
+  await cli(root, 'new', 'otra');
+  await cli(root, 'begin', 'otra');
+  const gi = leer(root, '.devteam/.gitignore');
+  assert.match(gi, /^tmp\/$/m, 'conserva lo que habia');
+  assert.equal(gi.match(/^\.activa$/gm).length, 1, 'una sola vez');
+});
+
+test('set a cerrada sin el minimo avisa y, si no venia en curso, lo anota en log.md', async () => {
+  const root = proyecto();
+  await cli(root, 'new', 'vieja');
+  fs.writeFileSync(path.join(root, '.devteam/tasks/vieja/log.md'), 'Entorno de pruebas usado: ninguno\n');
+  await cli(root, 'set', 'vieja', 'estado=parcial', 'falta=verlo en navegador');
+  const r = await cli(root, 'set', 'vieja', 'estado=cerrada');
+  assert.match(r.out, /aviso: cerrada sin cumplir el minimo/);
+  assert.match(leer(root, '.devteam/tasks/vieja/log.md'), /pasa de "parcial" a "cerrada" sin cumplir el minimo \(cerrada con verificacion\.pruebas/);
+
+  await cli(root, 'new', 'en-marcha');
+  fs.writeFileSync(path.join(root, '.devteam/tasks/en-marcha/log.md'), 'Entorno de pruebas usado: ninguno\n');
+  await cli(root, 'set', 'en-marcha', 'estado=en-curso');
+  const r2 = await cli(root, 'set', 'en-marcha', 'estado=cerrada');
+  assert.match(r2.out, /aviso: cerrada sin cumplir el minimo/);
+  assert.doesNotMatch(leer(root, '.devteam/tasks/en-marcha/log.md'), /sin cumplir/, 'desde en-curso es el flujo normal');
+
+  const r3 = await cli(root, 'set', 'en-marcha', 'verificacion.pruebas=ok');
+  assert.doesNotMatch(r3.out, /aviso/, 'ya estaba cerrada: no repite');
+});
+
+test('pruebas no-aplica solo vale si no hay codigo ni pantallas', async (t) => {
+  const root = proyecto();
+  await tareaCerrable(root, 'inventario', ['verificacion.pruebas=no-aplica']);
+  assert.ok(comprobarTarea(root, 'inventario').ok, comprobarTarea(root, 'inventario').errores.join('\n'));
+  await cli(root, 'set', 'inventario', 'toca_pantallas=si', 'verificacion.e2e=ok');
+  assert.ok(comprobarTarea(root, 'inventario').errores.some((e) => e.includes('toca pantallas')));
+
+  if (spawnSync('git', ['--version']).status !== 0) return t.skip('git no disponible');
+  const g = proyecto({ 'app.py': 'x = 1\n', 'notas.md': 'hola\n' });
+  const git = (...a) => spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd: g, encoding: 'utf8' });
+  git('init', '-q');
+  git('add', 'app.py');
+  git('commit', '-qm', 'codigo');
+  const conCodigo = git('rev-parse', '--short', 'HEAD').stdout.trim();
+  git('add', 'notas.md');
+  git('commit', '-qm', 'docs');
+  const soloDocs = git('rev-parse', '--short', 'HEAD').stdout.trim();
+  await tareaCerrable(g, 'analisis', ['verificacion.pruebas=no-aplica', `commit=${soloDocs}`]);
+  assert.ok(comprobarTarea(g, 'analisis').ok, comprobarTarea(g, 'analisis').errores.join('\n'));
+  await cli(g, 'set', 'analisis', `commit=${conCodigo}`);
+  assert.ok(comprobarTarea(g, 'analisis').errores.some((e) => e.includes('cambia codigo')));
+});
+
+test('check avisa si la verificacion dice ok sin registros en logs/', async () => {
+  const root = proyecto();
+  await tareaCerrable(root, 'sin-evidencia');
+  const r = comprobarTarea(root, 'sin-evidencia');
+  assert.ok(r.ok, 'es un aviso, no bloquea');
+  assert.ok(r.avisos.some((a) => a.includes('logs/')));
+  await cli(root, 'run', 'sin-evidencia', 'pruebas', '--', 'node -e "1"');
+  assert.equal(comprobarTarea(root, 'sin-evidencia').avisos.some((a) => a.includes('logs/')), false);
+});
+
 // ---------------------------------------------------------------- run
 
 test('run guarda la salida y conserva el codigo de salida', async () => {
@@ -395,6 +459,18 @@ test('la guardia no deja versionar dumps', () => {
   assert.equal(decide('git add -A', { archivosSinVersionar: () => ['src/a.py', 'backups/x.dump'] }), 'deny');
   assert.equal(decide('git add -A', { archivosSinVersionar: () => ['src/a.py'] }), 'allow');
   assert.equal(decide('git add src/a.py'), 'allow');
+  assert.equal(decide('git add demo_prod_2026-11-06.dump2'), 'deny', 'con numero al final');
+  assert.equal(decide('git add datos.bak3'), 'deny');
+  assert.equal(decide('git add base.backup'), 'deny');
+  assert.equal(decide('git add base.sql.bz2'), 'deny');
+  assert.equal(decide('git add migracion.sql'), 'allow', 'un .sql suelto es codigo');
+});
+
+test('la guardia acepta varios prefijos de contenedores', () => {
+  const ctx = { prefijo: ['demo_repair-', 'demo-prodlocal-'] };
+  assert.equal(decide('docker rm -f demo_repair-db-1', ctx), 'allow');
+  assert.equal(decide('docker rm -f demo-prodlocal-pg', ctx), 'allow');
+  assert.equal(decide('docker rm -f demo-otro-pg', ctx), 'ask');
 });
 
 test('la guardia pregunta antes de tocar contenedores ajenos o borrar fuera', () => {

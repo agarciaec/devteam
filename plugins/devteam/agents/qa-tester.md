@@ -145,3 +145,4 @@ Un informe en `.devteam/tasks/<slug>/findings/qa.md` y un resumen en tu respuest
 6. **Verificacion para la cabecera**, en una linea que la sesion copia tal cual a `devteam set`:
    `verificacion.pruebas=ok|fallo|no-ejecutadas verificacion.e2e=ok|pendiente|no-aplica verificacion.dispositivo=ok|pendiente|no-aplica`.
    `ok` solo con la ejecucion que lo demuestra; si no se pudo ejecutar, `pendiente` o `no-ejecutadas`.
+   `verificacion.pruebas=no-aplica` solo si el cambio no toca codigo (inventario, analisis, documentacion).

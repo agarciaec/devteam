@@ -93,7 +93,7 @@ Cierra todo lo que se pueda cerrar. Que una parte se bloquee no es motivo para d
    el indice a mano:
 
    ```
-   node <ruta>/devteam.mjs set <slug> estado=cerrada|parcial|bloqueada commit=<hash> verificacion.pruebas=ok|fallo|no-ejecutadas verificacion.e2e=ok|pendiente|no-aplica entorno="..." falta="..."
+   node <ruta>/devteam.mjs set <slug> estado=cerrada|parcial|bloqueada commit=<hash> verificacion.pruebas=ok|fallo|no-ejecutadas|no-aplica verificacion.e2e=ok|pendiente|no-aplica entorno="..." falta="..."
    ```
 
    `cerrada` exige pruebas en `ok`, commit y, si la tarea toca pantallas, `e2e` en `ok`. Si no lo

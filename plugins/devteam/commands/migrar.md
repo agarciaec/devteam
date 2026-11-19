@@ -50,7 +50,8 @@ Este comando convierte un proyecto que tiene el formato anterior.
      `sinteticos`.
    - `prefijo_contenedores`: el prefijo de los contenedores de este proyecto (deducelo de la
      composicion o de `docker ps -a`, p. ej. `sti-`), para no tocar los de otros proyectos de la
-     maquina.
+     maquina. Si el proyecto usa varios, escribelos como lista: `[miapp_repair-, miapp-prodlocal-]`;
+     no los acortes a un prefijo comun, que cubriria contenedores ajenos.
    - `hosts_produccion`: los servidores y bases de datos de produccion, que la guardia bloqueara.
      Sacalos de la ficha, de los archivos de despliegue o de la configuracion de entorno, y
      confirmalos con el usuario; nunca los inventes.
@@ -71,6 +72,11 @@ Este comando convierte un proyecto que tiene el formato anterior.
    entradas que propones quitar, y aplica solo con su confirmacion**: es conocimiento del proyecto.
 
 9. **Comprueba** con `devteam lint` y `devteam status`, y resume el resultado.
+
+   Si el usuario pide cerrar las parciales "para partir de cero", recomienda `abandonada` en lugar de
+   `cerrada`: tambien las saca de la lista de pendientes, pero el indice no afirma que se verificaron.
+   Con `abandonada` su `falta` ya explica por que. Si aun asi elige `cerrada`, la herramienta lo
+   permite, avisa y deja una linea en el `log.md` de cada tarea.
 
 10. Si hay git, propon un commit local **solo con `.devteam/`** (`chore(devteam): migrar al formato
    estructurado`). No hagas push.

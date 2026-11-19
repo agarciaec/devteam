@@ -349,6 +349,12 @@ casualidad: es una regla que al proyecto le falta. Anotala en la Fase 5.
    probo en un dispositivo o emulador (o en la version web, si el proyecto la tiene y cubre el
    flujo); si no, `pendiente`, y la tarea queda `parcial` con "falta dispositivo".
 
+   Registra solo lo que tiene evidencia: `ok` exige que las pruebas se ejecutaran con `devteam run`
+   (su salida queda en `tasks/<slug>/logs/`; `check` avisa si falta). Si la tarea no cambia codigo
+   —un inventario, un analisis, documentacion— no hay pruebas que ejecutar: usa
+   `verificacion.pruebas=no-aplica` y `verificacion.e2e=no-aplica`, nunca `ok`. La herramienta lo
+   rechaza si la tarea toca pantallas o si su commit cambia codigo.
+
    Si algo quedo sin hacer o sin verificar, el estado honesto es `parcial` (o `bloqueada`) con
    `falta="..."` diciendo que exactamente; nunca `cerrada` con la nota escondida. Si das la tarea
    por cerrada sin cumplir el minimo, el hook de cierre te lo devuelve, y al segundo intento la deja

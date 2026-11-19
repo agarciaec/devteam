@@ -623,16 +623,22 @@ poda—. Desde la 0.14, lo comprobable lo comprueba codigo:
   el indice anterior queda guardado entero.
 - **Guardia antes de cada comando de shell.** Lo inequivoco se **deniega**: conectarse a un host que
   la ficha declara en `hosts_produccion`, `--no-verify`, forzar el push a `main`/`master`/`develop`,
-  hacer push durante un `/sprint` y versionar dumps o respaldos. Lo que puede ser legitimo se
-  **pregunta**: borrar contenedores o volumenes sin el `prefijo_contenedores` del proyecto (varios
-  proyectos comparten maquina), `docker ... prune`, `compose down -v` y borrados recursivos fuera del
+  hacer push durante un `/sprint` y versionar dumps o respaldos (`.dump`, `.dump2`, `.bak`,
+  `.backup`, `.sql.gz` y la carpeta `backups/`). Lo que puede ser legitimo se **pregunta**: borrar
+  contenedores o volumenes sin el `prefijo_contenedores` del proyecto (varios proyectos comparten
+  maquina; si usa varios prefijos, van como lista), `docker ... prune`, `compose down -v` y borrados recursivos fuera del
   proyecto. Tarda unos 70 ms por comando y no lee nada si el comando no le concierne.
 - **Comprobacion de cierre al terminar cada turno.** Si una tarea de la sesion dice estar cerrada,
   parcial o bloqueada sin cumplir el minimo (commit, pruebas en `ok`, prueba de extremo a extremo si
   toca pantallas, que falta si es parcial), el turno no termina: se le devuelve al modelo lo que
   falta. Si insiste, deja pasar, pero la tarea queda como `parcial` con el motivo en su `log.md`: el
   indice nunca dice "cerrada" sin serlo. Las tareas que siguen "en curso" no se tocan, porque pueden
-  estar esperando tu respuesta.
+  estar esperando tu respuesta. Cerrar a mano una tarea que venia parcial o pendiente sin cumplir el
+  minimo se permite, pero la herramienta avisa y lo anota en su `log.md`.
+- **Verificacion con evidencia.** `ok` en las pruebas debe venir de una ejecucion con `devteam run`,
+  cuya salida queda en `logs/`; si no la hay, `check` avisa. Una tarea que no cambia codigo
+  (inventario, analisis) registra `no-aplica`, que la herramienta rechaza si el commit toca codigo o
+  la tarea toca pantallas.
 - **Ficha en dos niveles.** `context.md` es el nucleo que lee todo agente en cada arranque, con un
   objetivo de 150 lineas, 25 trampas y 20 lecciones que `devteam lint` vigila. Las recetas largas
   —como levantar el entorno de pruebas, como desplegar— van a `.devteam/ref/` y en la ficha queda su

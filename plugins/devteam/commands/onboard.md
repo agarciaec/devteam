@@ -75,7 +75,7 @@ entre `---` la leen la herramienta devteam y los hooks: respeta su formato (`cla
 ---
 modo_consumo: equilibrado          # economico | equilibrado | maximo
 datos_prueba: copia-produccion     # copia-produccion (por defecto si hay dumps del proyecto) | sinteticos
-prefijo_contenedores:              # prefijo de los contenedores de este proyecto, p. ej. miapp-
+prefijo_contenedores:              # prefijo de sus contenedores, p. ej. miapp-; si son varios: [miapp-, miapp-prodlocal-]
 hosts_produccion: []               # servidores y bases de produccion: la guardia los bloquea
 datos_sensibles: no                # si | no
 ---
