@@ -17,6 +17,7 @@ El ciclo completo, de instalar a trabajar.
 | Paso | Cuando | Comando |
 |---|---|---|
 | 1. Instalar | Una vez por maquina | `claude plugin marketplace add agarciaec/devteam` |
+| 1b. Migrar | Una vez por proyecto que ya usaba el equipo antes de la 0.14 | `/migrar` |
 | 2. Presentar el proyecto | Una vez por proyecto | `/kickoff` si es nuevo, `/onboard` si ya existe |
 | 2b. Revisar su salud | Tras el onboarding y cada cierto tiempo | `/audit` |
 | 2c. Revisar la interfaz | Cuando la interfaz se queda vieja o incomoda | `/redesign` |
@@ -36,6 +37,52 @@ Claude Code.
 claude plugin marketplace add agarciaec/devteam
 claude plugin install devteam@devteam-local
 ```
+
+**1b. Migrar un proyecto que ya usaba el equipo.** Solo hace falta en proyectos cuyo `.devteam/` se
+creo antes de la 0.14, con el indice en texto libre y los specs sin cabecera. No tienes que
+recordarlo: al abrir una sesion en uno de ellos, el resumen de inicio avisa de que usa el formato
+anterior, `/feature` y `/standup` te proponen migrar, y `/sprint` no arranca hasta hacerlo. Sin migrar
+falta el harness: el estado de las tareas no se puede comprobar al cerrar, y la guardia no conoce tus
+servidores de produccion.
+
+```
+/migrar
+```
+
+Se hace en una sesion, una vez, y va en este orden:
+
+1. **Simulacro.** No cambia nada: te muestra cuantos specs reciben cabecera, que tareas del indice
+   no tenian carpeta y se crearan, como traduce cada estado escrito a mano y la lista de lo que no
+   supo interpretar.
+2. **Te pregunta** si aplicar, revisar antes alguna duda o cancelar. Si `.devteam/` tiene cambios sin
+   confirmar en git, te lo dice antes.
+3. **Aplica.** Los cuerpos de los specs no se tocan y el indice anterior queda guardado entero en
+   `tasks/index-anterior.md`; el nuevo `tasks/index.md` se genera desde las cabeceras.
+4. **Completa la cabecera de la ficha** con lo que no se puede deducir, en una sola tanda de
+   preguntas: si las pruebas usan una copia local de produccion o datos sinteticos, el prefijo de los
+   contenedores del proyecto y los servidores de produccion que la guardia debe bloquear. Te propone
+   los que encuentra en la configuracion; nunca los inventa.
+5. **Adelgaza la ficha.** Si pasa de 150 lineas, mueve a `.devteam/ref/` las recetas largas (entorno
+   de pruebas, despliegue, sistemas) y deja en `context.md` un resumen con el puntero. Si hay
+   demasiadas trampas o lecciones, te **propone** cuales unir o quitar, con el antes y el despues, y
+   solo las toca si confirmas.
+6. **Comprueba y confirma.** Ejecuta `devteam lint` y `devteam status`, te dice cuantas tareas
+   quedaron en cada estado, y si hay git propone un commit local solo con `.devteam/`. No hace push.
+
+La traduccion de estados es **conservadora**, porque el objetivo es que el indice no diga "cerrada"
+de algo que no lo esta:
+
+| Estado escrito a mano | Queda como |
+|---|---|
+| "cerrada", "hecha", "integrada", "terminada" y similares | `cerrada` |
+| Cerrada pero "falta verlo en navegador", "sin prueba visual", "falta probar en telefono" | `parcial`, con eso en `falta` |
+| Cerrada que solo espera commit, push o despliegue | `cerrada`, con la nota en `falta`: es una accion tuya, no trabajo pendiente |
+| Algo que no se entiende | `pendiente` o `parcial`, y aparece en la lista de dudas |
+| Carpeta con `log.md` pero sin spec | `parcial`, para que la revises |
+| Carpeta que solo guarda salidas de pruebas | Se deja como esta |
+
+Despues de migrar, las tareas `parciales` son tu lista real de lo que quedo sin verificar: el inicio de
+sesion las muestra, y se retoman con `/feature <slug>` o en tanda con `/sprint`.
 
 **2. Presentar el proyecto al equipo.** Los agentes no saben nada de tu proyecto hasta que existe
 su ficha, asi que este paso va primero. Se hace una vez y sirve para siempre.
@@ -376,6 +423,10 @@ Para traer los cambios publicados desde la ultima vez:
 claude plugin marketplace update devteam-local
 claude plugin update devteam
 ```
+
+Los cambios se aplican al abrir una sesion nueva. Si vienes de una version anterior a la 0.14,
+ejecuta `/migrar` en cada proyecto la primera vez que lo abras: ver el paso
+[1b del uso rapido](#uso-rapido).
 
 En un servidor sin navegador, donde el registro no pueda resolver credenciales, clona el
 repositorio a mano y apunta el marketplace a esa ruta:
